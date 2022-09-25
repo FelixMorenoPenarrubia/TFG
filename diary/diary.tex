@@ -194,9 +194,53 @@ Casework.
 However, we need not go so far and it will probably be sufficient to forbid subgraphs which can always be colored with some prescribed list sizes. Instead of trying to find these subgraphs by hand, there is a more systematic way of checking whether a graph with given list sizes can always be $L$-colored. For doing so, we will need the Combinatorial Nullstellensatz technique from Noga Alon. 
 
 
-
-
 \subsection{Combinatorial Nullstellensatz and applications}
+
+This section will be mostly sourced from \cite{dvoraknullstellensatz}.
+
+\begin{theorem}[Combinatorial Nullstellensatz]
+Let $p(x_1, \ldots, x_n) \in \mathbb{K}[x_1, \ldots, x_n]$ be a nonzero polynomial and let $t_1, \ldots, t_n$ be nonnegative integers such that the degree of $x_i$ in $p$ is at most $t_i$. Let $S_1, \ldots, S_n$ be subsets of $\mathbb{K}$ such that $|S_i| = t_i+1$. Then there exist $a_1 \in S_1, \ldots, a_n \in S_n$ such that
+
+$$
+p(a_1, \ldots, a_n) \neq 0.
+$$
+\end{theorem}
+
+We will use the graph polynomial associated with a directed graph $G$:
+
+$$
+p_G(x_1, \ldots, x_n) = \prod_{\overrightarrow{v_iv_j}\in E(G)} (x_j-x_i).
+$$
+
+This polynomial is related to coloring since a coloring $\phi$ is proper iff $p_G(\phi(v_1), \ldots, \phi(v_n)) \neq 0$. So we can see how the combinatorial nullstellensatz is going to be useful here. The important result is this one:
+
+\begin{theorem}[Alon, Tarsi]
+Let $G$ be a directed graph on vertices $v_1, \ldots, v_n$, and let $L$ be an assignment of lists to vertices of $G$ such that $|L(v_i)| \geq d^+(v_i)+1$ for $i = 1, \ldots, n$. If the coefficient of $p_G$ at $\prod_{i=1}^n x_i^{d^+(v_i)}$ is non-zero, then $G$ has an $L$-coloring.
+\end{theorem}
+
+This coefficient has a combinatorial interpretation:
+
+\begin{theorem}
+The $\prod_{i=1}^n x_i^{d^+(v_i)}$ coefficient is the difference between even and odd spanning eulerian subgraphs of $G$. (\emph{Even} and \emph{odd} refer to the number of edges).
+\end{theorem}
+
+\textit{(Here is a brief detour from what concerns us).} Hence, since bipartite graphs have no odd spanning eulerian subgraphs (the number of edges in each direction on the bipartition is the same), any orientation gives a prescribed set of list sizes so that the graph is always $L$-colorable. Additionally, we have the following lemma:
+
+\begin{lemma}
+A graph $G$ has an orientation with maximum indegree $d$ if and only if $|E(H)| \leq d|V(H)|$ for every induced subgraph $H$.
+\end{lemma}
+
+Since bipartite planar graphs have at most $2n$ edges, we can conclude the following:
+
+\begin{theorem}
+Every planar bipartite graph can be 3-list-colored.
+\end{theorem}
+
+This theorem can also be proved by a more combinatorial approach without the nullstellensatz (see \cite{dvoraknullstellensatz}). 
+
+Cute historical note: this theorem, along with Thomassen's theorem and the Four Color Theorem, leads to conjecture that every planar graph has list chromatic number at most its chromatic number plus one. However, Mirzakhani provided a counterexample to this conjecture (I did a video about that!).
+
+How can these results help us? They provide a systematic way to find gadgets to avoid on our critical canvases. However, it will be more practical to check whether the entire graph induced by the interior vertices of our canvas (and with list sizes set by the number of neighbours in the outer face) can always be colored according to the preceding theorems. To do so, we will use the odd and even eulerian orientations characterization (modified slightly from the eulerian subgraph phrasing; we consider orientations having the desired indegrees and count the number of flipped edges compared to some fixed orientation). This is because generating those orientations by a pruned exhaustive search will be more efficient than computing the entire graph polynomial. There is a way to turn this orientation problem into a variant of matching in a general graph, making it polynomial time, but my supervisor thinks the exhaustive search will be more efficient in practice. 
 
 \section{Implementation of the search program (8-26 september)}
 

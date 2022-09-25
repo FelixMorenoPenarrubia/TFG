@@ -1,0 +1,209 @@
+\documentclass{article}
+\usepackage[margin=1.1in]{geometry}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+
+\usepackage[backend=bibtex]{biblatex}
+
+\bibliography{references.bib}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{observation}{Observation}
+\newtheorem{conjecture}{Conjecture}
+
+\newtheorem{definition}{Definition}
+
+
+\begin{document}
+
+\tableofcontents
+\newpage
+\section{Introduction (6, 8, 15, 20 september)}
+
+\subsection{Basic definitions of list-criticality}
+
+We start discussing the various definitions of criticality.
+
+\begin{definition}
+$G$ is \emph{critical (critical for $k$-list-coloring or $(k+1)$-list-critical)} if there exists a $k$-list-assignment $L$ such that $G$ is not $L$-colorable, but every proper subgraph of $G$ can be colored with any $k$-list-assignment.
+\end{definition}
+
+We will usually work with $k = 5$, and we will usually just say \emph{critical} when the value of $k$ and the intention of referring to list-coloring is clear. This first definition is the one that would be most analogous (in my opinion) to the definition of critical graphs with respect to regular coloring, but we have this second definition:
+
+\begin{definition}
+$G$ is \emph{critical} if there exists a $k$-list-assignment $L$ such that $G$ is not $L$-colorable but every proper subgraph of $G$ is not $L$-colorable.
+\end{definition}
+
+This is the definition we will be working with, since it turns out to be easier to work with a fixed list assignment. Clearly, the first definition implies the second but the second does not imply the first; the graphs satisfying the first definition are sometimes called \textit{minimal $k$-list-critical} because of their characterization as 5-list-critical graphs (under the second definition) with no other $k$-list-critical graphs as subgraphs (see \cite{onlistcritical}).
+
+We will also use the term $L$-critical. The second definition is equivalent to saying that there exists a $k$-list-assignment $L$ such that $G$ is $L$-critical.
+
+\begin{definition}
+A graph $G$ is \emph{$L$-critical} if $G$ is not $L$-colorable, but every proper subgraph of $G$ is.
+\end{definition}
+
+One more definition that we will be using is that of a graph critical with respect to a subgraph:
+
+\begin{definition}
+Let $G$ be a graph, $T$ be a subgraph of $G$, $L$ be a list assignment for $G$ and $\phi$ be a $L$-coloring of $T$. We say that $\phi$ \emph{extends to $G$} if there exists an $L$-coloring $\psi$ of $G$ such that $\phi(v) = \psi(v)$ for all vertices $v$ of $T$. We say $G$ is $\phi$-critical if $\phi$ extends to every proper subgraph of $G$ containig $T$ but not to $G$. 
+
+The pair $(G, L)$ is \emph{$T$-critical} if for every proper subgraph $G'$ of $G$ which contains $T$ as a subgraph there exists an $L$-coloring of $T$ that extends to an $L'$-coloring of $G'$, but does not extend to an $L$-coloring of $G$.
+\end{definition}
+
+$T$-criticality can be understood as: if we denote by $\mathcal{P}_T (G)$ the set of $L$-colorings of $T$ which extend to $G$, then $G$ is $T$-critical if this set grows when any edge or vertex is removed. For our purposes, we will set $T$ to be the outer cycle of our plane graphs, which brings us to the context of \emph{critical canvases} as discussed in \cite{fivelistcoloring2}:
+
+\begin{definition}[\cite{fivelistcoloring2}]
+We say the triple $(G, C, L)$ is a \emph{canvas} if $G$ is a 2-connected plane graph, $C$ is its outer cycle, and $L$ is a list assignment for $G$, $|L(v)| \geq 5$ for all $v \in V(G)-V(C)$ and there exists an $L$-coloring of $C$. We say a canvas $(G, C, L)$ is \emph{critical} if $G$ is $C$-critical with respect to $L$.
+\end{definition}
+
+However, we note that in the definition of $T$-criticality used in \cite{fivelistcoloring2}, they require that $G \neq T$; i. e. they disallow \emph{trivially $T$-critical} graphs in which the criticality comes from the nonexistence of proper subgraphs containing $T$. For our purposes of recursively constructing critical canvases, it will be useful to consider the empty cycles as ``base cases'', so we will not disallow this. However, this might mean that the statements theorems cited from \cite{fivelistcoloring2} and other references might have to be suitably modified.
+
+The restriction to 2-connected graphs comes from this lemma, also from \cite{fivelistcoloring2}:
+
+\begin{lemma}
+If a plane graph $G$ is $C$-critical, where $C$ is its outer cycle, then $G$ is 2-connected.
+\end{lemma}
+
+
+
+
+\subsection{Criticality and list-criticality on the torus}
+
+Now we will be talking about critical graphs for the usual vertex coloring (not list-coloring) for a while.
+
+Graph coloring in surfaces is a well-studied topic. Since Heawood generalized the four color proble proved with a simple proof an upper bound on the chromatic number for graphs on any (compact) surface except the sphere (and the bound turned out to be tight for every surface except the Klein bottle), there has been much work in the area. One of the most recent and strinking contributions has been the realization that in every surface most graphs are $5$-colorable, in the following sense:
+
+\begin{theorem}[Thomassen 1997]
+For any surface $\Sigma$, there is a finite number of $6$-critical graphs which embed on it.
+\end{theorem}
+
+So there is only a finite number of ``obstructions'' preventing the graph from being $5$-colorable. That means also that it is possible to decide in polynomial time (in fact, linear time) whether a graph on a surface if $5$-colorable. But to do that, you need to find the list of obstructions first.
+
+Thomassen found the concrete list of obstructions for the torus:
+
+\begin{theorem}[\cite{thomassentorus}]
+A graph $G$ embeddable on the torus is $5$-colorable if and only if it does not contain the following subgraphs:
+%TODO : learn what the actual graphs are.
+\begin{itemize}
+\item $K_6$.
+\item $C_3 + C_5$.
+\item $K_2 + H_7$, where $H_7$ is the graph obtained by applying \emph{Hajos'} construction to a pair of $K_4$.
+\item $T_{11}$, where $T_{11}$ is a triangulation of the torus with $11$ vertices.
+\end{itemize}
+Where $+$ denotes the join of two graphs: their disjoint union with all pairs of vertices from different graphs joined by edges.
+\end{theorem} 
+
+Our goal is to produce similar results for list-coloring. It is also true that there is a finite number of critical graphs:
+
+\begin{theorem}[Postle, Thomas]
+For any surface $\Sigma$, there is a finite number of $6$-list-critical graphs which embed on it.
+\end{theorem}
+
+Given that $6$-critical graphs are also $6$-list-critical, the list for the torus must contain the previous four graphs too. We conjecture that there are no more graphs.
+
+\begin{conjecture}
+A graph $G$ embeddable on the torus is $5$-list-colorable if and only if it does not contain the following subgraphs: $K_6, C_3 + C_5, K_2 + H_7, T_{11}$.
+\end{conjecture}
+
+
+How can we start trying to prove this? It is probably easier to work in the plane graph setting than with graphs embedded in the torus. If our embedded graph has two non homotopically equivalent non-contractible cycles, we can ``cut the torus through the cycles'' to obtain a plane graph, in which each of the vertices of the cycles appears twice in the outer face. If the graph was originally critical in the torus, then we will obtain as a result a critical canvas.
+
+If each of the two cycles is a triangle, then the resulting canvas will have $12$ vertices in the outer face. So it may be a good idea to generate all critical canvases with $12$ vertices in the outer face and analyze each of them to see if they could possibly come from a critical graph embedded in a torus. Hopefully, we won't obtain any graph other than the ones listed before. And for graphs which have longer non homotopically equivalent cycles, we may have to use some stronger theoretical results to prove that they can't be critical.
+
+
+\subsection{Chord or Tripod Theorem and generation of critical canvases}
+
+How to generate all critical canvases with $12$ vertices in the outer face? In \cite{fivelistcoloring2} it is proven that there is a linear bound of the number of total vertices with respect to the vertices in the outer face, so the total number of such canvases is finite, but still possibly quadratically exponential. However, also in \cite{fivelistcoloring2} is proven a structural result about critical canvases that will be very useful:
+
+\begin{theorem}[Cycle Chord or Tripod Theorem \cite{fivelistcoloring2}]
+If $(G, C, L)$ is a (nontrivial) critical canvas, then either
+
+\begin{enumerate}
+	\item $C$ has a chord in $G$.
+	\item There exists a vertex $v \in V(G) \setminus V(C)$ with at least three neighbors on $C$ such that at most one of the faces of $G[\{v\} \cup V(C)]$ includes a vertex or edge of $G$.
+\end{enumerate}
+\end{theorem}
+
+Additionally, note that every ``subcanvas'' of a critical canvas must be critical too. This gives us an inductive/recursive way of generating all critical canvases:
+
+Suppose we are generating critical canvases of cycle length $\ell$. There are two possible cases: canvases which have a chord, and canvases which do not. For canvases which have a chord, the chord divides the canvas into two critical subcanvases of sizes $a, b \geq 3$ with $a+b = \ell + 2$, so therefore $a, b \leq \ell-1$ and then we can generate all such canvases if we have already generated all critical canvases with smaller cycle size. 
+
+For canvases which do not have a chord, we have a similar recursive situation: considering the ``nonempty'' face of the tripod, we have another critical subcanvas. Hence, having generated all smaller critical canvases, we can generate canvases of size $\ell$ placing a tripod in all possible ways and recursively filling one of the faces of the tripod with a smaller critical canvas. There is one problem, however: when the tripod has only three neighbors which are three adjacent vertices, the cycle size of the biggest face is $\ell$, so we can't recurse to a smaller size of canvases and instead have to use canvases of the same size that we are generating now.
+
+All in all, we have the following algorithm for generating critical canvases of size $\ell$:
+
+\begin{enumerate}
+	\item Generate all possible canvases with a chord iterating $a$ from $3$ to $\ell-1$ and fusing together two canvases of size $a$ and $b = \ell+2-a$ in all possible orientations. Put all the canvases that are critical in a queue.
+	\item Generate all possible canvases with a tripod with biggest face of size at most $\ell-1$. Again, put those canvases that turn out to be critical in a queue.
+	\item While the queue is not empty, dequeue the first canvas, add a tripod with three consecutive neighbours to it in all the possible ways, and enqueue the canvases that turn out to be critical.
+\end{enumerate}
+
+The bound on the size of critical canvases from \cite{fivelistcoloring2} ensures that this algorithm will halt at some point. But it is necessary to test whether the canvases are actually critical or not. Doing this is unfeasible for even slightly large canvases (list-coloring is complete for the second level of the polynomial hierarchy), so what we will do instead is to test some property $\Pi$ which implies criticality, but is easier to verify. 
+
+\subsection{Possible tests for the $\Pi$ property}
+
+First, we have the obvious observation:
+
+\begin{observation}
+	In a critical canvas, every interior vertex has degree at least $5$.
+\end{observation}
+
+This allows us to reject a bunch of graphs with tripods with only $3$ or $4$ neighbours at the beginning, but we will need stronger properties. Recall Brooks' theorem from usual vertex coloring:
+
+\begin{theorem}[Brooks]
+Let $G$ be a connected graph with maximum degree $\Delta$. Then $\chi(G) \leq \Delta$ unless $G$ is a complete graph or an odd cycle.
+\end{theorem} 
+
+There is an analogue for list coloring too:
+
+\begin{definition}
+A list assignment $L$ for $G$ is said to be a \emph{degree assignment} if $\forall v$  $|L(v)| \geq \emph{deg } v$.
+\end{definition}
+
+\begin{theorem}[Erdos, Rubin, Taylor 1979]
+Let $G$ be a \textbf{2-connected} graph which is neither a clique nor an odd cycle. Then $G$ is $L$-colorable for every degree assignment $L$.
+\end{theorem}
+
+(Note that the 2-connectedness is required, by considering e.g. an odd path). 
+
+How is this useful? Well, consider a 2-connected induced subgraph $G'$ of interior vertices of a canvas $T = (G, C, L)$ which is not a clique or an odd cycle, and suppose all the other vertices of $G$ have been precolored. Since the vertices of $G'$ may have some precolored neighbors, we can only suppose that the lists of the vertices of $G'$ have the sizes of the original size of the list minus the ``exterior degree'' of the vertex, that is, the number of neighbours in $G \setminus G'$. And if those sizes are at least the ``interior degree'', then $G'$ will always be always be colorable no matter which is the precoloring outside, so $T$ can not be a critical canvas. In other words, we cannot have a 2-connected subgraph $G'$ of interior vertices with $|L(v)| \geq \text{deg } v$ for all vertices $v \in V(G')$ in a critical canvas unless $G'$ is a clique or an odd cycle. 
+
+In our case, for all interior vertices we have $|L(v)| = 5$ and we already established that the minimum degree for interior vertices is $5$, so the only candidates to be part of such a subgraph $G'$ are the vertices with degree precisely $5$. So what we do is construct the subgraph made of interior vertices with degree $5$, compute its biconnected components and check that each of these is a clique or an odd cycle. 
+
+This is a good property, but it is somewhat limited since it only works with vertices of degree $5$. We can find examples for which allowing greater exterior degrees (i.e. shorter lists in the subgraph) still makes the graph be always colorable.
+
+\begin{observation}
+Consider the graph $G$ with $V(G) = \{u, v, w, x\}$ and $E(G) = \{uv, vw, wx, xu, uw\}$. Then $G$ is always $L$-colorable for any $L$ with list sizes $L(u) = 3, L(v) = 2, L(w) = 2, L(x) = 2$. (This corresponds to vertex $w$ having degree $6$ in the original graph).
+\end{observation} 
+
+We can collect a list of these forbidden subgraphs and list sizes and manually check if the graph contains them in order to test a property stronger than what the theorem gives us. This allows for many possibilities, because the forbidden subgraphs don't necessarily need to be always $L$-colorable with the given list sizes, but can preclude the whole graph from being critical in other ways. Take this example:
+
+\begin{observation}
+Consider the graph $G$ with $V(G) = \{u, v, w, x, y\}$ and $E(G) = \{uv, uw, ux, uy, vw, wx, xy \}$. Consider the list sizes $L(u) = 4, L(v) = L(w) = L(x) = L(y) = 2$. Then $G$ is not always $L$-colorable with any $L$-coloring with those list sizes, but any $L$-coloring with these list sizes of $G$ without edge $wx$ extends to $G$.
+\end{observation}
+
+\begin{proof}
+Casework.
+
+%TODO don't be lazy and actually do it
+\end{proof}
+
+However, we need not go so far and it will probably be sufficient to forbid subgraphs which can always be colored with some prescribed list sizes. Instead of trying to find these subgraphs by hand, there is a more systematic way of checking whether a graph with given list sizes can always be $L$-colored. For doing so, we will need the Combinatorial Nullstellensatz technique from Noga Alon. 
+
+
+
+
+\subsection{Combinatorial Nullstellensatz and applications}
+
+\section{Implementation of the search program (8-26 september)}
+
+\newpage
+
+\printbibliography
+
+
+\end{document}
+

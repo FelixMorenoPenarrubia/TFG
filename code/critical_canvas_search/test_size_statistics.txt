@@ -1,0 +1,135 @@
+Enter maximum l:
+.-.-.-.-.-.-.-.-.
+Canvases of size 3 (total: 1)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+12: 1
+15: 1
+
+---
+Size statistics:
+3: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 4 (total: 1)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+12: 1
+14: 1
+15: 1
+
+---
+Size statistics:
+4: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 5 (total: 2)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+12: 2
+14: 2
+15: 2
+
+---
+Size statistics:
+5: 1
+6: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 6 (total: 4)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+11: 1
+12: 4
+14: 14
+15: 4
+
+---
+Size statistics:
+6: 1
+7: 2
+8: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 7 (total: 12)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+11: 6
+12: 5
+14: 86
+15: 12
+
+---
+Size statistics:
+7: 1
+8: 5
+9: 5
+10: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 8 (total: 74)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+11: 87
+12: 7
+14: 561
+15: 74
+
+---
+Size statistics:
+8: 1
+9: 13
+10: 32
+11: 18
+12: 6
+13: 1
+14: 1
+15: 1
+16: 1
+
+.-.-.-.-.-.-.-.-.
+Canvases of size 9 (total: 529)
+.-.-.-.-.-.-.-.-.
+
+
+---
+Test statistics:
+11: 1258
+12: 10
+14: 4121
+15: 529
+
+---
+Size statistics:
+9: 1
+10: 30
+11: 128
+12: 159
+13: 82
+14: 33
+15: 26
+16: 25
+17: 23
+18: 8
+19: 5
+20: 5
+21: 4
+

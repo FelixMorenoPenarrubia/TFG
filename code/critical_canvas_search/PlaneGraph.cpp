@@ -51,7 +51,8 @@ struct Code {
 		for (int i=0; i < size(); ++i) {
 			if (code[i] == -1) s.push_back('F');
 			else if (code[i] == -2) s.push_back('B');
-			else s.push_back('0'+code[i]);
+			else if (code[i] <= 9) s.push_back('0'+code[i]);
+			else s.push_back('a'+code[i]-10);
 		}
 		return s;
 	}

@@ -4,6 +4,7 @@
 #include<queue>
 #include<functional>
 #include<map>
+#include<fstream>
 #include "PlaneGraph.cpp"
 
 using std::cout;
@@ -30,31 +31,51 @@ const bool ADD_CHORDS = false; //TODO: fix bugs, do not use
 const bool DO_NOT_STORE_LAST = false;
 const bool REPORT_QUEUE_SIZE = false;
 const bool PROLOG_OUTPUT_FORMAT = true;
+const bool WRITE_TO_FILE = true;
+const string FILE_PATH = "../criticality_verifier/canvases/";
+const string FILE_EXTENSION = ".pl";
+const bool USE_N_THRESHOLD_PRINTING = true;
+const int N_THRESHOLD_PRINTING = 13;
+
 
 void print_canvas(pg g) {
-	cout << "-------" << endl;
-	cout << "n = " << g.n << ", m = " << g.m << ", l = " << g.l << endl;
-	cout << "Adjacency list:" << endl;
-	for(int u=0; u < g.n; ++u) {
-		for(int v : g.al[u]) {
-			cout << u << " " << v << endl;	
-		}
+
+	if(USE_N_THRESHOLD_PRINTING && g.n > N_THRESHOLD_PRINTING) return;
+
+	std::streambuf * buf;
+	std::ofstream of;
+	if(WRITE_TO_FILE) {
+		of.open(FILE_PATH + "l" + std::to_string(g.l) + "_n" + std::to_string(g.n) + "_c" + g.compute_code().to_string() + FILE_EXTENSION);
+		buf = of.rdbuf();
 	}
+	else {
+		buf = cout.rdbuf();
+	}
+
+	std::ostream stre(buf);
+	
 	if(PROLOG_OUTPUT_FORMAT) {
-		cout << "------" << endl;
-		cout << "interiorListSize(5)." << endl;
-		cout << "numColors(6)." << endl;
-		cout << "sizeOuterCycle(" << g.l << ")." << endl;
-		cout << "numVertices(" << g.n << ")." << endl;
+		stre << "sizeOuterCycle(" << g.l << ")." << endl;
+		stre << "numVertices(" << g.n << ")." << endl;
 		for(int u=0; u < g.n; ++u) {
 			for(int v : g.al[u]) {
-				if (u < v) cout << "edge(" << u << "," << v << ")." << endl;	
+				if (u < v) stre << "edge(" << u << "," << v << ")." << endl;	
 			}
 		}
 	}
-	cout << "-----" << endl;
-	cout << "Code: " << g.compute_code().to_string() << endl;
-	cout << "-------" << endl;
+	else {
+		stre << "-------" << endl;
+		stre << "n = " << g.n << ", m = " << g.m << ", l = " << g.l << endl;
+		stre << "Adjacency list:" << endl;
+		for(int u=0; u < g.n; ++u) {
+			for(int v : g.al[u]) {
+				stre << u << " " << v << endl;	
+			}
+		}
+		stre << "-----" << endl;
+		stre << "Code: " << g.compute_code().to_string() << endl;
+		stre << "-------" << endl;
+	}
 }
 
 

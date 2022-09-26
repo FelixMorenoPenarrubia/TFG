@@ -1,30 +1,32 @@
 symbolicOutput(0).  % set to 1 to see symbolic output only; 0 otherwise.
+readFile(1). % set to 1 to read from file
+verboseOutput(0). % set to 1 to write outer colorings which extend to subgraphs but not whole graph
 
 
 interiorListSize(5).
 numColors(6).
-sizeOuterCycle(7).
-numVertices(10).
-edge(0,1).
-edge(0,7).
-edge(0,6).
-edge(1,2).
-edge(1,7).
-edge(2,3).
-edge(2,8).
-edge(2,7).
-edge(3,4).
-edge(3,9).
-edge(3,8).
-edge(4,5).
-edge(4,9).
-edge(5,6).
-edge(5,9).
-edge(6,7).
-edge(6,8).
-edge(6,9).
-edge(7,8).
-edge(8,9).
+%sizeOuterCycle(7).
+%numVertices(10).
+%edge(0,1).
+%edge(0,7).
+%edge(0,6).
+%edge(1,2).
+%edge(1,7).
+%edge(2,3).
+%edge(2,8).
+%edge(2,7).
+%edge(3,4).
+%edge(3,9).
+%edge(3,8).
+%edge(4,5).
+%edge(4,9).
+%edge(5,6).
+%edge(5,9).
+%edge(6,7).
+%edge(6,8).
+%edge(6,9).
+%edge(7,8).
+%edge(8,9).
 
 
 %%%%%% Some helpful definitions to make the code cleaner:
@@ -124,14 +126,17 @@ allColsInvalid.
 %displaySol(M):-nl,
 %    moderator(Mod), nl, findall(D,(member(ed(E,D),M), member(em(E,Mod),M)), L),
 %    write('Moderator '), write(Mod), write( ' works: '), sort(L,L1), write(L1), fail.
-displaySol(M):-
+displaySolVerbose(M):-
     nl, write('List assignment: '), interiorVertex(V), nl, 
     write(V), write(': '), 
     findall(C, member(colorInList(C, V), M), L), member(CC, L), write(CC), write(' '), fail.
-displaySol(M):-
+displaySolVerbose(M):-
     nl, nl, write('Outer colorings for each subgraph:'), nl, nl, 
     interiorEdge([X, Y]), write('-----'), nl, write('Outer coloring for subgraph without edge '), write(X), write('-'), write(Y), nl, 
     findall([V, C], member(outerColoring(C, V, [X, Y]), M), L),  member([VV, CC], L), write(VV), write(': '), write(CC), nl, fail.
+displaySolVerbose(_).
+
+displaySol(M):- verboseOutput(1), displaySolVerbose(M), fail.
 displaySol(_).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,8 +194,12 @@ subsetOfSize(N,[_|L],   S ):-            length(L,Leng), Leng>=N,  subsetOfSize(
 
 %%%%%% main:
 
-main:-  symbolicOutput(1), !, writeClauses, halt.   % print the clauses in symbolic form and halt
-main:-  initClauseGeneration,
+main:- readFile(0), exec.
+main(_):- readFile(0), exec.
+main(F):- readFile(1), consult(F), exec.
+
+exec:-  symbolicOutput(1), !, writeClauses, halt.   % print the clauses in symbolic form and halt
+exec:-  initClauseGeneration,
         tell(clauses), writeClauses, told,          % generate the (numeric) SAT clauses and call the solver
         tell(header),  writeHeader,  told,
         numVars(N), numClauses(C),
@@ -200,8 +209,8 @@ main:-  initClauseGeneration,
         shell('picosat -v -o model infile.cnf', Result),  % if sat: Result=10; if unsat: Result=20.
         treatResult(Result),!.
 
-treatResult(20):- write('Unsatisfiable'), nl, halt.
-treatResult(10):- write('Solution found: '), nl, see(model), symbolicModel(M), seen, displaySol(M), nl,nl,halt.
+treatResult(20):- write('UNSATISFIABLE'), nl, write('!!!'), nl, halt.
+treatResult(10):- write('Satisfiable'), nl, see(model), symbolicModel(M), seen, displaySol(M), nl,nl,halt.
 treatResult( _):- write('cnf input error. Wrote anything strange in your cnf?'), nl,nl, halt.
     
 

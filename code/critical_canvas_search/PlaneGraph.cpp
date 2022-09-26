@@ -161,6 +161,7 @@ struct DFSGraph {
 	}
 	
 	vector<DFSGraph> partition_biconnected() {
+		if (n == 0) return vector<DFSGraph>();
 		vector<vector<pair<int, int>>> cedges;
 		vector<pair<int, int>> edge_stack;
 		generate_edge_partition(cedges, edge_stack, 0);
@@ -428,21 +429,25 @@ struct PlaneGraph {
 	}
 	
 	bool biconnected_deg5_components_test() {
+
+		if (DEBUG_MODE) {
+			cerr << "HEY" << endl;
+		}
+
 		vector<int> morph(n, -1);
 		DFSGraph deg5graph;
 		deg5graph.n = 0;
 		for (int u = l; u < n; ++u) {
-			int deg = 0;
-			for (int v : al[u]) {
-				if (v > l) {
-					deg++;
-				}
-			}
+			int deg = al[u].size();
 			if (deg == 5) {
 				morph[u] = deg5graph.n++;
 			}
 		}
-		deg5graph.n++;
+
+		if(DEBUG_MODE) {
+			cerr << "n = " << deg5graph.n << endl;
+		}
+
 		deg5graph.al = vector<vector<int>> (deg5graph.n);
 		for (int u = l; u < n; ++u) {
 			if (morph[u] > -1) {
@@ -456,8 +461,17 @@ struct PlaneGraph {
 		}
 		
 		vector<DFSGraph> comp = deg5graph.partition_biconnected();
+
+		if(DEBUG_MODE) {
+			cerr << comp.size() << endl;
+		}
 		
 		for (DFSGraph c : comp) {
+			if (DEBUG_MODE) {
+				cerr << "is_clique(): " << c.is_clique() << endl;
+				cerr << "is_odd_cycle(): " << c.is_odd_cycle() << endl;
+			}
+
 			if (!(c.is_clique() || c.is_odd_cycle())) return false;
 		}
 		

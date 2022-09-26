@@ -9,31 +9,59 @@ using std::vector;
 using pg = PlaneGraph;
 
 
-void generate_code() {
-	cout << "Introduce n, m, l of the graph" << endl;
+pg read_planegraph() {
+	//cout << "Introduce n, m, l of the graph" << endl;
 	int n, m, l;
 	cin >> n >> m >> l;
-	cout << "Introduce adjacency list (with edges duplicated)" << endl;
+	//cout << "Introduce adjacency list (with edges duplicated)" << endl;
 	vector<vector<int> > al(n);
 	for (int i=0; i < 2*m; ++i) {
 		int u, v;
 		cin >> u >> v;
 		al[u].push_back(v);
 	}
-	pg g = pg(l, al);
+	return pg(l, al);
+}
+
+void generate_code() {
+	pg g = read_planegraph();
 	cout << g.compute_code().to_string() << endl;
 }
 
+void num_biconnected_components() {
+	//n, m
+	int n, m;
+	cin >> n >> m;
+	//edges not duplicated
+	vector<vector<int> > al(n);
+	for (int i=0; i < m; ++i) {
+		int u, v;
+		cin >> u >> v;
+		al[u].push_back(v);
+		al[v].push_back(u);
+	}
+	DFSGraph g;
+	g.n = n;
+	g.al = al;
+	vector<DFSGraph> comp = g.partition_biconnected();
+	cout << comp.size() << endl;
+
+
+}
+
+void biconnected_deg5_components_test() {
+	pg g = read_planegraph();
+	cout << g.biconnected_deg5_components_test() << endl;
+}
+
 int main() {
-	cout << "Select program: " << endl;
-	cout << "1. Search" << endl;
-	cout << "2. Generate code for graph" << endl;
-	cout << "3. Add tripod to graph" << endl;
-	cout << "4. Perform degree test" << endl;
-	cout << "5. Perform deficiency test" << endl;
-	cout << "6. Perform gadget 4 test" << endl;
-	cout << "7. Perform biconnected components of degree 5 test" << endl;
-	cout << "8. Perform gadget 5 test" << endl;
+	cerr << "Select program: " << endl;
+	cerr << "1. Search" << endl;
+	cerr << "2. Generate code for graph" << endl;
+	cerr << "3. Isomorphism test for two canvases (adjacency list)" << endl;
+	cerr << "4. Isomorphism test for two canvases (list of operations)" << endl;
+	cerr << "5. Number of biconnected components of graph" << endl;
+	cerr << "6. Perform biconnected components of degree 5 test" << endl;
 	
 	int c;
 	cin >> c;
@@ -42,5 +70,11 @@ int main() {
 	}
 	if(c == 2) {
 		generate_code();
+	}
+	if(c == 5) {
+		num_biconnected_components();
+	}
+	if(c == 6) {
+		biconnected_deg5_components_test();
 	}
 }

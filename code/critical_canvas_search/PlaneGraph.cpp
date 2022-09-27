@@ -213,6 +213,239 @@ struct DFSGraph {
 	}
 };
 
+
+//TODO: find strongest base orientation???
+struct OrientationGraph {
+	int n;
+	int m;
+	vector<pair<int, int> > el; //edge list
+	vector<vector<int> > il; // incidence list
+
+	vector<int> base_orientation; //orientation for each edge: +1 first -> second, -1 second -> first
+
+
+	//constructor providing n, and el, generates il
+	OrientationGraph(int _n, vector<pair<int, int> > _el) {
+		n = _n;
+		el = _el;
+		m = el.size();
+		il = vector<vector<int>>(n);
+		for (int i=0; i < m; ++i) {
+			il[el[i].first].push_back(i);
+			il[el[i].second].push_back(i);
+		}
+	}
+
+	//Finds all orientations with indegree bounds bounds, which may have to be satisfied with equality or not, and it also allows 
+	//finding only one orientation
+	vector<vector<int> > find_orientations(const vector<int>& bounds, bool equality, bool find_one) {
+		vector<vector<int > > ans;
+		vector<int> curr_ori(m);
+		vector<int> curr_bounds = vector<int>(bounds);
+		vector<int> curr_rbounds(n);
+
+		for (int i=0; i < n; ++i) {
+			curr_rbounds[i] = (int)il[i].size() - curr_bounds[i];
+		}
+
+		
+
+		auto change_edge_bounds = [&] (int e, int delta) {
+			if (curr_ori[e] == 1) {
+				curr_bounds[el[e].second] += delta;
+				curr_rbounds[el[e].first] += delta;
+			}
+			else {
+				curr_bounds[el[e].first] += delta;
+				curr_rbounds[el[e].second] += delta;
+			}
+		};
+
+		auto can_change_edge = [&] (int e, int ori) -> bool {
+			if (ori == 1) {
+				return (curr_bounds[el[e].second] >= 1 && (!equality || (curr_rbounds[el[e].first] >= 1)));
+			}
+			else {
+				return (curr_bounds[el[e].first] >= 1 && (!equality || (curr_rbounds[el[e].second] >= 1)));
+			}
+		};
+
+		vector<pair<int, int> > decision_stack;
+		if (can_change_edge(0, 1)) {
+			curr_ori[0] = 1;
+			change_edge_bounds(0, -1);
+			decision_stack.emplace_back(0, 1);
+		}
+		else if (can_change_edge(0, -1)) {
+			curr_ori[0] = -1;
+			change_edge_bounds(0, -1);
+			decision_stack.emplace_back(0, 0);
+		}
+		else {
+			return ans;
+		}
+		//TODO: eliminate code duplication
+		for (int i=1; i < m; ++i) {
+			if (!can_change_edge(i, 1) || !can_change_edge(i, -1)) {
+				if (can_change_edge(i, 1)) {
+					curr_ori[i] = 1;
+					change_edge_bounds(i, -1);
+					decision_stack.emplace_back(i, 0);
+				}
+				else if (can_change_edge(i, -1)) {
+					curr_ori[i] = -1;
+					change_edge_bounds(i, -1); //note that the second parameter is delta, not orientation...
+					decision_stack.emplace_back(i, 0);
+				}
+			}
+		}
+
+		while (!decision_stack.empty()) {
+
+			if(DEBUG_MODE) {
+				
+				cerr << "Current stack status:" << endl;
+				for(pair<int, int> x : decision_stack) {
+					cerr << x.first << " " << x.second << endl;
+				}
+				cerr << endl;
+				
+			}
+
+			bool decided = false;
+			bool all_set = true;
+			for (int i=0; i < m; ++i) {
+				if (curr_ori[i] == 0) {
+					all_set = false;
+					if(decided) {
+						if (!can_change_edge(i, 1) || !can_change_edge(i, -1)) {
+							if (can_change_edge(i, 1)) {
+								curr_ori[i] = 1;
+								change_edge_bounds(i, -1);
+								decision_stack.emplace_back(i, 0);
+							}
+							else if (can_change_edge(i, -1)) {
+								curr_ori[i] = -1;
+								change_edge_bounds(i, -1); //note that the second parameter is delta, not orientation...
+								decision_stack.emplace_back(i, 0);
+							}
+						}
+					}
+					else {
+						if (can_change_edge(i, 1)) {
+							curr_ori[i] = 1;
+							change_edge_bounds(i, -1);
+							decision_stack.emplace_back(i, 1);
+							decided = true;
+						}
+						else if (can_change_edge(i, -1)) {
+							curr_ori[i] = -1;
+							change_edge_bounds(i, -1); //note that the second parameter is delta, not orientation...
+							decision_stack.emplace_back(i, 0);
+							decided = true;
+						}
+					}
+				}
+			}
+
+			if (all_set) {
+				ans.push_back(curr_ori);
+				if (find_one) return ans;
+			}
+			if (!decided) {
+				bool solved = false;
+				while (!solved) {
+					while (!decision_stack.empty() && decision_stack.back().second == 0) {
+						int edg_id = decision_stack.back().first;
+						decision_stack.pop_back();
+						change_edge_bounds(edg_id, +1);
+						curr_ori[edg_id] = 0;
+					}
+					if (!decision_stack.empty()) {
+						int edg_id = decision_stack.back().first;
+						decision_stack.pop_back();
+						change_edge_bounds(edg_id, +1);
+						if (can_change_edge(edg_id, -curr_ori[edg_id])) {
+							curr_ori[edg_id] = -curr_ori[edg_id];
+							change_edge_bounds(edg_id, -1);
+							decision_stack.emplace_back(edg_id, 0);
+							solved = true;
+						}
+						else {
+							curr_ori[edg_id] = 0;
+						}
+					}
+					else {
+						solved = true;
+					}
+				}
+			}
+		}
+
+		return ans;
+	}
+
+	bool find_base_orientation(const vector<int>& bounds) {
+		vector<vector<int> > ret = find_orientations(bounds, false, true);
+		if (ret.empty()) return false;
+		base_orientation = ret[0];
+		return true;
+	}
+
+	int find_orientation_difference() {
+		if(base_orientation.empty()) {
+			cerr << "ERROR - did you call find_base_orientation" << endl;
+		}
+
+		if (DEBUG_MODE) {
+			cerr << "Edge list: " << endl;
+			for (pair<int, int> e : el) {
+				cerr << e.first << "-" << e.second << " ";
+			}
+			cerr << endl;
+
+			cerr << "Base orientation: " << endl;
+			for (int x : base_orientation) {
+				if(x == 1) cerr << " ";
+				cerr << x << "  ";
+				
+			}
+			cerr << endl;
+		}
+
+		vector<int> bounds(n, 0);
+		for (int i=0; i < m; ++i) {
+			if (base_orientation[i] == 1) {
+				bounds[el[i].second]++;
+			}
+			else {
+				bounds[el[i].first]++;
+			}
+		}
+		vector<vector<int> > ori = find_orientations(bounds, true, false);
+		int ans = 0;
+		for (vector<int> co : ori) {
+
+			if (DEBUG_MODE) {
+				cerr << "Orientation: " << endl;
+				for (int x : co) {
+					if(x == 1) cerr << " ";
+					cerr << x << "  ";
+				}
+				cerr << endl;
+			}
+
+			int dif = 0;
+			for (int i=0; i < m; ++i) {
+				if (co[i] != base_orientation[i]) dif++;
+			}
+			if (dif%2 == 0) ans++;
+			else ans--;
+		}
+		return ans;
+	}
+};
+
 struct PlaneGraph {
 	int n; //num vertices
 	int m; //num edges
@@ -505,11 +738,25 @@ struct PlaneGraph {
 		}
 		return true;
 	}
-	
-		
-	
-	
-	
-	 
-	
+
+	bool alon_tarsi_test() {
+		vector<pair<int, int> > el;
+		vector<int> bounds (n-l); 
+		for (int u = l; u < n; ++u) {
+			bounds[u-l] = 4;
+			for (int v : al[u]) {
+				if (v > u) {
+					el.emplace_back(u-l, v-l);
+				}
+				else if (v < l) {
+					bounds[u-l]--;
+				}
+			}
+		}
+		if (el.empty()) return true;
+		OrientationGraph og = OrientationGraph(n-l, el);
+		if (!og.find_base_orientation(bounds)) return true; //TODO: is this alright
+
+		return og.find_orientation_difference() == 0;
+	}
 };

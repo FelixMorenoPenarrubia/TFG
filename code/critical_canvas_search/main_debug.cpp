@@ -54,6 +54,42 @@ void biconnected_deg5_components_test() {
 	cout << g.biconnected_deg5_components_test() << endl;
 }
 
+void print_all_orientations() {
+	//n, m
+	int n, m;
+	cin >> n >> m;
+	vector<pair<int, int> > el;
+	//edge list - not duplicated
+	for (int i=0; i < m; ++i) {
+		int u, v;
+		cin >> u >> v;
+		el.emplace_back(u, v);
+	}
+	//n ints - bounds
+	vector<int> bounds(n);
+	for(int i=0; i < n; ++i) {
+		cin >> bounds[i];
+	}
+	//one int (0 or 1) - equality
+	bool equality;
+	cin >> equality;
+
+	OrientationGraph g = OrientationGraph(n, el);
+	vector<vector<int> > ans = g.find_orientations(bounds, equality, false);
+	for(vector<int> v : ans) {
+		for(int i=0; i < (int)v.size(); ++i) {
+			if (i > 0) cout << " ";
+			cout << v[i];
+		}
+		cout << endl;
+	}
+}
+
+void alon_tarsi_test() {
+	pg g = read_planegraph();
+	cout << g.alon_tarsi_test() << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
@@ -62,6 +98,8 @@ int main() {
 	cerr << "4. Isomorphism test for two canvases (list of operations)" << endl;
 	cerr << "5. Number of biconnected components of graph" << endl;
 	cerr << "6. Perform biconnected components of degree 5 test" << endl;
+	cerr << "7. Print all orientations with given bounds of graph" << endl;
+	cerr << "8. Perform Alon-Tarsi test" << endl;
 	
 	int c;
 	cin >> c;
@@ -76,5 +114,11 @@ int main() {
 	}
 	if(c == 6) {
 		biconnected_deg5_components_test();
+	}
+	if(c == 7) {
+		print_all_orientations();
+	}
+	if(c == 8) {
+		alon_tarsi_test();
 	}
 }

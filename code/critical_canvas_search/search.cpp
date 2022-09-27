@@ -23,18 +23,18 @@ set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
 const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = true;
+const bool PRINT_CANVAS_ON_END = false;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
 const bool ADD_CHORDS = false; //TODO: fix bugs, do not use
 const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = false;
-const bool PROLOG_OUTPUT_FORMAT = true;
-const bool WRITE_TO_FILE = true;
+const bool REPORT_QUEUE_SIZE = true;
+const bool PROLOG_OUTPUT_FORMAT = false;
+const bool WRITE_TO_FILE = false;
 const string FILE_PATH = "../criticality_verifier/canvases/";
 const string FILE_EXTENSION = ".pl";
-const bool USE_N_THRESHOLD_PRINTING = true;
+const bool USE_N_THRESHOLD_PRINTING = false;
 const int N_THRESHOLD_PRINTING = 13;
 
 
@@ -84,7 +84,8 @@ bool test_canvas(pg g) {
 	vector<std::function<bool()>> tests = {std::bind(&PlaneGraph::degree_test, g),
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
 										   std::bind(&PlaneGraph::gadget4_test, g),
-										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g)
+										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
+										   std::bind(&PlaneGraph::alon_tarsi_test, g)
 										  /* std::bind(&PlaneGraph::gadget5_test, g)*/};
 	/*
 	if(!g.degree_test()) return false;
@@ -107,6 +108,12 @@ bool test_canvas(pg g) {
 			if(!f()) return false;
 		}
 	}
+	/*
+	if(!g.alon_tarsi_test()) {
+		cout << "Canvas does not pass Alon-Tarsi test:" << endl;
+		print_canvas(g);
+	}
+	*/
 
 	return true;
 }

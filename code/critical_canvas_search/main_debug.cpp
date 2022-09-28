@@ -85,9 +85,32 @@ void print_all_orientations() {
 	}
 }
 
-void alon_tarsi_test() {
+void weak_alon_tarsi_test() {
 	pg g = read_planegraph();
-	cout << g.alon_tarsi_test() << endl;
+	cout << g.weak_alon_tarsi_test() << endl;
+}
+
+void strong_alon_tarsi_test() {
+	pg g = read_planegraph();
+	cout << g.strong_alon_tarsi_test() << endl;
+}
+
+void bounds_generation() {
+	int n;
+	int sum;
+	cin >> n >> sum;
+	vector<int> vec(n);
+	for (int i=0; i < n; ++i) {
+		cin >> vec[i];
+	}
+	vector<vector<int> > ans = PlaneGraph::bounds_generation(vec, sum);
+	for(vector<int> bnd : ans) {
+		for (int i=0; i < (int)bnd.size(); ++i) {
+			if (i > 0) cout << " ";
+			cout << bnd[i];
+		}
+		cout << endl;
+	}
 }
 
 int main() {
@@ -99,7 +122,9 @@ int main() {
 	cerr << "5. Number of biconnected components of graph" << endl;
 	cerr << "6. Perform biconnected components of degree 5 test" << endl;
 	cerr << "7. Print all orientations with given bounds of graph" << endl;
-	cerr << "8. Perform Alon-Tarsi test" << endl;
+	cerr << "8. Perform (weak) Alon-Tarsi test" << endl;
+	cerr << "9. Perform (strong) Alon-Tarsi test" << endl;
+	cerr << "10. Bounds generation" << endl;
 	
 	int c;
 	cin >> c;
@@ -119,6 +144,12 @@ int main() {
 		print_all_orientations();
 	}
 	if(c == 8) {
-		alon_tarsi_test();
+		weak_alon_tarsi_test();
+	}
+	if(c == 9) {
+		strong_alon_tarsi_test();
+	}
+	if(c == 10) {
+		bounds_generation();
 	}
 }

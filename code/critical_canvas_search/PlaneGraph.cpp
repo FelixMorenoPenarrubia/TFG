@@ -392,6 +392,13 @@ struct OrientationGraph {
 		return true;
 	}
 
+	bool find_strict_base_orientation(const vector<int>& bounds) {
+		vector<vector<int> > ret = find_orientations(bounds, true, true);
+		if (ret.empty()) return false;
+		base_orientation = ret[0];
+		return true;
+	}
+
 	int find_orientation_difference() {
 		if(base_orientation.empty()) {
 			cerr << "ERROR - did you call find_base_orientation" << endl;
@@ -739,7 +746,7 @@ struct PlaneGraph {
 		return true;
 	}
 
-	bool alon_tarsi_test() {
+	bool weak_alon_tarsi_test() {
 		vector<pair<int, int> > el;
 		vector<int> bounds (n-l); 
 		for (int u = l; u < n; ++u) {
@@ -755,8 +762,61 @@ struct PlaneGraph {
 		}
 		if (el.empty()) return true;
 		OrientationGraph og = OrientationGraph(n-l, el);
-		if (!og.find_base_orientation(bounds)) return true; //TODO: is this alright
+		if (!og.find_base_orientation(bounds)) return true;
 
 		return og.find_orientation_difference() == 0;
+	}
+
+	static void bounds_backtracking(int i, int sum, int bounds_sum, vector<int>& curr_bounds, const vector<int>& bounds, vector<vector<int>>& ans) {
+		int n = bounds.size();
+		if (i == n) {
+			if (sum == 0) {
+				ans.push_back(vector<int>(curr_bounds));
+			}
+		}
+		else {
+			for (int v = std::max(0, sum-bounds_sum+bounds[i]); v <= std::min(bounds[i], sum); ++v) {
+				curr_bounds[i] = v;
+				bounds_backtracking(i+1, sum-v, bounds_sum-bounds[i], curr_bounds, bounds, ans);
+			}
+		}
+	}
+
+	static vector<vector<int> > bounds_generation(const vector<int>& bounds, int m) {
+		int n = bounds.size();
+		int bounds_sum = 0;
+		for (int x : bounds) {
+			bounds_sum += x;
+		}
+		vector<vector<int> > ans;
+		vector<int> curr_bounds(n, 0);
+		bounds_backtracking(0, m, bounds_sum, curr_bounds, bounds, ans);
+		return ans;
+	}
+
+	bool strong_alon_tarsi_test() {
+		vector<pair<int, int> > el;
+		vector<int> bounds (n-l); 
+		for (int u = l; u < n; ++u) {
+			bounds[u-l] = 4;
+			for (int v : al[u]) {
+				if (v > u) {
+					el.emplace_back(u-l, v-l);
+				}
+				else if (v < l) {
+					bounds[u-l]--;
+				}
+			}
+		}
+		if (el.empty()) return true;
+		OrientationGraph og = OrientationGraph(n-l, el);
+		vector<vector <int> > bounds_vector = bounds_generation(bounds, el.size());
+		for (vector<int> strict_bounds : bounds_vector) {
+			if (og.find_strict_base_orientation(strict_bounds)) {
+				if (og.find_orientation_difference() != 0) return false;
+			}
+		}
+
+		return true;
 	}
 };

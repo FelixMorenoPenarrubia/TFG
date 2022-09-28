@@ -23,13 +23,13 @@ set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
 const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = false;
+const bool PRINT_CANVAS_ON_END = true;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
 const bool ADD_CHORDS = false; //TODO: fix bugs, do not use
 const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = true;
+const bool REPORT_QUEUE_SIZE = false;
 const bool PROLOG_OUTPUT_FORMAT = false;
 const bool WRITE_TO_FILE = false;
 const string FILE_PATH = "../criticality_verifier/canvases/";
@@ -85,7 +85,7 @@ bool test_canvas(pg g) {
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
 										   std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
-										   std::bind(&PlaneGraph::alon_tarsi_test, g)
+										   std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
 										  /* std::bind(&PlaneGraph::gadget5_test, g)*/};
 	/*
 	if(!g.degree_test()) return false;

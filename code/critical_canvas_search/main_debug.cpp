@@ -28,6 +28,55 @@ void generate_code() {
 	cout << g.compute_code().to_string() << endl;
 }
 
+void isomorphism_test_adjacency_list() {
+	pg g1 = read_planegraph();
+	pg g2 = read_planegraph();
+	//cerr << g1.compute_code().to_string() << endl;
+	//cerr << g2.compute_code().to_string() << endl;
+	cout << (g1.compute_code().to_string() == g2.compute_code().to_string()) << endl;
+}
+
+void isomorphism_test_operation_list() {
+	vector<pg> vpg;
+	vpg.push_back(read_planegraph());
+	vpg.push_back(read_planegraph());
+	//Number of operations
+	int q;
+	cin >> q;
+	for(int i=0; i < q; ++i) {
+
+		cerr << "Operation " << i << endl;
+
+		string s;
+		cin >> s;
+		if (s == "add_tripod") {
+			//add_tripod idx s j bm
+			int idx, s, j;
+			long long bm;
+			cin >> idx >> s >> j >> bm;
+			vpg.push_back(vpg[idx].add_tripod(s, j, bm));
+		}
+		else if (s == "fuse_chord") {
+			//fuse_chord idx1 idx2 j1 j2 same_orientation
+			int idx1,idx2,j1,j2,same_orientation;
+			cin >> idx1 >> idx2 >> j1 >> j2 >> same_orientation;
+			vpg.push_back(PlaneGraph::fuse_chord(vpg[idx1], vpg[idx2], j1, j2, same_orientation));
+		}
+		else if (s == "print_isomorphism") {
+			//print_isomorphism idx1 idx2
+			int idx1, idx2;
+			cin >> idx1 >> idx2;
+			cout << (vpg[idx1].compute_code().to_string() == vpg[idx2].compute_code().to_string()) << endl;
+		}
+	}
+
+	/*for (int i=0; i < (int)vpg.size(); ++i) { 
+		pg g = vpg[i];
+		cerr << i << ": " << endl;
+		print_canvas(g);
+	}*/
+}
+
 void num_biconnected_components() {
 	//n, m
 	int n, m;
@@ -133,6 +182,12 @@ int main() {
 	}
 	if(c == 2) {
 		generate_code();
+	}
+	if(c == 3) {
+		isomorphism_test_adjacency_list();
+	}
+	if(c == 4) {
+		isomorphism_test_operation_list();
 	}
 	if(c == 5) {
 		num_biconnected_components();

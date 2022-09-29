@@ -507,6 +507,7 @@ struct PlaneGraph {
 		return code;
 	}
 	
+	//Note: may give different codes for isomorphic graphs if the outer orientation is reversed 
 	Code compute_code() {
 		Code code = std::min(compute_code_edge(0, 1), compute_code_edge(1, 0));
 		for (int u = 1; u < l; ++u) {
@@ -515,6 +516,10 @@ struct PlaneGraph {
 		return code;
 	}
 	
+
+	//Adds tripod: vertex j from the outer face is pushed into inner face
+	//and adds s >= 1 outer vertices
+	//connected to j depending on whether the bit in bitmask bm is set
 	PlaneGraph add_tripod(int s, int j, ll bm) {
 	
 		int pj = (j-1+l)%l;
@@ -555,14 +560,12 @@ struct PlaneGraph {
 		return PlaneGraph(l+s-1, nal);
 	}
 
+
+	//Fuses graphs g1 and g2 along the edges j1->j1+1 and j2->j2 +- 1 of the outer face
+	//if same_orientation is false, the orientation of the second graph is reversed
 	static PlaneGraph fuse_chord(PlaneGraph g1, PlaneGraph g2, int j1, int j2, bool same_orientation) {
 		//TODO: fix bugs
-		if (DEBUG_MODE) {
-			cerr << "fuse_chord(" << g1.compute_code().to_string() << ", " << g2.compute_code().to_string() << ", " 
-			<< j1 << ", " << j2 << ", " << same_orientation << ")" << endl;
-			//cerr << g1.n << " " << g2.n << endl;
-			//cerr << g1.l << " " << g2.l << endl;
-		}
+		
 
 		vector<int> morph1(g1.n);
 		vector<int> morph2(g2.n);
@@ -591,7 +594,7 @@ struct PlaneGraph {
 		}
 
 		vector<vector<int> > nal (g1.n + g2.n -2);
-
+		vector<int> jal;
 		for (int u = 0; u < g1.n; ++u) {
 			for (int v : g1.al[u]) {
 
@@ -602,22 +605,46 @@ struct PlaneGraph {
 				if (u == (j1+1)%g1.l && v == j1) {
 					continue;
 				}
+				if (u == j1) {
+					jal.push_back(morph1[v]);
+				}
+				else {
+					nal[morph1[u]].push_back(morph1[v]);
+				}
+			}
+		}
 
-				nal[morph1[u]].push_back(morph1[v]);
+		if (!same_orientation) {
+			for (int u = 0; u < g2.n; ++u) {
+				std::reverse(g2.al[u].begin(), g2.al[u].end());
 			}
 		}
 
 		for (int u = 0; u < g2.n; ++u) {
 			for (int v : g2.al[u]) {
 				if (u == j2) {
-					if (same_orientation && v == (j2+1)%g2.l) continue;
-					if (!same_orientation && v == (j2-1+g2.l)%g2.l) continue;
+					if (!same_orientation && v == (j2+1)%g2.l) continue;
+					if (same_orientation && v == (j2-1+g2.l)%g2.l) continue;
 				}
+				
 				nal[morph2[u]].push_back(morph2[v]);
+				
 			}
 		}
 
-		return PlaneGraph(g1.l+g2.l-2, nal);
+		for (int x : jal) nal[0].push_back(x);
+
+		PlaneGraph res = PlaneGraph(g1.l+g2.l-2, nal);
+
+		if (DEBUG_MODE) {
+			cerr << "fuse_chord(" << g1.compute_code().to_string() << ", " << g2.compute_code().to_string() << ", " 
+			<< j1 << ", " << j2 << ", " << same_orientation << ")" << endl;
+			cerr << "Result = " << res.compute_code().to_string() << endl;
+			//cerr << g1.n << " " << g2.n << endl;
+			//cerr << g1.l << " " << g2.l << endl;
+		}
+
+		return res;
 	}
 	
 	
@@ -670,9 +697,7 @@ struct PlaneGraph {
 	
 	bool biconnected_deg5_components_test() {
 
-		if (DEBUG_MODE) {
-			cerr << "HEY" << endl;
-		}
+		
 
 		vector<int> morph(n, -1);
 		DFSGraph deg5graph;
@@ -684,9 +709,7 @@ struct PlaneGraph {
 			}
 		}
 
-		if(DEBUG_MODE) {
-			cerr << "n = " << deg5graph.n << endl;
-		}
+		
 
 		deg5graph.al = vector<vector<int>> (deg5graph.n);
 		for (int u = l; u < n; ++u) {
@@ -703,14 +726,14 @@ struct PlaneGraph {
 		vector<DFSGraph> comp = deg5graph.partition_biconnected();
 
 		if(DEBUG_MODE) {
-			cerr << comp.size() << endl;
+			//cerr << comp.size() << endl;
 		}
 		
 		for (DFSGraph c : comp) {
-			if (DEBUG_MODE) {
+			/*if (DEBUG_MODE) {
 				cerr << "is_clique(): " << c.is_clique() << endl;
 				cerr << "is_odd_cycle(): " << c.is_odd_cycle() << endl;
-			}
+			}*/
 
 			if (!(c.is_clique() || c.is_odd_cycle())) return false;
 		}

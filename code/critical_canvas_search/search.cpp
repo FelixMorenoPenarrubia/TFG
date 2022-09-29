@@ -27,7 +27,7 @@ const bool PRINT_CANVAS_ON_END = true;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
-const bool ADD_CHORDS = false; //TODO: fix bugs, do not use
+const bool ADD_CHORDS = true; 
 const bool DO_NOT_STORE_LAST = false;
 const bool REPORT_QUEUE_SIZE = false;
 const bool PROLOG_OUTPUT_FORMAT = false;
@@ -201,7 +201,7 @@ void gen(int l) {
 			pg ng = g.add_tripod(1, j, 1);
 			if(add_canvas(l, ng)) q.push(ng);
 
-			if(REPORT_QUEUE_SIZE && rand()%10000 == 0 && !q.empty()) {
+			if(REPORT_QUEUE_SIZE && rand()%1000 == 0 && !q.empty()) {
 				cout << "Queue size: " << q.size() << endl;
 				cout << "Current canvas n: " << g.n << endl;
 			}

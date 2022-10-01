@@ -23,7 +23,7 @@ set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
 const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = true;
+const bool PRINT_CANVAS_ON_END = false;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
@@ -103,8 +103,8 @@ bool test_canvas(pg g) {
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
 										   std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
-										   std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
-										  /* std::bind(&PlaneGraph::gadget5_test, g)*/};
+										  /* std::bind(&PlaneGraph::strong_alon_tarsi_test, g)*/
+										   std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)};
 	/*
 	if(!g.degree_test()) return false;
 	if(!g.deficiency_test()) return false;
@@ -126,12 +126,12 @@ bool test_canvas(pg g) {
 			if(!f()) return false;
 		}
 	}
-	/*
-	if(!g.alon_tarsi_test()) {
-		cout << "Canvas does not pass Alon-Tarsi test:" << endl;
+	
+	/*if(!g.recursive_reducibility_alon_tarsi_test()) {
+		cout << "Canvas does not pass recursive Alon-Tarsi test:" << endl;
 		print_canvas(g);
-	}
-	*/
+	}*/
+	
 
 	return true;
 }

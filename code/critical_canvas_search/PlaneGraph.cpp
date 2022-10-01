@@ -644,6 +644,103 @@ struct PlaneGraph {
 
 		return res;
 	}
+
+	//Returns new graph with interior vertex v removed
+	PlaneGraph remove_vertex(int v) {
+		vector<int> morph(n);
+		for (int i = 0; i < n; ++i) {
+			morph[i] = i - int(i > v);
+		}
+		vector<vector<int> > nal(n-1);
+		for (int u = 0; u < n; ++u) {
+			if (u == v) continue;
+			for (int w : al[u]) {
+				if (w == v) continue;
+				nal[morph[u]].push_back(morph[w]);
+			}
+		}
+		return PlaneGraph(l, nal);
+	}
+
+
+	//Returns the subgraph contained in the interior of the cycle given
+	//Orientation matters for interior/exterior
+	PlaneGraph subgraph_contained_in_cycle(vector<int> cyc) {
+		vector<int> morph(n, -1);
+		int cs = cyc.size();
+		for (int i = 0; i < cs; ++i) {
+			morph[cyc[i]] = i;
+		}
+		int cn = cs;
+		std::queue<int> q;
+		for (int i = 0; i < cs; ++i) {
+			int u = cyc[i];
+			int j = ral[u][cyc[(i+1)%cs]]+1;
+			j %= al[u].size();
+			while (al[u][j] != cyc[(i-1+cs)%cs]) {
+				int v = al[u][j];
+				if (morph[v] == -1) {
+					morph[v] = cn++;
+					q.push(v);
+				}
+				j++;
+				j %= al[u].size();
+			}
+		}
+		while (!q.empty()) {
+			int u = q.front();
+			q.pop();
+			for (int v : al[u]) {
+				if (morph[v] == -1) {
+					morph[v] = cn++;
+					q.push(v);
+				}
+			}
+		}
+
+		vector<vector<int> > nal(cn);
+
+		for (int u = 0; u < n; ++u) {
+			if (morph[u] == -1) continue;
+			for (int v : al[u]) {
+				if (morph[v] == -1) continue;
+				nal[morph[u]].push_back(morph[v]);
+			}
+		}
+
+		return PlaneGraph(cs, nal);
+
+	}
+
+
+	//Returns the subgraph contained by the cycle v-a-...-b-v
+	//Note: v-a-...-b-v must be positively oriented
+	PlaneGraph partition_outer_face_interval(int v, int a, int b) {
+		vector<int> cyc;
+		cyc.push_back(v);
+		for (int i=a; i % l != b; ++i) {
+			cyc.push_back(i%l);
+		}
+		cyc.push_back(b);
+		return subgraph_contained_in_cycle(cyc);
+	}
+
+	//Returns a vector of new graphs resulting from partitioning the graph along the neighbours of the outer
+	//face of interior vertex v
+	vector<PlaneGraph> partition_along_vertex(int v) {
+		vector<int> outer_face_neighbours;
+		for (int w : al[v]) {
+			if (w < l) outer_face_neighbours.push_back(w);
+		}
+		vector<PlaneGraph> ans;
+		int m = outer_face_neighbours.size();
+		for (int i=0; i < m; ++i) {
+			ans.push_back(partition_outer_face_interval(v, outer_face_neighbours[i], outer_face_neighbours[(i+1)%m]));
+		}
+		return ans;
+	}
+
+
 	
 	
 	bool degree_test() {
@@ -815,7 +912,7 @@ struct PlaneGraph {
 		return ans;
 	}
 
-	bool strong_alon_tarsi_test() {
+	bool alon_tarsi_always_colorable() {
 		vector<pair<int, int> > el;
 		vector<int> bounds (n-l); 
 		for (int u = l; u < n; ++u) {
@@ -826,6 +923,7 @@ struct PlaneGraph {
 				}
 				else if (v < l) {
 					bounds[u-l]--;
+					if (bounds[u-l] == 0) return false;
 				}
 			}
 		}
@@ -834,10 +932,80 @@ struct PlaneGraph {
 		vector<vector <int> > bounds_vector = bounds_generation(bounds, el.size());
 		for (vector<int> strict_bounds : bounds_vector) {
 			if (og.find_strict_base_orientation(strict_bounds)) {
-				if (og.find_orientation_difference() != 0) return false;
+				if (og.find_orientation_difference() != 0) return true;
 			}
 		}
 
+		return false;
+	}
+
+	bool strong_alon_tarsi_test() {
+		bool edges_inside = false;
+		for (int u = l; u < n; ++u) {
+			for (int v : al[u]) {
+				if (v > l) {
+					edges_inside = true;
+				}
+			}
+		}
+		if (!edges_inside) return true;
+		
+
+		return !alon_tarsi_always_colorable();
+	}
+
+	//Returns the vertices that have to be deleted in order to obtain the minimal graph which passes
+	//the Alon-Tarsi test
+	//TODO: this is a bit of a ugly hack due to the inability of arbitrarily label vertices in subgraphs,
+	//maybe take into account if I ever refactor the code
+	vector<int> minimal_irreducible_deletedvertices() {
+		if (n <= l+1) return vector<int>();
+		for (int v = l; v < n; ++v) {
+			PlaneGraph g = remove_vertex(v);
+			if(!g.alon_tarsi_always_colorable()) {
+				vector<int> dv = g.minimal_irreducible_deletedvertices();
+				for (int i=0; i < (int)dv.size(); ++i) {
+					if(dv[i] >= v) dv[i]++;
+				}
+				dv.push_back(v);
+				return dv;
+			}
+		}
+		return vector<int>();
+	}
+
+
+	//TODO: ensure that there are no weird cases when alon tarsi test passes when it should not
+	//TODO: fix connectivity problem. 
+	bool recursive_reducibility_alon_tarsi_test() {
+		if (n == l) return true;
+		if (!strong_alon_tarsi_test()) return false;
+		vector<int> deleted_vertices = minimal_irreducible_deletedvertices();	
+
+		if (DEBUG_MODE) {
+			cerr << "Deleted vertices: ";
+			for (int v : deleted_vertices) cerr << v << " ";
+			cerr << endl;
+		}
+
+		vector<int> deleted(n);
+		for (int v : deleted_vertices) deleted[v] = 1;
+		int undel_vertex = l;
+		while (deleted[undel_vertex]) undel_vertex++;
+		vector<PlaneGraph> vhpp = partition_along_vertex(undel_vertex);
+		for (PlaneGraph g : vhpp) {
+
+			if (DEBUG_MODE) {
+				cerr << "Recursively going into " << g.n << " " << g.l << endl;
+				for (int u=0; u < g.n; ++u) {
+					for (int v : g.al[u]) {
+						cerr << u << " " << v << endl;
+					}
+				}
+			}
+
+			if (!g.recursive_reducibility_alon_tarsi_test()) return false;
+		}
 		return true;
 	}
 };

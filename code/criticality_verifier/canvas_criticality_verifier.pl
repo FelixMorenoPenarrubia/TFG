@@ -1,6 +1,6 @@
 symbolicOutput(0).  % set to 1 to see symbolic output only; 0 otherwise.
 readFile(1). % set to 1 to read from file
-verboseOutput(0). % set to 1 to write outer colorings which extend to subgraphs but not whole graph
+verboseOutput(1). % set to 1 to write outer colorings which extend to subgraphs but not whole graph
 
 
 interiorListSize(5).

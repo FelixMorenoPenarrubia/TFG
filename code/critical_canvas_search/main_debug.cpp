@@ -62,6 +62,16 @@ void isomorphism_test_operation_list() {
 			cin >> idx1 >> idx2 >> j1 >> j2 >> same_orientation;
 			vpg.push_back(PlaneGraph::fuse_chord(vpg[idx1], vpg[idx2], j1, j2, same_orientation));
 		}
+		else if (s == "cycle_subgraph") {
+			//cycle_subgraph idx cs v1 ... vcs
+			int idx, cs;
+			cin >> idx >> cs;
+			vector<int> cyc(cs);
+			for (int i=0; i < cs; ++i) {
+				cin >> cyc[i];
+			}
+			vpg.push_back(vpg[idx].subgraph_contained_in_cycle(cyc));
+		}
 		else if (s == "print_isomorphism") {
 			//print_isomorphism idx1 idx2
 			int idx1, idx2;
@@ -167,6 +177,11 @@ void canvas_test() {
 	cout << test_canvas(g) << endl;
 }
 
+void recursive_alon_tarsi_test() {
+	pg g = read_planegraph();
+	cout << g.recursive_reducibility_alon_tarsi_test() << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
@@ -179,7 +194,8 @@ int main() {
 	cerr << "8. Perform (weak) Alon-Tarsi test" << endl;
 	cerr << "9. Perform (strong) Alon-Tarsi test" << endl;
 	cerr << "10. Bounds generation" << endl;
-	cerr << "11. Canvas test" << endl;
+	cerr << "11. Canvas test battery" << endl;
+	cerr << "12. Perform recursive Alon-Tarsi test" << endl;
 	
 	int c;
 	cin >> c;
@@ -215,5 +231,8 @@ int main() {
 	}
 	if(c == 11) {
 		canvas_test();
+	}
+	if(c == 12) {
+		recursive_alon_tarsi_test();
 	}
 }

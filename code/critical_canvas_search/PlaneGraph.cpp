@@ -214,7 +214,6 @@ struct DFSGraph {
 };
 
 
-//TODO: find strongest base orientation???
 struct OrientationGraph {
 	int n;
 	int m;
@@ -302,7 +301,7 @@ struct OrientationGraph {
 
 		while (!decision_stack.empty()) {
 
-			if(DEBUG_MODE) {
+			if(DEBUG_MODE && rand()%1000000 == 0) {
 				
 				cerr << "Current stack status:" << endl;
 				for(pair<int, int> x : decision_stack) {
@@ -405,7 +404,7 @@ struct OrientationGraph {
 		}
 
 		if (DEBUG_MODE) {
-			cerr << "Edge list: " << endl;
+			/*cerr << "Edge list: " << endl;
 			for (pair<int, int> e : el) {
 				cerr << e.first << "-" << e.second << " ";
 			}
@@ -417,7 +416,7 @@ struct OrientationGraph {
 				cerr << x << "  ";
 				
 			}
-			cerr << endl;
+			cerr << endl;*/
 		}
 
 		vector<int> bounds(n, 0);
@@ -434,12 +433,12 @@ struct OrientationGraph {
 		for (vector<int> co : ori) {
 
 			if (DEBUG_MODE) {
-				cerr << "Orientation: " << endl;
+				/*cerr << "Orientation: " << endl;
 				for (int x : co) {
 					if(x == 1) cerr << " ";
 					cerr << x << "  ";
 				}
-				cerr << endl;
+				cerr << endl;*/
 			}
 
 			int dif = 0;
@@ -564,7 +563,6 @@ struct PlaneGraph {
 	//Fuses graphs g1 and g2 along the edges j1->j1+1 and j2->j2 +- 1 of the outer face
 	//if same_orientation is false, the orientation of the second graph is reversed
 	static PlaneGraph fuse_chord(PlaneGraph g1, PlaneGraph g2, int j1, int j2, bool same_orientation) {
-		//TODO: fix bugs
 		
 
 		vector<int> morph1(g1.n);

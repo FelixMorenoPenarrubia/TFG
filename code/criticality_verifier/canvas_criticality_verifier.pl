@@ -41,8 +41,9 @@ coloring(CL):-      numVertices(NV), sizeOuterCycle(SZ), LEN is NV-SZ, length(CL
 edge([X, Y]):- edge(X, Y).
 interiorEdge([X, Y]):- edge([X, Y]), interiorVertex(X), interiorVertex(Y).
 interiorEdge([X, Y]):- edge([X, Y]), outerVertex(X), interiorVertex(Y).
-completelyInteriorEdge([X, Y]):- edge([X, Y]), interiorVertex(X), interiorVertex(Y).
-outerEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y).
+interiorEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y), X+1 =\= Y, sizeOuterCycle(SZ), Y+1 =\= X+SZ. %chord
+completelyInteriorEdge([X, Y]):- edge([X, Y]), interiorVertex(X), interiorVertex(Y). %excludes chords and inter-outer edges
+outerEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y). %includes chords
 outerInterEdge([X, Y]):- edge([X, Y]), outerVertex(X), interiorVertex(Y).
 distinctEdges(A, B):- edge(A), edge(B), dif(A,B). 
 

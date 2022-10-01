@@ -23,13 +23,13 @@ set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
 const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = true;
+const bool PRINT_CANVAS_ON_END = false;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
-const bool ADD_CHORDS = true; 
+const bool ADD_CHORDS = false; 
 const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = false;
+const bool REPORT_QUEUE_SIZE = true;
 const bool PROLOG_OUTPUT_FORMAT = false;
 const bool WRITE_TO_FILE = false;
 const string FILE_PATH = "../criticality_verifier/canvases/";
@@ -201,7 +201,7 @@ void gen(int l) {
 			pg ng = g.add_tripod(1, j, 1);
 			if(add_canvas(l, ng)) q.push(ng);
 
-			if(REPORT_QUEUE_SIZE && rand()%1000 == 0 && !q.empty()) {
+			if(REPORT_QUEUE_SIZE && rand()%10000 == 0 && !q.empty()) {
 				cout << "Queue size: " << q.size() << endl;
 				cout << "Current canvas n: " << g.n << endl;
 			}

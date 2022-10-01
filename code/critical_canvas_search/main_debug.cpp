@@ -162,6 +162,11 @@ void bounds_generation() {
 	}
 }
 
+void canvas_test() {
+	pg g = read_planegraph();
+	cout << test_canvas(g) << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
@@ -174,6 +179,7 @@ int main() {
 	cerr << "8. Perform (weak) Alon-Tarsi test" << endl;
 	cerr << "9. Perform (strong) Alon-Tarsi test" << endl;
 	cerr << "10. Bounds generation" << endl;
+	cerr << "11. Canvas test" << endl;
 	
 	int c;
 	cin >> c;
@@ -206,5 +212,8 @@ int main() {
 	}
 	if(c == 10) {
 		bounds_generation();
+	}
+	if(c == 11) {
+		canvas_test();
 	}
 }

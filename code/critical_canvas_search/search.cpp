@@ -23,17 +23,18 @@ set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
 const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = false;
+const bool PRINT_CANVAS_ON_END = true;
 const bool PAUSE_ON_ADD = false;
 const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
 const bool ADD_CHORDS = false; 
 const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = true;
+const bool REPORT_QUEUE_SIZE = false;
 const bool PROLOG_OUTPUT_FORMAT = false;
+const bool MAIN_DEBUG_OUTPUT_FORMAT = false;
 const bool WRITE_TO_FILE = false;
-const string FILE_PATH = "../criticality_verifier/canvases/";
-const string FILE_EXTENSION = ".pl";
+const string FILE_PATH = "./tests/crit_test_";
+const string FILE_EXTENSION = ".inp";
 const bool USE_N_THRESHOLD_PRINTING = false;
 const int N_THRESHOLD_PRINTING = 13;
 
@@ -44,8 +45,9 @@ void print_canvas(pg g) {
 
 	std::streambuf * buf;
 	std::ofstream of;
+	std::string file_name_noextension = FILE_PATH + "l" + std::to_string(g.l) + "_n" + std::to_string(g.n) + "_c" + g.compute_code().to_string();
 	if(WRITE_TO_FILE) {
-		of.open(FILE_PATH + "l" + std::to_string(g.l) + "_n" + std::to_string(g.n) + "_c" + g.compute_code().to_string() + FILE_EXTENSION);
+		of.open(file_name_noextension + FILE_EXTENSION);
 		buf = of.rdbuf();
 	}
 	else {
@@ -61,6 +63,22 @@ void print_canvas(pg g) {
 			for(int v : g.al[u]) {
 				if (u < v) stre << "edge(" << u << "," << v << ")." << endl;	
 			}
+		}
+	}
+	else if (MAIN_DEBUG_OUTPUT_FORMAT) {
+		stre << 11 << endl;
+		stre << g.n << " " << g.m << " " << g.l << endl;
+		for(int u=0; u < g.n; ++u) {
+			for(int v : g.al[u]) {
+				stre << u << " " << v << endl;
+			}
+		}
+		if(WRITE_TO_FILE) {
+			std::ofstream out_file_of;
+			out_file_of.open(file_name_noextension + ".cor");
+			std::streambuf * out_file_buf = out_file_of.rdbuf();
+			std::ostream out_file_stre(out_file_buf);
+			out_file_stre << 1 << endl;
 		}
 	}
 	else {

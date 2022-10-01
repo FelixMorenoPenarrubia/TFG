@@ -923,7 +923,7 @@ struct PlaneGraph {
 				}
 				else if (v < l) {
 					bounds[u-l]--;
-					if (bounds[u-l] == 0) return false;
+					if (bounds[u-l] == -1) return false;
 				}
 			}
 		}
@@ -943,7 +943,7 @@ struct PlaneGraph {
 		bool edges_inside = false;
 		for (int u = l; u < n; ++u) {
 			for (int v : al[u]) {
-				if (v > l) {
+				if (v >= l) {
 					edges_inside = true;
 				}
 			}
@@ -1006,6 +1006,32 @@ struct PlaneGraph {
 
 			if (!g.recursive_reducibility_alon_tarsi_test()) return false;
 		}
+		return true;
+	}
+
+	bool old_alon_tarsi_test() {
+		vector<pair<int, int> > el;
+		vector<int> bounds (n-l); 
+		for (int u = l; u < n; ++u) {
+			bounds[u-l] = 4;
+			for (int v : al[u]) {
+				if (v > u) {
+					el.emplace_back(u-l, v-l);
+				}
+				else if (v < l) {
+					bounds[u-l]--;
+				}
+			}
+		}
+		if (el.empty()) return true;
+		OrientationGraph og = OrientationGraph(n-l, el);
+		vector<vector <int> > bounds_vector = bounds_generation(bounds, el.size());
+		for (vector<int> strict_bounds : bounds_vector) {
+			if (og.find_strict_base_orientation(strict_bounds)) {
+				if (og.find_orientation_difference() != 0) return false;
+			}
+		}
+
 		return true;
 	}
 };

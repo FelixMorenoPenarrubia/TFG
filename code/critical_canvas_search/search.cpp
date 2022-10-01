@@ -103,7 +103,7 @@ bool test_canvas(pg g) {
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
 										   std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
-										  /* std::bind(&PlaneGraph::strong_alon_tarsi_test, g)*/
+										   //std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
 										   std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)};
 	/*
 	if(!g.degree_test()) return false;
@@ -180,7 +180,6 @@ void gen(int l) {
 	
 	//Add chords
 	if(ADD_CHORDS) {
-		//TODO: fix bugs
 		for(int a=3; a < l; ++a) {
 			int b = l-a+2;
 			for(pg g1 : canvases[a]) {

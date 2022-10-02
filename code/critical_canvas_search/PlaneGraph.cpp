@@ -1143,10 +1143,18 @@ struct PlaneGraph {
 	}
 
 
+	static std::map<Code, bool> rr_aa_mem;
+
 	//TODO: ensure that there are no weird cases when alon tarsi test passes when it should not
 	bool recursive_reducibility_alon_tarsi_test() {
 		if (n == l) return true;
-		if (!strong_alon_tarsi_test()) return false;
+
+		Code code = compute_code();
+		if (rr_aa_mem.find(code) != rr_aa_mem.end()) {
+			return rr_aa_mem[code];
+		}
+
+		if (!strong_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		vector<int> deleted_vertices = minimal_irreducible_deletedvertices();	
 
 		if (DEBUG_MODE) {
@@ -1171,9 +1179,9 @@ struct PlaneGraph {
 				}
 			}
 
-			if (!g.recursive_reducibility_alon_tarsi_test()) return false;
+			if (!g.recursive_reducibility_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		}
-		return true;
+		return rr_aa_mem[code] = true;
 	}
 
 	bool old_alon_tarsi_test() {
@@ -1204,3 +1212,5 @@ struct PlaneGraph {
 
 	
 };
+
+std::map<Code, bool> PlaneGraph::rr_aa_mem;

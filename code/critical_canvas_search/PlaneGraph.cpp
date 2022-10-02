@@ -237,6 +237,7 @@ struct OrientationGraph {
 
 	//Finds all orientations with indegree bounds bounds, which may have to be satisfied with equality or not, and it also allows 
 	//finding only one orientation
+	//DEPRECATED - use find_orientation_differences_map for all purposes
 	vector<vector<int> > find_orientations(const vector<int>& bounds, bool equality, bool find_one) {
 		vector<vector<int > > ans;
 		vector<int> curr_ori(m);
@@ -448,6 +449,149 @@ struct OrientationGraph {
 			if (dif%2 == 0) ans++;
 			else ans--;
 		}
+		return ans;
+	}
+
+	
+
+	std::map<vector<int>, int> find_orientation_differences_map(const vector<int>& bounds) {
+		std::map<vector<int>, int> ans;
+		vector<int> indeg(n, 0);
+		vector<int> ori(m, -1); //0: first -> second, 1: second -> first
+		int parity = 1;
+		vector<pair<int, int> > decision_stack; // (e, d), d == 1 if can decide, d == 0 if forced
+		auto edge_options = [&] (int e) -> vector<int> {
+			vector<int> v;
+			if (indeg[el[e].second] < bounds[el[e].second]) v.push_back(0);
+			if (indeg[el[e].first] < bounds[el[e].first]) v.push_back(1);
+			return v;
+		};
+		std::function<void(int, int)> set_edge_ori = [&] (int e, int o) -> void {
+			if (ori[e] == 0) {
+				indeg[el[e].second]--;
+			}
+			if (ori[e] == 1) {
+				indeg[el[e].first]--;
+				parity *= -1;
+			}
+			ori[e] = o;
+			if (ori[e] == 0) {
+				indeg[el[e].second]++;
+			}
+			if (ori[e] == 1) {
+				indeg[el[e].first]++;
+				parity *= -1;
+			}
+
+			if (o == 0 || o == 1) {
+				for (int i=0; i < m; ++i) {
+					if (ori[i] == -1 && edge_options(i).size() == 1) {
+						decision_stack.emplace_back(i, 0);
+						set_edge_ori(i, edge_options(i)[0]);
+					}
+				}
+			}
+		};
+
+		auto choose_edge = [&] () -> pair<int, int> {
+			pair<int, int> p (-1, -1);
+			int min_slack = 2e9;
+			for (int i=0; i < m; ++i) {
+				if (ori[i] == -1 && !edge_options(i).empty()) {
+					bool op0ok = (edge_options(i).size() == 2 || edge_options(i)[0] == 0);
+					bool op1ok = (edge_options(i).size() == 2 || edge_options(i)[0] == 1);
+					if (op0ok && bounds[el[i].second]-indeg[el[i].second] < min_slack) {
+						min_slack = bounds[el[i].second]-indeg[el[i].second];
+						p = pair<int, int>(i, 0);
+					}
+					if (op1ok && bounds[el[i].first]-indeg[el[i].first] < min_slack) {
+						min_slack = bounds[el[i].first]-indeg[el[i].first];
+						p = pair<int, int>(i, 1);
+					}
+				}
+			}
+			return p;
+		};
+
+
+		
+		
+		/*
+		vector<int> opt0 = edge_options(0);
+		if (opt0.size() == 2) {
+			decision_stack.emplace_back(0, 1); // ALWAYS push to stack before set_edge_ori
+			set_edge_ori(0, 0);
+		}
+		else if (opt0.size() == 1) {
+			decision_stack.emplace_back(0, 0);
+			set_edge_ori(0, opt0[0]);
+		}*/
+
+		pair<int, int> initial_choice = choose_edge();
+		if (initial_choice.first == -1) return ans;
+		if (edge_options(initial_choice.first).size() == 2) {
+			decision_stack.emplace_back(initial_choice.first, 1);
+			set_edge_ori(initial_choice.first, initial_choice.second);
+		}
+		else {
+			decision_stack.emplace_back(initial_choice.first, 0);
+			set_edge_ori(initial_choice.first, initial_choice.second);
+		}
+
+		while (!decision_stack.empty()) {
+
+			bool all_set = true;
+			bool blocked = false;
+			/*for (int e=0; e < m && all_set; ++e) {
+				if (ori[e] == -1) {
+					all_set = false;
+					if (edge_options(e).empty()) {
+						blocked = true;
+					}
+					else if (edge_options(e).size() == 1) {
+						decision_stack.emplace_back(e, 0);
+						set_edge_ori(e, edge_options(e)[0]);
+					}
+					else {
+						decision_stack.emplace_back(e, 1);
+						set_edge_ori(e, 0);
+					}
+				}
+			}*/
+
+			for (int e = 0; e < m && !blocked; ++e) {
+				if (ori[e] == -1) {
+					all_set = false;
+					if (edge_options(e).empty()) {
+						blocked = true;
+					}
+				}
+			}
+
+			if (all_set) {
+				ans[indeg] += parity;
+			}
+			if (all_set || blocked) {
+				while (!decision_stack.empty()) {
+					pair<int, int> p = decision_stack.back();
+					decision_stack.pop_back();
+					if (p.second) {
+						decision_stack.emplace_back(p.first, 0);
+						set_edge_ori(p.first, 1-ori[p.first]);
+						break;
+					}
+					else {
+						set_edge_ori(p.first, -1);
+					}
+				}
+			}
+			else {
+				pair<int, int> choice = choose_edge();
+				decision_stack.emplace_back(choice.first, 1);
+				set_edge_ori(choice.first, choice.second);
+			}
+		}
+
 		return ans;
 	}
 };
@@ -913,6 +1057,12 @@ struct PlaneGraph {
 	}
 
 	bool alon_tarsi_always_colorable() {
+
+		if (DEBUG_MODE) {
+			cerr << "Doing Alon-Tarsi test, interior vertices: " << n-l << endl;
+		}
+
+
 		vector<pair<int, int> > el;
 		vector<int> bounds (n-l); 
 		for (int u = l; u < n; ++u) {
@@ -929,13 +1079,23 @@ struct PlaneGraph {
 		}
 		if (el.empty()) return true;
 		OrientationGraph og = OrientationGraph(n-l, el);
+		/*
 		vector<vector <int> > bounds_vector = bounds_generation(bounds, el.size());
 		for (vector<int> strict_bounds : bounds_vector) {
 			if (og.find_strict_base_orientation(strict_bounds)) {
 				if (og.find_orientation_difference() != 0) return true;
 			}
 		}
+		*/
 
+		if (DEBUG_MODE) {
+			cerr << "Going into the implementation" << endl;
+		}
+
+		std::map<vector<int>, int> diffs = og.find_orientation_differences_map(bounds);
+		for (auto x : diffs) {
+			if (x.second != 0) return true;
+		}
 		return false;
 	}
 
@@ -959,7 +1119,15 @@ struct PlaneGraph {
 	//TODO: this is a bit of a ugly hack due to the inability of arbitrarily label vertices in subgraphs,
 	//maybe take into account if I ever refactor the code
 	vector<int> minimal_irreducible_deletedvertices() {
+		if (DEBUG_MODE) {
+			cerr << "minimal_irreducible_deletedvertices " << n << " " << l << endl;
+		}
+
 		if (n <= l+1) return vector<int>();
+
+		if (DEBUG_MODE) {
+			cerr << "minimal_irreducible_deletedvertices2" << endl;
+		}
 		for (int v = l; v < n; ++v) {
 			PlaneGraph g = remove_vertex(v);
 			if(!g.alon_tarsi_always_colorable()) {
@@ -976,7 +1144,6 @@ struct PlaneGraph {
 
 
 	//TODO: ensure that there are no weird cases when alon tarsi test passes when it should not
-	//TODO: fix connectivity problem. 
 	bool recursive_reducibility_alon_tarsi_test() {
 		if (n == l) return true;
 		if (!strong_alon_tarsi_test()) return false;
@@ -1034,4 +1201,6 @@ struct PlaneGraph {
 
 		return true;
 	}
+
+	
 };

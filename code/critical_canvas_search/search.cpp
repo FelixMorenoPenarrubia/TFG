@@ -29,7 +29,7 @@ const bool TEST_STATISTICS = false;
 const bool SIZE_STATISTICS = false;
 const bool ADD_CHORDS = false; 
 const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = false;
+const bool REPORT_QUEUE_SIZE = true;
 const bool PROLOG_OUTPUT_FORMAT = false;
 const bool MAIN_DEBUG_OUTPUT_FORMAT = false;
 const bool WRITE_TO_FILE = false;
@@ -103,8 +103,9 @@ bool test_canvas(pg g) {
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
 										   std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
-										   //std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
-										   std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)};
+										   std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
+										   //std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)
+										   };
 	/*
 	if(!g.degree_test()) return false;
 	if(!g.deficiency_test()) return false;
@@ -218,7 +219,7 @@ void gen(int l) {
 			pg ng = g.add_tripod(1, j, 1);
 			if(add_canvas(l, ng)) q.push(ng);
 
-			if(REPORT_QUEUE_SIZE && rand()%10000 == 0 && !q.empty()) {
+			if(REPORT_QUEUE_SIZE && rand()%30000 == 0 && !q.empty()) {
 				cout << "Queue size: " << q.size() << endl;
 				cout << "Current canvas n: " << g.n << endl;
 			}

@@ -1,3 +1,5 @@
+%WARNING: Does not work well with canvases with chords. do not use for that.
+
 symbolicOutput(0).  % set to 1 to see symbolic output only; 0 otherwise.
 readFile(1). % set to 1 to read from file
 verboseOutput(1). % set to 1 to write outer colorings which extend to subgraphs but not whole graph
@@ -39,11 +41,12 @@ contains_colors([]).
 contains_colors([C|CL]):- color(C), contains_colors(CL).
 coloring(CL):-      numVertices(NV), sizeOuterCycle(SZ), LEN is NV-SZ, length(CL, LEN), contains_colors(CL).
 edge([X, Y]):- edge(X, Y).
+chord([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y), X+1 =\= Y, sizeOuterCycle(SZ), Y+1 =\= X+SZ.
 interiorEdge([X, Y]):- edge([X, Y]), interiorVertex(X), interiorVertex(Y).
 interiorEdge([X, Y]):- edge([X, Y]), outerVertex(X), interiorVertex(Y).
-interiorEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y), X+1 =\= Y, sizeOuterCycle(SZ), Y+1 =\= X+SZ. %chord
+interiorEdge([X, Y]):- chord([X, Y]). %chord
 completelyInteriorEdge([X, Y]):- edge([X, Y]), interiorVertex(X), interiorVertex(Y). %excludes chords and inter-outer edges
-outerEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y). %includes chords
+outerEdge([X, Y]):- edge([X, Y]), outerVertex(X), outerVertex(Y), not(chord([X, Y])). %does NOT include chords
 outerInterEdge([X, Y]):- edge([X, Y]), outerVertex(X), interiorVertex(Y).
 distinctEdges(A, B):- edge(A), edge(B), dif(A,B). 
 

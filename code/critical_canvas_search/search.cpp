@@ -22,22 +22,7 @@ vector<vector<pg>> canvases;
 set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
-const bool PRINT_CANVAS_ON_ADD = false;
-const bool PRINT_CANVAS_ON_END = true;
-const bool PAUSE_ON_ADD = false;
-const bool TEST_STATISTICS = false;
-const bool SIZE_STATISTICS = true;
-const bool ADD_CHORDS = false; 
-const bool DO_NOT_STORE_LAST = false;
-const bool REPORT_QUEUE_SIZE = false;
-const bool PROLOG_OUTPUT_FORMAT = false;
-const bool MAIN_DEBUG_OUTPUT_FORMAT = false;
-const bool WRITE_TO_FILE = false;
-const string FILE_PATH = "./tests/crit_test_";
-const string FILE_EXTENSION = ".inp";
-const bool USE_N_THRESHOLD_PRINTING = false;
-const int N_THRESHOLD_PRINTING = 13;
-
+#include "search_config.cpp"
 
 void print_canvas(pg g) {
 
@@ -81,7 +66,7 @@ void print_canvas(pg g) {
 			out_file_stre << 1 << endl;
 		}
 	}
-	else {
+	else if (VERBOSE_OUTPUT_FORMAT) {
 		stre << "-------" << endl;
 		stre << "n = " << g.n << ", m = " << g.m << ", l = " << g.l << endl;
 		stre << "Adjacency list:" << endl;
@@ -93,6 +78,14 @@ void print_canvas(pg g) {
 		stre << "-----" << endl;
 		stre << "Code: " << g.compute_code().to_string() << endl;
 		stre << "-------" << endl;
+	}
+	else {
+		stre << g.n << " " << g.m << " " << g.l << endl;
+		for(int u=0; u < g.n; ++u) {
+			for(int v : g.al[u]) {
+				stre << u << " " << v << endl;	
+			}
+		}
 	}
 }
 
@@ -151,7 +144,7 @@ bool add_canvas(int l, pg g) {
 			canvases[l].push_back(g);
 		}
 		else {
-			canvases[l].push_back(pg(0, vector<vector<int>>())); //TODO: this is a bad patch
+			canvases[l].push_back(pg(0, vector<vector<int>>())); //patch in order to still get number of canvases
 		}
 
 		canvases_codes.insert(c);
@@ -229,17 +222,24 @@ void gen(int l) {
 }
 
 void search() {
-	cout << "Enter maximum l:" << endl;
+	if (VERBOSE_OUTPUT_FORMAT) {
+		cout << "Enter maximum l:" << endl;
+	}
 	int l;
 	cin >> l;
 	canvases = vector<vector<pg>>(l+1);
 	for(int i=3; i <= l; ++i) {
 		gen(i);
-		cout << ".-.-.-.-.-.-.-.-." << endl;
-		cout << "Canvases of size " << i << " (total: " << canvases[i].size() << ")" << endl;
-		cout << ".-.-.-.-.-.-.-.-." << endl;
-		cout << endl << endl;
-		if(PRINT_CANVAS_ON_END) {
+		if (VERBOSE_OUTPUT_FORMAT) {
+			cout << ".-.-.-.-.-.-.-.-." << endl;
+			cout << "Canvases of size " << i << " (total: " << canvases[i].size() << ")" << endl;
+			cout << ".-.-.-.-.-.-.-.-." << endl;
+			cout << endl << endl;
+		}
+		else if (i == l) {
+			cout << canvases[i].size() << endl;
+		}
+		if(PRINT_CANVAS_ON_END && (VERBOSE_OUTPUT_FORMAT || i == l)) {
 			for (pg g : canvases[i]) {
 				print_canvas(g);
 			}

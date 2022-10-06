@@ -5,6 +5,8 @@
 #include<map>
 #include<unordered_map>
 #include<utility>
+#include<functional>
+#include<queue>
 
 #ifdef DEBUG
 const bool DEBUG_MODE = true;
@@ -284,7 +286,7 @@ struct OrientationGraph {
 		else {
 			return ans;
 		}
-		//TODO: eliminate code duplication
+		
 		for (int i=1; i < m; ++i) {
 			if (!can_change_edge(i, 1) || !can_change_edge(i, -1)) {
 				if (can_change_edge(i, 1)) {
@@ -1116,7 +1118,7 @@ struct PlaneGraph {
 
 	//Returns the vertices that have to be deleted in order to obtain the minimal graph which passes
 	//the Alon-Tarsi test
-	//TODO: this is a bit of a ugly hack due to the inability of arbitrarily label vertices in subgraphs,
+	//NOTE: this is a bit of a ugly hack due to the inability of arbitrarily label vertices in subgraphs,
 	//maybe take into account if I ever refactor the code
 	vector<int> minimal_irreducible_deletedvertices() {
 		if (DEBUG_MODE) {

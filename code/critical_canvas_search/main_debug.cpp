@@ -72,6 +72,12 @@ void isomorphism_test_operation_list() {
 			}
 			vpg.push_back(vpg[idx].subgraph_contained_in_cycle(cyc));
 		}
+		else if (s == "read_code") {
+			//read_code code
+			string code;
+			cin >> code;
+			vpg.push_back(PlaneGraph(Code(code)));
+		}
 		else if (s == "print_isomorphism") {
 			//print_isomorphism idx1 idx2
 			int idx1, idx2;

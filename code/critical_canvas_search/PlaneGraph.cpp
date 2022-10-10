@@ -7,6 +7,7 @@
 #include<utility>
 #include<functional>
 #include<queue>
+#include<cstdint>
 
 #ifdef DEBUG
 const bool DEBUG_MODE = true;
@@ -26,7 +27,7 @@ using std::endl;
 using ll = long long;
 
 struct Code {
-	vector<int> code;
+	vector<int8_t> code;
 	
 	Code() {
 	
@@ -60,6 +61,15 @@ struct Code {
 	}
 	int operator[](int i) const {
 		return code[i];
+	}
+
+	Code(const string& s) {
+		for (int i=0; i < (int)s.length(); ++i) {
+			if (s[i] == 'F') code.push_back(-1);
+			else if (s[i] == 'B') code.push_back(-2);
+			else if ('0' <= s[i] && s[i] <= '9') code.push_back(s[i]-'0');
+			else code.push_back(s[i]-'a'+10);
+		}
 	}
 
 	
@@ -626,6 +636,57 @@ struct PlaneGraph {
 			}
 		}
 		m /= 2;
+	}
+
+	PlaneGraph(const Code& code) {
+		l = 1;
+		n = 1;
+		for (int i = 0; i < code.size(); ++i) {
+			if (code[i] == -1) l++;
+			else break;
+		}
+
+		for (int i = 0; i < code.size(); ++i) {
+			if (code[i] == -1) n++;
+		}
+		al = vector<vector<int>>(n);
+		int cn = 0;
+		vector<int> cv_stack;
+		cv_stack.push_back(0);
+		vector<int> zero_neigh;
+		for (int i = 0; i < code.size(); ++i) {
+			if (code[i] == -1) {
+				al[cv_stack.back()].push_back(++cn);
+				cv_stack.push_back(cn);
+			}
+			else if (code[i] == -2) {
+				int a = cv_stack.back();
+				cv_stack.pop_back();
+				int b = cv_stack.back();
+				al[a].push_back(b);
+			}
+			else {
+				al[cv_stack.back()].push_back(code[i]);
+				if (code[i] == 0) {
+					zero_neigh.push_back(cv_stack.back());
+				}
+			}
+		}
+		std::reverse(zero_neigh.begin(), zero_neigh.end());
+		for (int x : zero_neigh) al[0].push_back(x);
+
+		ral = vector< std::map<int, int> > (n);
+		m = 0;
+		for (int u = 0; u < n; ++u) {
+			for (int i = 0; i < (int)al[u].size(); ++i) {
+				int v = al[u][i];
+				ral[u][v] = i; 
+				//am[u][v] = 1;
+				m += 1;
+			}
+		}
+		m /= 2;
+
 	}
 	
 	void dfs_code(int u, int idx, int& c, vector<int>& an, Code& code) {

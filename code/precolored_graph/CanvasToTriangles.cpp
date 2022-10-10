@@ -158,7 +158,7 @@ void read_canvases_and_print_critical_triangles() {
     cout << critical_set.size() << endl;
 
     for (auto x : critical_set) {
-       // print_result(x.second);
+        print_result(x.second);
     }
 }
 

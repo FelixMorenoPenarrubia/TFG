@@ -94,7 +94,7 @@ void print_canvas(pg g) {
 bool test_canvas(pg g) {
 	vector<std::function<bool()>> tests = {std::bind(&PlaneGraph::degree_test, g),
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
-										   std::bind(&PlaneGraph::gadget4_test, g),
+										 //  std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
 										   //std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
 										   std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)
@@ -121,8 +121,8 @@ bool test_canvas(pg g) {
 		}
 	}
 	
-	/*if(!g.recursive_reducibility_alon_tarsi_test()) {
-		cout << "Canvas does not pass recursive Alon-Tarsi test:" << endl;
+	/*if(!g.gadget4_test()) {
+		cout << "Canvas does not pass gadget4_test:" << endl;
 		print_canvas(g);
 	}*/
 	
@@ -137,6 +137,13 @@ void pause() {
 }
 
 bool add_canvas(int l, pg g) {
+
+	if (REPORT_MEMORY_USAGE && rand()%REPORT_INTERVAL == 0) {
+		cout << "l = " << l << endl;
+		cout << "Canvas vector size: " << canvases[l].size() << endl;
+		cout << "Alon-Tarsi memoization size: " << PlaneGraph::rr_aa_mem.size() << endl;
+	}
+
 	if(!test_canvas(g)) return false;
 	Code c = g.compute_code();
 	if(canvases_codes.find(c) == canvases_codes.end()) {
@@ -212,10 +219,12 @@ void gen(int l) {
 			pg ng = g.add_tripod(1, j, 1);
 			if(add_canvas(l, ng)) q.push(ng);
 
-			if(REPORT_QUEUE_SIZE && rand()%30000 == 0 && !q.empty()) {
+			if(REPORT_QUEUE_SIZE && rand()%REPORT_INTERVAL == 0 && !q.empty()) {
 				cout << "Queue size: " << q.size() << endl;
 				cout << "Current canvas n: " << g.n << endl;
 			}
+
+			
 
 		}
 	}

@@ -913,7 +913,7 @@ struct PlaneGraph {
 	}
 	
 	bool check_gadget4(int u, int v, int w, int x) {
-		if(am[u][v] && am[u][w] && am[u][x] && am[v][w] && am[w][x]) {
+		if(am[u][v] && am[u][w] && am[u][x] && am[v][w] && am[w][x] && x != v) {
 			if(al_adjacent(u, v, w) && al_adjacent(u, w, x)) {
 				if(al[u].size() <= 5 && al[v].size() <= 5 && al[w].size() <= 6 && al[x].size() <= 5) {
 					return true;
@@ -982,7 +982,7 @@ struct PlaneGraph {
 		return true;
 	}
 	
-	bool check_gadget5(int u, int v, int w, int x, int y) {
+	/*bool check_gadget5(int u, int v, int w, int x, int y) {
 		if(am[u][v] && am[u][w] && am[u][x] && am[u][y] && am[v][w] && am[w][x] && am[x][y]) {
 		//TODO: verify that this is enough
 			if(al_adjacent(u, v, w) && al_adjacent(u, w, x) && al_adjacent(u, x, y)) {
@@ -1008,7 +1008,7 @@ struct PlaneGraph {
 			}
 		}
 		return true;
-	}
+	}*/
 
 	bool weak_alon_tarsi_test() {
 		vector<pair<int, int> > el;

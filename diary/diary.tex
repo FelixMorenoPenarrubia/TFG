@@ -182,13 +182,13 @@ Consider the graph $G$ with $V(G) = \{u, v, w, x\}$ and $E(G) = \{uv, vw, wx, xu
 We can collect a list of these forbidden subgraphs and list sizes and manually check if the graph contains them in order to test a property stronger than what the theorem gives us. This allows for many possibilities, because the forbidden subgraphs don't necessarily need to be always $L$-colorable with the given list sizes, but can preclude the whole graph from being critical in other ways. Take this example:
 
 \begin{observation}
-Consider the graph $G$ with $V(G) = \{u, v, w, x, y\}$ and $E(G) = \{uv, uw, ux, uy, vw, wx, xy \}$. Consider the list sizes $L(u) = 4, L(v) = L(w) = L(x) = L(y) = 2$. Then $G$ is not always $L$-colorable with any $L$-coloring with those list sizes, but any $L$-coloring with these list sizes of $G$ without edge $wx$ extends to $G$.
+Consider the graph $G$ with $V(G) = \{u, v, w, x, y\}$ and $E(G) = \{uv, uw, ux, uy, vw, wx, xy \}$. Consider the list sizes $L(u) = 4, L(v) = L(w) = L(x) = L(y) = 2$. Then $G$ is not always $L$-colorable with any $L$ assignment with those list sizes, but any $L$-coloring with these list sizes of $G$ without edge $wx$ extends to $G$.
 \end{observation}
 
 \begin{proof}
-Casework.
+We will prove that if there is a common color $c \in L(w) \cap L(x)$, then the graph can always be $L$-colored, so that for any assignment $L$ for which the graph is not $L$-colorable, the graph remains not $L$-colorable when removing the edge $wx$ (since $w$ and $x$ can not be the same color).
 
-%TODO don't be lazy and actually do it
+If there exists such a $c$, then there exists a $c' \in L(u)$ such that $c' \not\in L(w), c' \not\in L(x)$. Now, if $c' \not\in L(v)$ or $c' \not\in L(y)$, then we can assign $c'$ to $u$ and the remaining graph is a path with lists sizes $1, 2, 2, 2$, which can always be colored. If $c' \in L(v) \cap L(y)$, then assigning $c'$ to $v$ and $y$ results in a triangle with lists sizes $2, 3, 2$, which can always be colored.
 \end{proof}
 
 However, we need not go so far and it will probably be sufficient to forbid subgraphs which can always be colored with some prescribed list sizes. Instead of trying to find these subgraphs by hand, there is a more systematic way of checking whether a graph with given list sizes can always be $L$-colored. For doing so, we will need the Combinatorial Nullstellensatz technique from Noga Alon. 

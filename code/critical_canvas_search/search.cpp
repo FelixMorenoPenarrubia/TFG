@@ -94,7 +94,7 @@ void print_canvas(pg g) {
 bool test_canvas(pg g) {
 	vector<std::function<bool()>> tests = {std::bind(&PlaneGraph::degree_test, g),
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
-										 //  std::bind(&PlaneGraph::gadget4_test, g),
+										   std::bind(&PlaneGraph::gadget5_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
 										   //std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
 										   std::bind(&PlaneGraph::recursive_reducibility_alon_tarsi_test, g)
@@ -121,8 +121,8 @@ bool test_canvas(pg g) {
 		}
 	}
 	
-	/*if(!g.gadget4_test()) {
-		cout << "Canvas does not pass gadget4_test:" << endl;
+	/*if(!g.gadget5_test()) {
+		cout << "Canvas does not pass gadget5_test:" << endl;
 		print_canvas(g);
 	}*/
 	

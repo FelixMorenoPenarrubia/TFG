@@ -607,21 +607,21 @@ struct PlaneGraph {
 	
 	vector< vector <int> > al; //adjacency list representation, incl orientation
 	vector< std::map<int, int> > ral;
-	vector< vector <int> > am; //adjacency matrix representation
+	//vector< vector <int> > am; //adjacency matrix representation
 	
 	
 	PlaneGraph(int _l, vector< vector <int> > _al) {
 		l = _l;
 		al = _al;
 		n = al.size();
-		am = vector< vector<int> >(n, vector<int>(n, 0));
+		//am = vector< vector<int> >(n, vector<int>(n, 0));
 		ral = vector< std::map<int, int> > (n);
 		m = 0;
 		for (int u = 0; u < n; ++u) {
 			for (int i = 0; i < (int)al[u].size(); ++i) {
 				int v = al[u][i];
 				ral[u][v] = i; 
-				am[u][v] = 1;
+				//am[u][v] = 1;
 				m += 1;
 			}
 		}
@@ -912,7 +912,8 @@ struct PlaneGraph {
 		return (vi == wi+1 || wi == vi+1 || (vi == 0 && wi == als-1) || (wi == 0 && vi == als-1));
 	}
 	
-	bool check_gadget4(int u, int v, int w, int x) {
+	//now basically useless - and uses deprecated am
+	/*bool check_gadget4(int u, int v, int w, int x) {
 		if(am[u][v] && am[u][w] && am[u][x] && am[v][w] && am[w][x] && x != v) {
 			if(al_adjacent(u, v, w) && al_adjacent(u, w, x)) {
 				if(al[u].size() <= 5 && al[v].size() <= 5 && al[w].size() <= 6 && al[x].size() <= 5) {
@@ -934,7 +935,7 @@ struct PlaneGraph {
 			}
 		}
 		return true;
-	}
+	}*/
 	
 	bool biconnected_deg5_components_test() {
 
@@ -982,33 +983,35 @@ struct PlaneGraph {
 		return true;
 	}
 	
-	/*bool check_gadget5(int u, int v, int w, int x, int y) {
-		if(am[u][v] && am[u][w] && am[u][x] && am[u][y] && am[v][w] && am[w][x] && am[x][y]) {
-		//TODO: verify that this is enough
-			if(al_adjacent(u, v, w) && al_adjacent(u, w, x) && al_adjacent(u, x, y)) {
-				if(al[u].size() <= 5 && al[v].size() <= 5 && al[w].size() <= 6 && al[x].size() <= 6 && al[y].size() <= 5) {
-					return true;
-				}
-			}
-		}
-		return false;
+	bool neighbour(int u, int v) {
+		return ral[u].find(v) != ral[u].end();
 	}
 	
+	
 	bool gadget5_test() {
-		//TODO: Improve complexity 
 		for (int u = l; u < n; ++u) {
-			for (int v = l; v < n; ++v) {
-				for (int w = l; w < n; ++w) {
-					for (int x = l; x < n; ++x) {
-						for (int y = l; y < n; ++y) {
-							if(check_gadget5(u, v, w, x, y)) return false;
+			if (al[u].size() <= 5) {
+				for (int v : al[u]) {
+					if (v >= l && al[v].size() <= 5) {
+						for (int w : al[u]) {
+							if (w >= l && neighbour(v, w) && al[w].size() <= 6) {
+								for (int x : al[u]) {
+									if (x >= l && neighbour(w, x) && x != v && al[x].size() <= 6) {
+										for (int y : al[u]) {
+											if (y >= l && neighbour(x, y) && y != w && y != v && al[y].size() <= 5) {
+												return false;
+											}
+										}
+									}
+								}
+							}
 						}
 					}
 				}
 			}
 		}
 		return true;
-	}*/
+	}
 
 	bool weak_alon_tarsi_test() {
 		vector<pair<int, int> > el;

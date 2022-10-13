@@ -8,6 +8,7 @@
 #include<functional>
 #include<queue>
 #include<cstdint>
+#include<chrono>
 
 #ifdef DEBUG
 const bool DEBUG_MODE = true;
@@ -223,6 +224,17 @@ struct DFSGraph {
 		if (!is_connected()) return false;
 		return true;
 	}
+};
+
+//From a sketchy stackoverflow post: https://stackoverflow.com/questions/10405030/c-unordered-map-fail-when-used-with-a-vector-as-key
+struct VectorHasher {
+    int operator()(const vector<int8_t> &V) const {
+        int hash = V.size();
+        for(const int8_t &i : V) {
+            hash ^= int(i) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+        }
+        return hash;
+    }
 };
 
 
@@ -466,9 +478,12 @@ struct OrientationGraph {
 
 	
 
-	std::map<vector<int>, int> find_orientation_differences_map(const vector<int>& bounds) {
-		std::map<vector<int>, int> ans;
-		vector<int> indeg(n, 0);
+	std::unordered_map<vector<int8_t>, int, VectorHasher> find_orientation_differences_map(const vector<int>& bounds) {
+
+		int ori_number = 0;
+
+		std::unordered_map<vector<int8_t>, int, VectorHasher> ans;
+		vector<int8_t> indeg(n, 0);
 		vector<int> ori(m, -1); //0: first -> second, 1: second -> first
 		int parity = 1;
 		vector<pair<int, int> > decision_stack; // (e, d), d == 1 if can decide, d == 0 if forced
@@ -505,24 +520,50 @@ struct OrientationGraph {
 			}
 		};
 
+		vector<int> degree(n, 0);
+		for (auto p : el) {
+			degree[p.first]++;
+			degree[p.second]++;
+		}
+
+		int rnd_val =2343325;
+		std::function<int()> my_rand = [&] () -> int {
+			rnd_val = (rnd_val*3457+1)%104729;
+			return rnd_val;
+		};
+
+		auto score_calculation = [&] (int i, int ori) -> int {
+			//Least slack (bounds-indeg)
+			return (ori ? -(bounds[el[i].first]-indeg[el[i].first]) : -(bounds[el[i].second]-indeg[el[i].second]));
+			//Most (degree-bounds)
+			//return (ori ? degree[el[i].first]-bounds[el[i].first] : degree[el[i].second]-bounds[el[i].second]);
+			//Most degree
+			//return (ori ? degree[el[i].first] : degree[el[i].second]);
+			//Least degree
+			//return (ori ? -degree[el[i].first] : -degree[el[i].second]);
+			//Random
+			//return my_rand();
+		};
+
 		auto choose_edge = [&] () -> pair<int, int> {
 			pair<int, int> p (-1, -1);
-			int min_slack = 2e9;
+			int max_score = -2e9;
 			for (int i=0; i < m; ++i) {
 				if (ori[i] == -1 && !edge_options(i).empty()) {
 					bool op0ok = (edge_options(i).size() == 2 || edge_options(i)[0] == 0);
 					bool op1ok = (edge_options(i).size() == 2 || edge_options(i)[0] == 1);
-					if (op0ok && bounds[el[i].second]-indeg[el[i].second] < min_slack) {
-						min_slack = bounds[el[i].second]-indeg[el[i].second];
+					if (op0ok && score_calculation(i, 0) > max_score) {
+						max_score = score_calculation(i, 0);
 						p = pair<int, int>(i, 0);
 					}
-					if (op1ok && bounds[el[i].first]-indeg[el[i].first] < min_slack) {
-						min_slack = bounds[el[i].first]-indeg[el[i].first];
+					if (op1ok && score_calculation(i, 1) > max_score) {
+						max_score = score_calculation(i, 1);
 						p = pair<int, int>(i, 1);
 					}
 				}
 			}
 			return p;
+			
 		};
 
 
@@ -582,6 +623,8 @@ struct OrientationGraph {
 
 			if (all_set) {
 				ans[indeg] += parity;
+
+				ori_number++;
 			}
 			if (all_set || blocked) {
 				while (!decision_stack.empty()) {
@@ -603,6 +646,12 @@ struct OrientationGraph {
 				set_edge_ori(choice.first, choice.second);
 			}
 		}
+
+		if (ori_number > 1e7) {
+			cerr << "Orientation number: " << ori_number << endl;
+			cerr << "Ans map size: " << ans.size() << endl;
+		}
+
 
 		return ans;
 	}
@@ -720,6 +769,17 @@ struct PlaneGraph {
 			code = std::min(code, std::min(compute_code_edge(u, (u+1)%l), compute_code_edge((u+1)%l, u)));
 		}
 		return code;
+	}
+
+	//Returns number of interior edges
+	int interior_edges() {
+		int ans = 0;
+		for (int u = l; u < n; ++u) {
+			for (int v : al[u]) {
+				if (v > u) ans++;
+			}
+		}
+		return ans;
 	}
 	
 
@@ -941,6 +1001,7 @@ struct PlaneGraph {
 		}
 		vector<PlaneGraph> ans;
 		int m = outer_face_neighbours.size();
+
 		for (int i=0; i < m; ++i) {
 			ans.push_back(partition_outer_face_interval(v, outer_face_neighbours[i], outer_face_neighbours[(i+1)%m]));
 		}
@@ -1048,7 +1109,26 @@ struct PlaneGraph {
 		return ral[u].find(v) != ral[u].end();
 	}
 	
-	
+	bool gadget4_test() {
+		for (int u = l; u < n; ++u) {
+			if (al[u].size() <= 5) {
+				for (int v : al[u]) {
+					if (v >= l && al[v].size() <= 5) {
+						for (int w : al[u]) {
+							if (w >= l && neighbour(v, w) && al[w].size() <= 6) {
+								for (int x : al[u]) {
+									if (x >= l && neighbour(x, w) && x != v && al[x].size() <= 5) {
+										return false;
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
 	bool gadget5_test() {
 		for (int u = l; u < n; ++u) {
 			if (al[u].size() <= 5) {
@@ -1124,9 +1204,9 @@ struct PlaneGraph {
 
 	bool alon_tarsi_always_colorable() {
 
-		if (DEBUG_MODE) {
+		/*if (DEBUG_MODE) {
 			cerr << "Doing Alon-Tarsi test, interior vertices: " << n-l << endl;
-		}
+		}*/
 
 
 		vector<pair<int, int> > el;
@@ -1144,6 +1224,9 @@ struct PlaneGraph {
 			}
 		}
 		if (el.empty()) return true;
+
+		
+
 		OrientationGraph og = OrientationGraph(n-l, el);
 		/*
 		vector<vector <int> > bounds_vector = bounds_generation(bounds, el.size());
@@ -1154,11 +1237,30 @@ struct PlaneGraph {
 		}
 		*/
 
-		if (DEBUG_MODE) {
+		/*if (DEBUG_MODE) {
 			cerr << "Going into the implementation" << endl;
-		}
+		}*/
 
-		std::map<vector<int>, int> diffs = og.find_orientation_differences_map(bounds);
+		//if (DEBUG_MODE) {
+
+			/*std::chrono::steady_clock::time_point begin;
+			if (el.size() > 25) {
+				cerr << "Alon-Tarsi test on graph with " << el.size() << " edges" << endl;
+				cerr << compute_code().to_string() << endl;
+				begin = std::chrono::steady_clock::now();
+			}*/
+		//}
+
+		std::unordered_map<vector<int8_t>, int, VectorHasher> diffs = og.find_orientation_differences_map(bounds);
+
+		//if (DEBUG_MODE) {
+			/*if (el.size() > 25) {
+				std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+				cerr << "Finished" << endl;
+				cerr << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << " ms" << endl;
+			}*/
+		//}
+
 		for (auto x : diffs) {
 			if (x.second != 0) return true;
 		}
@@ -1185,15 +1287,15 @@ struct PlaneGraph {
 	//NOTE: this is a bit of a ugly hack due to the inability of arbitrarily label vertices in subgraphs,
 	//maybe take into account if I ever refactor the code
 	vector<int> minimal_irreducible_deletedvertices() {
-		if (DEBUG_MODE) {
+		/*if (DEBUG_MODE) {
 			cerr << "minimal_irreducible_deletedvertices " << n << " " << l << endl;
-		}
+		}*/
 
 		if (n <= l+1) return vector<int>();
 
-		if (DEBUG_MODE) {
+		/*if (DEBUG_MODE) {
 			cerr << "minimal_irreducible_deletedvertices2" << endl;
-		}
+		}*/
 		for (int v = l; v < n; ++v) {
 			PlaneGraph g = remove_vertex(v);
 			if(!g.alon_tarsi_always_colorable()) {
@@ -1211,7 +1313,16 @@ struct PlaneGraph {
 
 	static std::map<Code, bool> rr_aa_mem;
 
+	int outer_face_neighbours_num(int v) {
+		int ans = 0;
+		for (int w : al[v]) {
+			if (w < l) ans++;
+		}
+		return ans;
+	}
+
 	//TODO: ensure that there are no weird cases when alon tarsi test passes when it should not
+	//TODO: currently, it does not really work with full generality - it can only erase vertices with at least two outer neighbours
 	bool recursive_reducibility_alon_tarsi_test() {
 		if (n == l) return true;
 
@@ -1223,27 +1334,27 @@ struct PlaneGraph {
 		if (!strong_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		vector<int> deleted_vertices = minimal_irreducible_deletedvertices();	
 
-		if (DEBUG_MODE) {
+		/*if (DEBUG_MODE) {
 			cerr << "Deleted vertices: ";
 			for (int v : deleted_vertices) cerr << v << " ";
 			cerr << endl;
-		}
+		}*/
 
 		vector<int> deleted(n);
 		for (int v : deleted_vertices) deleted[v] = 1;
 		int undel_vertex = l;
-		while (deleted[undel_vertex]) undel_vertex++;
+		while (deleted[undel_vertex] || outer_face_neighbours_num(undel_vertex) < 2) undel_vertex++;
 		vector<PlaneGraph> vhpp = partition_along_vertex(undel_vertex);
 		for (PlaneGraph g : vhpp) {
 
-			if (DEBUG_MODE) {
+			/*if (DEBUG_MODE) {
 				cerr << "Recursively going into " << g.n << " " << g.l << endl;
 				for (int u=0; u < g.n; ++u) {
 					for (int v : g.al[u]) {
 						cerr << u << " " << v << endl;
 					}
 				}
-			}
+			}*/
 
 			if (!g.recursive_reducibility_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		}

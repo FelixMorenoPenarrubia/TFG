@@ -18,7 +18,7 @@ using pg = PlaneGraph;
 using ll = long long;
 
 
-vector<vector<pg>> canvases;
+vector<vector<Code>> canvases;
 set<Code> canvases_codes;
 std::map<Code, ll> profile_by_code;
 
@@ -27,6 +27,8 @@ std::map<Code, ll> profile_by_code;
 void print_canvas(pg g) {
 
 	if(USE_N_THRESHOLD_PRINTING && g.n > N_THRESHOLD_PRINTING) return;
+	if(USE_LOWN_THRESHOLD_PRINTING && g.n < N_THRESHOLD_PRINTING) return;
+	if(USE_LOWINTERIORM_THRESHOLD_PRINTING && g.interior_edges() < M_THRESHOLD_PRINTING) return;
 
 	std::streambuf * buf;
 	std::ofstream of;
@@ -94,6 +96,7 @@ void print_canvas(pg g) {
 bool test_canvas(pg g) {
 	vector<std::function<bool()>> tests = {std::bind(&PlaneGraph::degree_test, g),
 	 									   std::bind(&PlaneGraph::deficiency_test, g),
+										   std::bind(&PlaneGraph::gadget4_test, g),
 										   std::bind(&PlaneGraph::gadget5_test, g),
 										   std::bind(&PlaneGraph::biconnected_deg5_components_test, g),
 										   //std::bind(&PlaneGraph::strong_alon_tarsi_test, g)
@@ -137,21 +140,16 @@ void pause() {
 }
 
 bool add_canvas(int l, pg g) {
-
-	if (REPORT_MEMORY_USAGE && rand()%REPORT_INTERVAL == 0) {
-		cout << "l = " << l << endl;
-		cout << "Canvas vector size: " << canvases[l].size() << endl;
-		cout << "Alon-Tarsi memoization size: " << PlaneGraph::rr_aa_mem.size() << endl;
-	}
+	
 
 	if(!test_canvas(g)) return false;
 	Code c = g.compute_code();
 	if(canvases_codes.find(c) == canvases_codes.end()) {
 		if(!DO_NOT_STORE_LAST || l+1 < (int) canvases.size()) {
-			canvases[l].push_back(g);
+			canvases[l].push_back(c);
 		}
 		else {
-			canvases[l].push_back(pg(0, vector<vector<int>>())); //patch in order to still get number of canvases
+			canvases[l].push_back(pg(0, vector<vector<int>>()).compute_code()); //patch in order to still get number of canvases
 		}
 
 		canvases_codes.insert(c);
@@ -173,24 +171,26 @@ pg empty_cycle(int l) {
 }
 
 void gen(int l) {
-	queue<pg> q;
+	queue<Code> q;
 
 	//Empty cycle
 	add_canvas(l, empty_cycle(l));
-	q.push(empty_cycle(l));
+	q.push(empty_cycle(l).compute_code());
 	
 	//Add chords
 	if(ADD_CHORDS) {
 		for(int a=3; a < l; ++a) {
 			int b = l-a+2;
-			for(pg g1 : canvases[a]) {
-				for(pg g2 : canvases[b]) {
+			for(Code& c1 : canvases[a]) {
+				for(Code& c2 : canvases[b]) {
+					pg g1 = PlaneGraph(c1);
+					pg g2 = PlaneGraph(c2);
 					for(int j1=0; j1 < a; ++j1) {
 						for(int j2=0; j2 < b; ++j2) {
 							pg ng1 = PlaneGraph::fuse_chord(g1, g2, j1, j2, false);
 							pg ng2 = PlaneGraph::fuse_chord(g1, g2, j1, j2, true);
-							if(add_canvas(l, ng1)) q.push(ng1);
-							if(add_canvas(l, ng2)) q.push(ng2);
+							if(add_canvas(l, ng1)) q.push(ng1.compute_code());
+							if(add_canvas(l, ng2)) q.push(ng2.compute_code());
 						}
 					}
 				}
@@ -201,11 +201,12 @@ void gen(int l) {
 	//Add tripods from smaller sizes
 	for(int k=3; k < l; ++k) {  //for each canvas size up to l-1
 		ll ts = l-k+1;
-		for(pg g : canvases[k]) { //for each canvas of that size
+		for(Code& c : canvases[k]) { //for each canvas of that size
+			pg g = PlaneGraph(c);
 			for(int j=0; j < k; ++j) { //for each outer vertex of the canvas
 				for(ll bm=1; bm < (1LL<<ts); ++bm) { //for each disposition of the chords of the tripod (bitmask)
 					pg ng = g.add_tripod(ts, j, bm);
-					if(add_canvas(l, ng)) q.push(ng);
+					if(add_canvas(l, ng)) q.push(ng.compute_code());
 				}
 			}
 		}
@@ -213,15 +214,19 @@ void gen(int l) {
 	
 	//Add tripods from the same size
 	while(!q.empty()) {
-		pg g = q.front();
+		pg g = PlaneGraph(q.front());
 		q.pop();
 		for(int j=0; j < l; ++j) { //for each outer vertex of the canvas
 			pg ng = g.add_tripod(1, j, 1);
-			if(add_canvas(l, ng)) q.push(ng);
+			if(add_canvas(l, ng)) q.push(ng.compute_code());
 
-			if(REPORT_QUEUE_SIZE && rand()%REPORT_INTERVAL == 0 && !q.empty()) {
+			if(REPORT_SIZES && rand()%REPORT_INTERVAL == 0 && !q.empty()) {
+				cout << "l = " << l << endl;
 				cout << "Queue size: " << q.size() << endl;
 				cout << "Current canvas n: " << g.n << endl;
+				cout << "Canvas vector size: " << canvases[l].size() << endl;
+				cout << "Alon-Tarsi memoization size: " << PlaneGraph::rr_aa_mem.size() << endl;
+				
 			}
 
 			
@@ -236,7 +241,7 @@ void search() {
 	}
 	int l;
 	cin >> l;
-	canvases = vector<vector<pg>>(l+1);
+	canvases = vector<vector<Code>>(l+1);
 	for(int i=3; i <= l; ++i) {
 		gen(i);
 		if (VERBOSE_OUTPUT_FORMAT) {
@@ -249,8 +254,8 @@ void search() {
 			cout << canvases[i].size() << endl;
 		}
 		if(PRINT_CANVAS_ON_END && (VERBOSE_OUTPUT_FORMAT || i == l)) {
-			for (pg g : canvases[i]) {
-				print_canvas(g);
+			for (Code c : canvases[i]) {
+				print_canvas(PlaneGraph(c));
 			}
 			cout << endl << endl;
 		}
@@ -272,8 +277,8 @@ void search() {
 
 		if(SIZE_STATISTICS) {
 			std::map<int, int> stats;
-			for(pg g : canvases[i]) {
-				stats[g.n]++;
+			for(Code c : canvases[i]) {
+				stats[PlaneGraph(c).n]++;
 			}
 
 			cout << "---" << endl;

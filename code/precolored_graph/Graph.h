@@ -8,6 +8,8 @@
 
 using std::vector;
 
+namespace precolored {
+
 struct Graph {
     int n;
     int m;
@@ -46,5 +48,7 @@ struct Graph {
 
 
 };
+
+}
 
 #endif

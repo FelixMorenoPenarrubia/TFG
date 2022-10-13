@@ -28,6 +28,13 @@ void generate_code() {
 	cout << g.compute_code().to_string() << endl;
 }
 
+void print_graph_from_code() {
+	string s;
+	cin >> s;
+	pg g = PlaneGraph(Code(s));
+	print_canvas(g);
+}
+
 void isomorphism_test_adjacency_list() {
 	pg g1 = read_planegraph();
 	pg g2 = read_planegraph();
@@ -202,6 +209,7 @@ int main() {
 	cerr << "10. Bounds generation" << endl;
 	cerr << "11. Canvas test battery" << endl;
 	cerr << "12. Perform recursive Alon-Tarsi test" << endl;
+	cerr << "13. Print graph from code" << endl;
 	
 	int c;
 	cin >> c;
@@ -240,5 +248,8 @@ int main() {
 	}
 	if(c == 12) {
 		recursive_alon_tarsi_test();
+	}
+	if(c == 13) {
+		print_graph_from_code();
 	}
 }

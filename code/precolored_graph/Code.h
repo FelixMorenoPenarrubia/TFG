@@ -6,6 +6,8 @@
 #ifndef CODE_H_
 #define CODE_H_
 
+namespace precolored {
+
 using std::vector;
 using std::string;
 
@@ -33,5 +35,6 @@ struct Code {
 
 bool operator<(const Code& a, const Code& b);
 
+}
 
 #endif

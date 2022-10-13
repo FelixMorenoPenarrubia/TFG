@@ -6,6 +6,7 @@
 
 using std::vector;
 using std::map;
+using namespace precolored;
 
 vector<int> minimal_irreducible_deletedvertices(const Graph& g);
 

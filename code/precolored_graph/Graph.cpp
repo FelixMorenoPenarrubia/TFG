@@ -2,6 +2,8 @@
 
 using std::endl;
 
+using namespace precolored;
+
 Graph::Graph() {
     n = 0;
     m = 0;

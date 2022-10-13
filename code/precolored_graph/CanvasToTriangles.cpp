@@ -12,7 +12,7 @@ using std::cout;
 using std::endl;
 using std::vector;
 using std::map;
-using namespace precolored;
+
 
 bool test_graph (const Graph& g) {
     

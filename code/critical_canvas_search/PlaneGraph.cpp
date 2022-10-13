@@ -10,6 +10,9 @@
 #include<cstdint>
 #include<chrono>
 
+#include "../precolored_graph/Graph.h"
+#include "../precolored_graph/AlonTarsi.h"
+
 #ifdef DEBUG
 const bool DEBUG_MODE = true;
 #else

@@ -1,6 +1,6 @@
 #include "Code.h"
 
-using namespace precolored;
+
 
 void Code::push_r(int x) {
     code.push_back(1+x);

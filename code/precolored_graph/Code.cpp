@@ -23,11 +23,11 @@ string GraphCode::to_string() const {
     for (int i=0; i < size(); ++i) {
         if (code[i] < 0) {
             s.push_back('F');
-            s.push_back('0'-code[i]+1);
+            s.push_back('0'-code[i]-1);
         }
         else if (code[i] > 0) { 
             s.push_back('R');
-            s.push_back('A'+code[i]-1);
+            s.push_back('a'+code[i]-1);
         }
         else {
             s.push_back('B');

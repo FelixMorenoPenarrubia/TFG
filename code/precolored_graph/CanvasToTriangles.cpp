@@ -109,6 +109,8 @@ void print_result(pair<Graph, vector<vector<int>> > p) {
     cout << "---" << endl;
     cout << "Graph with list sizes: " << endl;
     p.first.write(cout);
+    cout << "Code: " << endl;
+    cout << p.first.compute_code().to_string() << endl;
     cout << "Original canvas: " << endl;
     int n = p.second.size();
     cout << n << endl;
@@ -126,8 +128,23 @@ void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_
     //debug(candidate_list.size());
 
     map<GraphCode, int> candidate_set;
+
     for (int i=0; i < (int) candidate_list.size(); ++i) {
         GraphCode gc = candidate_list[i].first.compute_code();
+
+        //TODO: ADD DEBUG CONDITIONAL OR SOMETHING
+
+        if (gc.to_string() == "F5F5F4F4RcBBReBF4RaBB") {
+            debug_msg("Found graph");
+            if(candidate_set.find(gc) != candidate_set.end()) {
+                debug_msg("Already in cand set");
+            }
+            if(critical_set.find(gc) != critical_set.end()) {
+                debug_msg("Already in crit set")
+            }
+        }
+
+
         if (candidate_set.find(gc) == candidate_set.end() && critical_set.find(gc) == critical_set.end()) {
             candidate_set[gc] = i; 
         }
@@ -136,6 +153,15 @@ void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_
 
     for (auto p : candidate_set) {
         const Graph& g = candidate_list[p.second].first;
+
+        if (g.compute_code().to_string() == "F5F5F4F4RcBBReBF4RaBB") {
+            if (test_graph(g)) {
+                debug_msg("Passed tests");
+            }
+            else {
+                debug_msg("Did not pass tests");
+            }
+        }
 
         if (test_graph(g)) {
             critical_set[p.first] = candidate_list[p.second];

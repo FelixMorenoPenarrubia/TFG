@@ -87,8 +87,12 @@ GraphCode Graph::compute_code_edge(int u, int v) const {
     GraphCode code = GraphCode();
     vector<int> assigned_numbers (n, -1);
     assigned_numbers[u] = 0;
+    code.push_f(list_sizes[u]);
     int c = 1;
-    dfs_code(v, ral[v].at(u), c, assigned_numbers, code);
+    for (int i = 0; i < (int)al[u].size(); ++i) {
+        int w = al[u][(i+ral[u].at(v))%al[u].size()];
+        dfs_code(w, ral[w].at(u), c, assigned_numbers, code);
+    }
     return code;
 }
 

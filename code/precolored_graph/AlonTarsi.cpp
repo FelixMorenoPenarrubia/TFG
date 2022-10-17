@@ -107,6 +107,8 @@ bool alon_tarsi(const Graph& g) {
             }
         }
         if (all_set) {
+            debug_var(indeg);
+            debug_var(parity);
             oridiffmap[indeg] += parity;
         }
         if (all_set || blocked) {
@@ -131,6 +133,10 @@ bool alon_tarsi(const Graph& g) {
     }
 
     for (auto x : oridiffmap) {
+
+        debug_var(x.first);
+        debug_var(x.second);
+
         if (x.second != 0) return true;
     }
 	return false;
@@ -138,7 +144,13 @@ bool alon_tarsi(const Graph& g) {
 }
 
 vector<int> minimal_irreducible_deletedvertices(const Graph& g) {
+
+    debug_msg("minimal_irreducible_deletedvertices");
+
     for (int v = 0; v < g.n; ++v) {
+
+        debug_var(v);
+
         Graph gp = g.remove_vertex(v);
         if(!alon_tarsi(gp)) {
             vector<int> dv = minimal_irreducible_deletedvertices(gp);
@@ -153,7 +165,7 @@ vector<int> minimal_irreducible_deletedvertices(const Graph& g) {
 }
 
 bool recursive_alon_tarsi(const Graph& g) {
-    static map<Code, bool> alon_tarsi_mem;
+    static map<GraphCode, bool> alon_tarsi_mem;
 
     vector<Graph> vcc = g.connected_components();
 
@@ -164,17 +176,17 @@ bool recursive_alon_tarsi(const Graph& g) {
         return false;
     }
 
-   // debug_msg("Recursive Alon-Tarsi")
-   // g.write(cerr);
+    debug_msg("Recursive Alon-Tarsi")
+    g.write(cerr);
 
 
-    Code code = g.compute_code();
+    GraphCode code = g.compute_code();
 
     if (g.nocolors()) return false;
 
    
     if (alon_tarsi_mem.find(code) != alon_tarsi_mem.end()) {
-       // debug_msg("Already in memory");
+        debug_msg("Already in memory");
         return alon_tarsi_mem[code];
     }
 
@@ -185,12 +197,12 @@ bool recursive_alon_tarsi(const Graph& g) {
     }
 
     if (alon_tarsi(g)) {
-       // debug_msg("Always colorable");
+        debug_msg("Always colorable");
         return alon_tarsi_mem[code] = true;
     }
     vector<int> deleted_vertices = minimal_irreducible_deletedvertices(g);
 
-    //debug_var(deleted_vertices);
+    debug_var(deleted_vertices);
 
     vector<int> deleted(g.n);
     for (int v : deleted_vertices) deleted[v] = 1;

@@ -32,11 +32,11 @@ struct Graph {
 
     void write(std::ostream& os) const;
     
-    void dfs_code(int u, int idx, int& c, vector<int>& an, Code& code) const;
+    void dfs_code(int u, int idx, int& c, vector<int>& an, GraphCode& code) const;
 
-    Code compute_code_edge(int u, int v) const;
+    GraphCode compute_code_edge(int u, int v) const;
 
-    Code compute_code() const;
+    GraphCode compute_code() const;
 
     Graph remove_vertex(int w) const;
 

@@ -120,14 +120,14 @@ void print_result(pair<Graph, vector<vector<int>> > p) {
     cout << "---" << endl;
 }
 
-void process_canvas(map<Code, pair<Graph, vector<vector<int>> >>& critical_set) {
+void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_set) {
     vector<pair<Graph, vector<vector<int>> >> candidate_list = read_canvas_and_generate_triangle_graphs();
     
     //debug(candidate_list.size());
 
-    map<Code, int> candidate_set;
+    map<GraphCode, int> candidate_set;
     for (int i=0; i < (int) candidate_list.size(); ++i) {
-        Code gc = candidate_list[i].first.compute_code();
+        GraphCode gc = candidate_list[i].first.compute_code();
         if (candidate_set.find(gc) == candidate_set.end() && critical_set.find(gc) == critical_set.end()) {
             candidate_set[gc] = i; 
         }
@@ -149,7 +149,7 @@ void process_canvas(map<Code, pair<Graph, vector<vector<int>> >>& critical_set) 
 
 void read_canvases_and_print_critical_triangles() {
 
-    map<Code, pair<Graph, vector<vector<int>> >> critical_set;
+    map<GraphCode, pair<Graph, vector<vector<int>> >> critical_set;
     int T;
     cin >> T;
     for (int t = 0; t < T; ++t) {

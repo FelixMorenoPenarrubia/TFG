@@ -11,10 +11,10 @@
 using std::vector;
 using std::string;
 
-struct Code {
+struct GraphCode {
 	vector<int> code;
 	
-	Code() {
+	GraphCode() {
 	
 	}
 	
@@ -33,7 +33,7 @@ struct Code {
 };
 
 
-bool operator<(const Code& a, const Code& b);
+bool operator<(const GraphCode& a, const GraphCode& b);
 
 
 

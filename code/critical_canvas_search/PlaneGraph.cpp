@@ -232,9 +232,9 @@ struct DFSGraph {
 //From a sketchy stackoverflow post: https://stackoverflow.com/questions/10405030/c-unordered-map-fail-when-used-with-a-vector-as-key
 struct VectorHasher {
     int operator()(const vector<int8_t> &V) const {
-        int hash = V.size();
+        unsigned int hash = V.size();
         for(const int8_t &i : V) {
-            hash ^= int(i) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
+            hash ^= (unsigned int)(i) + 0x9e3779b9 + (hash << 6) + (hash >> 2);
         }
         return hash;
     }
@@ -329,7 +329,7 @@ struct OrientationGraph {
 
 		while (!decision_stack.empty()) {
 
-			if(DEBUG_MODE && rand()%1000000 == 0) {
+			/*if(DEBUG_MODE && rand()%1000000 == 0) {
 				
 				cerr << "Current stack status:" << endl;
 				for(pair<int, int> x : decision_stack) {
@@ -337,7 +337,7 @@ struct OrientationGraph {
 				}
 				cerr << endl;
 				
-			}
+			}*/
 
 			bool decided = false;
 			bool all_set = true;
@@ -650,10 +650,10 @@ struct OrientationGraph {
 			}
 		}
 
-		if (ori_number > 1e7) {
+		/*if (ori_number > 1e7) {
 			cerr << "Orientation number: " << ori_number << endl;
 			cerr << "Ans map size: " << ans.size() << endl;
-		}
+		}*/
 
 
 		return ans;
@@ -1207,9 +1207,9 @@ struct PlaneGraph {
 
 	bool alon_tarsi_always_colorable() {
 
-		/*if (DEBUG_MODE) {
+		if (DEBUG_MODE) {
 			cerr << "Doing Alon-Tarsi test, interior vertices: " << n-l << endl;
-		}*/
+		}
 
 
 		vector<pair<int, int> > el;
@@ -1326,7 +1326,8 @@ struct PlaneGraph {
 
 	//TODO: ensure that there are no weird cases when alon tarsi test passes when it should not
 	//TODO: currently, it does not really work with full generality - it can only erase vertices with at least two outer neighbours
-	bool recursive_reducibility_alon_tarsi_test() {
+	
+	bool old_recursive_reducibility_alon_tarsi_test() {
 		if (n == l) return true;
 
 		Code code = compute_code();
@@ -1337,11 +1338,11 @@ struct PlaneGraph {
 		if (!strong_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		vector<int> deleted_vertices = minimal_irreducible_deletedvertices();	
 
-		/*if (DEBUG_MODE) {
+		if (DEBUG_MODE) {
 			cerr << "Deleted vertices: ";
 			for (int v : deleted_vertices) cerr << v << " ";
 			cerr << endl;
-		}*/
+		}
 
 		vector<int> deleted(n);
 		for (int v : deleted_vertices) deleted[v] = 1;
@@ -1350,18 +1351,36 @@ struct PlaneGraph {
 		vector<PlaneGraph> vhpp = partition_along_vertex(undel_vertex);
 		for (PlaneGraph g : vhpp) {
 
-			/*if (DEBUG_MODE) {
+			if (DEBUG_MODE) {
 				cerr << "Recursively going into " << g.n << " " << g.l << endl;
 				for (int u=0; u < g.n; ++u) {
 					for (int v : g.al[u]) {
 						cerr << u << " " << v << endl;
 					}
 				}
-			}*/
+			}
 
-			if (!g.recursive_reducibility_alon_tarsi_test()) return rr_aa_mem[code] = false;
+			if (!g.old_recursive_reducibility_alon_tarsi_test()) return rr_aa_mem[code] = false;
 		}
 		return rr_aa_mem[code] = true;
+	}
+
+	bool recursive_reducibility_alon_tarsi_test() {
+		vector<vector<int>> ial(n-l);
+		vector<int> list_sizes(n-l);
+		for (int u = l; u < n; ++u) {
+			list_sizes[u-l] = 5;
+			for (int v : al[u]) {
+				if (v >= l) {
+					ial[u-l].push_back(v-l);
+				}
+				else  {
+					list_sizes[u-l]--;
+				}
+			}
+		}
+		Graph g = Graph(list_sizes, ial);
+		return !recursive_alon_tarsi(g);
 	}
 
 	bool old_alon_tarsi_test() {

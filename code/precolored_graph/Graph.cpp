@@ -1,4 +1,5 @@
 #include "Graph.h"
+#include "debug_utility.h"
 
 using std::endl;
 
@@ -37,6 +38,22 @@ bool Graph::nocolors() const {
     return ans;
 }
 
+Graph Graph::read(std::istream& is) {
+    int n, m;
+    is >> n >> m;
+    vector<int> list_sizes(n);
+    for (int u = 0; u < n; ++u) {
+        is >> list_sizes[u];
+    }
+    vector<vector<int> > al (n);
+    for (int e = 0; e < 2*m; ++e) {
+        int u, v;
+        is >> u >> v;
+        al[u].push_back(v);
+    }
+    return Graph(list_sizes, al);
+}
+
 void Graph::write(std::ostream& os) const {
     os << n << " " << m << endl;
     for (int u = 0; u < n; ++u) {
@@ -50,11 +67,12 @@ void Graph::write(std::ostream& os) const {
     }
 }
 
-void Graph::dfs_code(int u, int idx, int& c, vector<int>& an, Code& code) const {
+void Graph::dfs_code(int u, int idx, int& c, vector<int>& an, GraphCode& code) const {
     if (an[u] != -1) {
         code.push_r(an[u]);
         return;
     }
+
     code.push_f(list_sizes[u]);
     an[u] = c++;
     int als = (int)al[u].size();
@@ -65,8 +83,8 @@ void Graph::dfs_code(int u, int idx, int& c, vector<int>& an, Code& code) const 
     code.push_b();
 }
 
-Code Graph::compute_code_edge(int u, int v) const {
-    Code code = Code();
+GraphCode Graph::compute_code_edge(int u, int v) const {
+    GraphCode code = GraphCode();
     vector<int> assigned_numbers (n, -1);
     assigned_numbers[u] = 0;
     int c = 1;
@@ -74,10 +92,11 @@ Code Graph::compute_code_edge(int u, int v) const {
     return code;
 }
 
-Code Graph::compute_code() const {
-    Code code = Code();
+GraphCode Graph::compute_code() const {
+    GraphCode code = GraphCode();
     for (int u = 0; u < n; ++u) {
         for (int v : al[u]) {
+
             if (code.size() == 0) code = compute_code_edge(u, v);
             else code = std::min(code, compute_code_edge(u, v));
         }

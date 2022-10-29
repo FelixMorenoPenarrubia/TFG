@@ -5,6 +5,7 @@
 #include<iostream>
 #include<vector>
 #include<map>
+#include<fstream>
 
 
 using std::cin;
@@ -13,13 +14,78 @@ using std::endl;
 using std::vector;
 using std::map;
 
+TwoTriangleGraph::TwoTriangleGraph() {
+
+}
+
+TwoTriangleGraph::TwoTriangleGraph(Graph _g, int _pl, vector<vector<int>> _oc, vector<vector<int>> _ett) {
+    g = _g;
+    path_length = _pl;
+    original_canvas = _oc;
+    edges_to_triangles = _ett;
+}
+
+void TwoTriangleGraph::write_verbose(std::ostream& os) {
+    os << "---" << endl;
+    os << "Graph with list sizes: " << endl;
+    g.write(cout);
+    //cout << "Code: " << endl;
+    //cout << p.first.compute_code().to_string() << endl;
+    os << "Edges to the two triangles: " << endl;
+    for (int i=0; i < g.n; ++i) {
+        for (int j : edges_to_triangles[i]) {
+            os << i << " T" << j << endl;
+        }
+    }
+    os << "Original canvas: " << endl;
+    int n = original_canvas.size();
+    os << n << endl;
+    for (int i=0; i < n; ++i) {
+        for (int j : original_canvas[i]) {
+            os << i << " " << j << endl;
+        }
+    }
+    os << "---" << endl;
+}
+
+void TwoTriangleGraph::write_prolog(std::ostream& os) {
+    os << "numVertices(" << g.n + 6 << ")." << endl;
+    os << "numVerticesTSubgraph(6)." << endl;
+    os << "tEdge(0,1)." << endl;
+    os << "tEdge(0,2)." << endl;
+    if(path_length == 1) {
+        os << "tEdge(0,3)." << endl;
+    }
+    os << "tEdge(1,2)." << endl;
+    os << "tEdge(3,4)." << endl;
+    os << "tEdge(3,5)." << endl;
+    os << "tEdge(4,5)." << endl;
+
+    for (int i=0; i < g.n; ++i) {
+        for (int j : edges_to_triangles[i]) {
+            os << "iEdge(" << j << "," << i+6 << ")." << endl;
+        }
+    }
+
+    for (int i=0; i < g.n; ++i) {
+        for (int j : g.al[i]) {
+            if (i < j) {
+                os << "iEdge(" << i + 6 << "," << j + 6 << ")." << endl;
+            }
+        }
+    }
+}
+
+void TwoTriangleGraph::write(std::ostream& os) {
+    write_verbose(os);
+}
 
 bool test_graph (const Graph& g) {
     
    return !recursive_alon_tarsi(g);
 }
 
-vector<pair<Graph, vector<vector<int> > > > read_canvas_and_generate_triangle_graphs() {
+vector<TwoTriangleGraph> read_canvas_and_generate_triangle_graphs() {
     int n, m, l;
     cin >> n >> m >> l;
     vector<vector<int> > al (n);
@@ -34,7 +100,7 @@ vector<pair<Graph, vector<vector<int> > > > read_canvas_and_generate_triangle_gr
     }
 
     int path_length = (l-6)/2;
-    vector<pair<Graph, vector<vector<int>> >> ans;
+    vector<TwoTriangleGraph> ans;
 
     for (int s=0; s < l; ++s) {
         int nn = n-l+(path_length-1);
@@ -42,6 +108,8 @@ vector<pair<Graph, vector<vector<int> > > > read_canvas_and_generate_triangle_gr
         vector<vector<int> > nal(nn);
         vector<vector<int> > nam(nn, vector<int> (nn));
         vector<int> morph(n, -1);
+        vector<vector<int> > ett (nn);
+
         for (int i=1; i < path_length; ++i) {
             morph[(s+i)%l] = i-1;
             morph[(s+2*path_length+3-i)%l] = i-1;
@@ -74,6 +142,11 @@ vector<pair<Graph, vector<vector<int> > > > read_canvas_and_generate_triangle_gr
             }
         }
 
+        auto add_ett = [&] (int u, int t) {
+            list_sizes[morph[u]]--;
+            ett[morph[u]].push_back(t);
+        };
+
         for (int u = 0; u < n; ++u) {
             if (morph[u] == -1) continue;
             if (u >= l) {
@@ -83,66 +156,42 @@ vector<pair<Graph, vector<vector<int> > > > read_canvas_and_generate_triangle_gr
                     nal[morph[u]].push_back(morph[v]);
                     nam[morph[u]][morph[v]] = 1;
                 }
-                if (am[u][s] || am[u][(s+2*path_length+3)%l]) list_sizes[morph[u]]--;
-                if (am[u][(s+path_length)%l] || am[u][(s+path_length+3)%l]) list_sizes[morph[u]]--;
-                if (am[u][(s+1*path_length+1)%l]) list_sizes[morph[u]]--;
-                if (am[u][(s+1*path_length+2)%l]) list_sizes[morph[u]]--;
-                if (am[u][(s+2*path_length+4)%l]) list_sizes[morph[u]]--;
-                if (am[u][(s+2*path_length+5)%l]) list_sizes[morph[u]]--;
+                if (am[u][s] || am[u][(s+2*path_length+3)%l]) add_ett(u, 0);
+                if (am[u][(s+path_length)%l] || am[u][(s+path_length+3)%l]) add_ett(u, 3);
+                if (am[u][(s+1*path_length+1)%l]) add_ett(u, 4);
+                if (am[u][(s+1*path_length+2)%l]) add_ett(u, 5);
+                if (am[u][(s+2*path_length+4)%l]) add_ett(u, 1);
+                if (am[u][(s+2*path_length+5)%l]) add_ett(u, 2);
             }
             else {
-                if (u == (s+1)%l || u == (s+path_length-1)%l) {
-                    list_sizes[morph[u]]--; //assuming no chords
-                    if (path_length == 2) list_sizes[morph[u]]--;
+                if (u == (s+1)%l) {
+                    add_ett(u, 0); //Assuming no chords
+                }
+                if (u == (s+path_length-1)%l) {
+                    add_ett(u, 3);
                 }
             }
         }
-        ans.emplace_back(Graph(list_sizes, nal), al);
+        ans.emplace_back(Graph(list_sizes, nal), path_length, al, ett);
         
-        //ans.back().first.write(cerr);
+        
     }
 
     return ans;
 }
 
-void print_result(pair<Graph, vector<vector<int>> > p) {
-    cout << "---" << endl;
-    cout << "Graph with list sizes: " << endl;
-    p.first.write(cout);
-    cout << "Code: " << endl;
-    cout << p.first.compute_code().to_string() << endl;
-    cout << "Original canvas: " << endl;
-    int n = p.second.size();
-    cout << n << endl;
-    for (int i=0; i < n; ++i) {
-        for (int j : p.second[i]) {
-            cout << i << " " << j << endl;
-        }
-    }
-    cout << "---" << endl;
-}
 
-void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_set) {
-    vector<pair<Graph, vector<vector<int>> >> candidate_list = read_canvas_and_generate_triangle_graphs();
+
+void process_canvas(map<GraphCode, TwoTriangleGraph>& critical_set) {
+    vector<TwoTriangleGraph> candidate_list = read_canvas_and_generate_triangle_graphs();
     
     //debug(candidate_list.size());
 
     map<GraphCode, int> candidate_set;
 
     for (int i=0; i < (int) candidate_list.size(); ++i) {
-        GraphCode gc = candidate_list[i].first.compute_code();
+        GraphCode gc = candidate_list[i].g.compute_code();
 
-        //TODO: ADD DEBUG CONDITIONAL OR SOMETHING
-
-        if (gc.to_string() == "F5F5F4F4RcBBReBF4RaBB") {
-            debug_msg("Found graph");
-            if(candidate_set.find(gc) != candidate_set.end()) {
-                debug_msg("Already in cand set");
-            }
-            if(critical_set.find(gc) != critical_set.end()) {
-                debug_msg("Already in crit set")
-            }
-        }
 
 
         if (candidate_set.find(gc) == candidate_set.end() && critical_set.find(gc) == critical_set.end()) {
@@ -152,16 +201,9 @@ void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_
 
 
     for (auto p : candidate_set) {
-        const Graph& g = candidate_list[p.second].first;
+        const Graph& g = candidate_list[p.second].g;
 
-        if (g.compute_code().to_string() == "F5F5F4F4RcBBReBF4RaBB") {
-            if (test_graph(g)) {
-                debug_msg("Passed tests");
-            }
-            else {
-                debug_msg("Did not pass tests");
-            }
-        }
+       
 
         if (test_graph(g)) {
             critical_set[p.first] = candidate_list[p.second];
@@ -175,17 +217,19 @@ void process_canvas(map<GraphCode, pair<Graph, vector<vector<int>> >>& critical_
 
 void read_canvases_and_print_critical_triangles() {
 
-    map<GraphCode, pair<Graph, vector<vector<int>> >> critical_set;
+    map<GraphCode, TwoTriangleGraph> critical_set;
     int T;
     cin >> T;
     for (int t = 0; t < T; ++t) {
+        cout << "Processing canvas " << t << "/" << T << endl;
         process_canvas(critical_set);
     }
 
     cout << critical_set.size() << endl;
 
     for (auto x : critical_set) {
-        print_result(x.second);
+        //std::ofstream fout("../criticality_verifier/triangle_graphs/tg_" + x.first.to_string() + ".pl");
+        x.second.write(cout);
     }
 }
 

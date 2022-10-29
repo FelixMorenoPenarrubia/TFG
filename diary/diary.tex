@@ -264,6 +264,73 @@ After doing this, our program is finally efficient enough to generate all candid
 
 \subsection{Canvas criticality verifier}
 
+\section{Two precolored triangles}
+
+In Postle's thesis, the following result is proven: 
+
+\begin{theorem}
+Let $G$ a planar graph, $L$ a list assignment with lists of size $5$ and $T_1, T_2$ be two triangles on it with distance between them at least $14$ (the distance between them is the minimum distance between any pair of vertices). Then any valid precoloring of $T_1 \cup T_2$ extends to the whole graph.
+\end{theorem}
+
+Our goal now will be to improve the bound of $14$ and find the tightest possible bound.
+
+We want to generate all $(T_1 \cup T_2)$-critical graphs, where $T_1$ and $T_2$ are triangles at distance $d$, for different values of $d$. Our hope is that, for some small value of $d$ such as $4$ or $5$, we will find no critical graphs, so we will have found the tightest bound possible in the above result by Postle. (Of course, after that we will have to think how to prove the bound).
+
+\subsection{Two precolored triangles from critical canvases}
+
+One way to generate all $(T_1 \cup T_2)$-critical graphs is as follows: consider a $(T_1 \cup T_2)$-critical graph $G$ which has $T_1$ and $T_2$ joined by a path of length $d$. Now, duplicate all $d-1$ vertices in the interior of the path and let $C$ be the resulting cycle of length $2d+6$ formed by the duplicated vertices of the path and the two triangles. Let $G'$ be the resulting graph.
+
+\begin{theorem}
+$G'$ is $C$-critical.
+\end{theorem}
+
+\begin{proof}
+Let $e'$ be an edge not in $C$, consider the corresponding edge $e$ from $G$: by $(T_1 \cup T_2)$-criticality, there is a coloring of $(T_1 \cup T_2)$ which extends to $G \ e$ but not to $G$. Let $\phi_P$ be the extension of that coloring to the path between $T_1$ and $T_2$ and let $\phi_C$ be the precoloring of $C$ in which the corresponding duplicated vertices get the same color. Now, note that $\phi_C$ can be extended to $G \ e'$ but not to $G$, since if it did we could recover an extension of the original precoloring of the two triangles.
+\end{proof}
+
+Hence, in order to enumerate all $(T_1 \cup T_2)$-critical triangles with triangles at distance at most $d$, we can generate all critical canvases with outer face of size $2d+6$, and for each canvas find all the ways to merge vertices in order to obtain the graph with two triangles. Of course, this approach will generate many graphs which are not critical - we can discard some of them using Alon-Tarsi or other tests.
+
+However, we will also try a different approach for enumerating the critical graphs with two precolored triangles. This different approach will make it easier to translate the results of our computations into a proof. 
+
+\subsection{Generating critical graphs with a precolored path}
+
+As a prerequisite, we will see how to generate all planar graphs with interior vertices with lists of length $5$ and outer vertices with lists of length $3$ critical with respect to a precolored path $P$ on the boundary. Recall that, by Thomassen's theorem, there are no such critical graphs for paths of length $1$. 
+
+We will be using the following result from Postle:
+
+\begin{theorem}[\cite{fivelistcoloring1}]
+Let $G$ be a planar graph and $L$ a list assignment with lists of size $5$ for interior vertices and lists of size $3$ for exterior vertices except for two of those, which have lists of size $2$. Then $G$ is $L$-colorable. 
+\end{theorem}
+
+Using this, we can identify $3$ possible cases in which a $P$-critical graph might fall into:
+
+\begin{enumerate}
+\item The graph has a chord inside $P$, i.e. there is an edge between two vertices of $P$ which is not part of the path. Then, the graph can be partitioned into two smaller graphs critical with respect to some smaller path.
+\item The graph has a chord form $P$ to some outer vertex not in $P$: then, similarly, the graph can be decomposed into two smaller graphs critical with respect to shorter paths.
+\item Otherwise, here is the more interesting case: The key idea is that, if all interior vertices have at most two neighbors in $P$, then by removing $P$ and removing the corresponding colors in the list we obtain a graph which satisfies the hypothesis Postle's result (all exterior vertices have list size at least $3$, save for the two ones which are adjacent to the ends of the paths which have list size at least $2$), and therefore is always colorable, so the graph is not critical. Hence, we must have at least one \emph{tripod}, or a graph with at least three neighbors in $P$, and furthermore we can take such tripod to divide the graph into faces such that only one of them is nonempty. The graph bounded by the nonempty face must be critical with respect to a shorter or equal path: note that here the path (and the outer cycle) might have equal length so that, if we're generating the critical graphs by length of outer cycle, we must use a queue like in the critical canvas scenario.
+\end{enumerate}
+
+With this recursive characterization, we can generate $P$-critical graphs in a very similar way to which we generated critical canvases. Having those graphs generated will be useful for our goals.
+
+\subsection{Generating critical graphs with two precolored paths}
+
+We still need to generate another type of critical graph before we can generate our triangles. Now, we will be generating graphs critical with respect to \emph{two} precolored paths of length $1$. This will be a more difficult endeavor, and we will have to change our strategy a bit.
+
+Inspired by the argument developed in paper \cite{crossingsfarapart}, we will work in a different setting: instead of requiring only that all vertices in the outer face have list size at least $3$, we will also require that no two adjacent vertices have list size exactly $3$ (i.e. at least one of them has size at least $4$). In this setting, it is proved in \cite{crossingsfarapart} that there are only $2$ critical graphs with respect to a precolored path of length $2$. 
+
+Let's see now how to generate all graphs critical with respect to two precolored paths of length at most $1$ in this setting. We again have three cases, the first two of which are easy:
+
+\begin{enumerate}
+\item The outer face is not bounded by an induced cycle; i. e. the graph has an articulation point or a chord. Then, in the case of the articulation point, the graph can be divided into two graphs critical wrt a path of length $1$ and a path of length $0$, and in the case of a chord the graph can be divided wrt into two critical graph wrt paths of length $1$. 
+\item The two precolored paths are \emph{near}, i. e. the distance between them is not very large. Then the graph must be also critical with respect to the entire path joining the two vertices, and we can use the previouss section where we enumerated the graphs critical with respect one precolored path. 
+\end{enumerate}
+
+The third case, when the two preocolored paths are far apart, is more complex. The strategy we will follow will be to analyze the different cases for the list sizes of the vertices which are near one of the paths, similarly to what is done in \cite{crossingsfarapart}. For each of the cases, smartly choosing which vertices to precolor leaves us with a smaller graph for which the precoloring of the graph does not extend. However, we need to be careful here: this graph might not be critical itself, it just has to \emph{contain as a subgraph} another critical graph. Therefore, this case requires a more subtle recursive generation procedure. 
+
+\subsection{Generating critical graphs with a precolored path and a precolored triangle}
+
+
+
 \newpage
 
 \printbibliography

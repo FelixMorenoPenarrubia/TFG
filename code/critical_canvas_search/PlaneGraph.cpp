@@ -1084,7 +1084,7 @@ struct PlaneGraph {
 				for (int v : al[u]) {
 					if (morph[v] > -1) {
 						deg5graph.al[morph[u]].push_back(morph[v]);
-						deg5graph.al[morph[v]].push_back(morph[u]);
+						//deg5graph.al[morph[v]].push_back(morph[u]);
 					}
 				}
 			}
@@ -1092,12 +1092,17 @@ struct PlaneGraph {
 		
 		vector<DFSGraph> comp = deg5graph.partition_biconnected();
 
-		if(DEBUG_MODE) {
-			//cerr << comp.size() << endl;
-		}
+		/*if(DEBUG_MODE) {
+			cerr << comp.size() << endl;
+		}*/
 		
 		for (DFSGraph c : comp) {
 			/*if (DEBUG_MODE) {
+				for (int u=0; u < c.n; ++u) {
+					for (int v : c.al[u]) {
+						cerr << u << " " << v << endl;
+					}
+				}
 				cerr << "is_clique(): " << c.is_clique() << endl;
 				cerr << "is_odd_cycle(): " << c.is_odd_cycle() << endl;
 			}*/

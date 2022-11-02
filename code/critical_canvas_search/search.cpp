@@ -254,10 +254,19 @@ void search() {
 			cout << canvases[i].size() << endl;
 		}
 		if(PRINT_CANVAS_ON_END && (VERBOSE_OUTPUT_FORMAT || i == l)) {
-			for (Code c : canvases[i]) {
-				print_canvas(PlaneGraph(c));
+			if (SORTED_OUTPUT_FORMAT) {
+				std::sort(canvases[i].begin(), canvases[i].end());
+				for (Code c : canvases[i]) {
+					cout << c.to_string() << endl;
+					//print_canvas(PlaneGraph(c));
+				}
 			}
-			cout << endl << endl;
+			else {
+				for (Code c : canvases[i]) {
+					print_canvas(PlaneGraph(c));
+				}
+			}
+			//cout << endl << endl;
 		}
 		if(TEST_STATISTICS) {
 

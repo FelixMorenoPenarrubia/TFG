@@ -1,6 +1,7 @@
 #include "TwoTriangleGraph.hh"
 
 #include<iostream>
+#include<algorithm>
 
 using std::vector;
 using std::endl;
@@ -54,14 +55,27 @@ TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
             int v = g.al[u][(j+g.ral[u].at(nu))%us];
             al[morph[u]].push_back(morph[v]); //TODO: Assuming no chords
         }
+        std::reverse(al[morph[u]].begin(), al[morph[u]].end());
         int cu = (s+2*path_length+3-i)%g.l;
         int cnu = (cu+1)%g.l;
         int cus = g.al[cu].size();
-        for (int j=1;  j+1 < cus; ++j) {
+        vector<int> nalu;
+        for (int j=(i==0 ? 0 : 1);  j+(i==path_length ? 0 : 1) < cus; ++j) {
             int v = g.al[cu][(j+g.ral[cu].at(cnu))%cus];
-            if (!am[u][v]) al[morph[u]].push_back(morph[v]); 
+            if (!am[u][v]) nalu.push_back(morph[v]); 
         }
+        reverse(nalu.begin(), nalu.end());
+        for (int x : nalu) al[morph[u]].push_back(x);
 
+    }
+
+    for (int u = 0; u < g.l; ++u) {
+        if (morph[u] == -1 || !precolored[morph[u]] || morph[u] == 0 || morph[u] == path_length) continue;
+         for (int j = (int)g.al[u].size()-1; j > -1; --j) {
+            int v = g.al[u][j];
+            if (corr[v] != -1 && am[u][corr[v]]) continue;
+            al[morph[u]].push_back(morph[v]);
+        }
     }
 
     for (int u=g.l; u < g.n; ++u) {

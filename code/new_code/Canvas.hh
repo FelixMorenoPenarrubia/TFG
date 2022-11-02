@@ -12,7 +12,7 @@
 
 
 struct CanvasCode {
-    std::vector<int> code;
+    std::vector<int8_t> code;
 
     CanvasCode();
 

@@ -26,16 +26,8 @@ bool CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) const {
 
         if (test_canvas(g)) {
             
-            if (g.l == 12 && g.n > 20) {
-                
-                debug_msg("Added canvas");
-                debug_var(g.n);
-                debug_var(g.al);
-                debug_var(g.compute_code().to_string());
-                
-            }
 
-            cl[cd] = g;
+            cl.insert(cd);
             return true;
         }
     }
@@ -47,8 +39,8 @@ void CanvasSearch::add_smaller_chords(int l, const vector<CanvasList>& prev, Can
         int b = l-a+2;
         for(auto p1 : prev[a]) {
             for(auto p2 : prev[b]) {
-                Canvas g1 = p1.second;
-                Canvas g2 = p2.second;
+                Canvas g1 = Canvas(p1);
+                Canvas g2 = Canvas(p2);
                 for(int j1=0; j1 < a; ++j1) {
                     for(int j2=0; j2 < b; ++j2) {
                         Canvas ng1 = Canvas::fuse_chord(g1, g2, j1, j2, false);
@@ -66,7 +58,7 @@ void CanvasSearch::add_smaller_tripods(int l, const vector<CanvasList>& prev, Ca
     for(int k=3; k < l; ++k) {  //for each canvas size up to l-1
 		ll ts = l-k+1;
 		for(auto p : prev[k]) { //for each canvas of that size
-			Canvas g = p.second;
+			Canvas g = Canvas(p);
 			for(int j=0; j < k; ++j) { //for each outer vertex of the canvas
 				for(ll bm=1; bm < (1LL<<ts); ++bm) { //for each disposition of the chords of the tripod (bitmask)
 					Canvas ng = g.add_tripod(ts, j, bm);
@@ -78,16 +70,16 @@ void CanvasSearch::add_smaller_tripods(int l, const vector<CanvasList>& prev, Ca
 }
 
 void CanvasSearch::add_same_size_tripods(int l, CanvasList& curr) const {
-    std::queue<Canvas> q;
+    std::queue<CanvasCode> q;
     for (auto p : curr) {
-        q.push(p.second);
+        q.push(p);
     }
     while(!q.empty()) {
-		Canvas g = q.front();
+		Canvas g = Canvas(q.front());
 		q.pop();
 		for(int j=0; j < l; ++j) { //for each outer vertex of the canvas
 			Canvas ng = g.add_tripod(1, j, 1);
-			if(add_canvas(ng, curr)) q.push(ng);
+			if(add_canvas(ng, curr)) q.push(ng.compute_code());
 		}
 	}
 }
@@ -115,7 +107,7 @@ vector<Canvas> CanvasSearch::get_chordless(int l) {
     }
     vector<Canvas> ans;
     for (auto p : critical_chordless[l]) {
-        ans.push_back(p.second);
+        ans.push_back(Canvas(p));
     }
     return ans;
 }
@@ -126,7 +118,7 @@ vector<Canvas> CanvasSearch::get_with_chords(int l) {
     }
     vector<Canvas> ans;
     for (auto p : critical_with_chords[l]) {
-        ans.push_back(p.second);
+        ans.push_back(Canvas(p));
     }
     return ans;
 }

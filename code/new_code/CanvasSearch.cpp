@@ -1,6 +1,7 @@
 #include "CanvasSearch.hh"
 #include "debug_utility.hh"
 #include <queue>
+#include<iostream>
 
 using ll = long long; //for bitmasks
 
@@ -10,17 +11,30 @@ CanvasSearch::CanvasSearch() {
 }
 
 bool CanvasSearch::test_canvas(const Canvas& g) const {
-    return g.test_criticality(); 
+    
+    bool res = g.test_criticality(); 
+    
+    return res;
 }
 
 bool CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) const {
 
-    debug_msg("Adding canvas:");
-    g.write(std::cerr);
-
     CanvasCode cd = g.compute_code();
     if (cl.find(cd) == cl.end()) {
+
+        
+
         if (test_canvas(g)) {
+            
+            if (g.l == 12 && g.n > 20) {
+                
+                debug_msg("Added canvas");
+                debug_var(g.n);
+                debug_var(g.al);
+                debug_var(g.compute_code().to_string());
+                
+            }
+
             cl[cd] = g;
             return true;
         }

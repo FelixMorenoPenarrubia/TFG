@@ -9,6 +9,10 @@ using std::cerr;
 using std::pair;
 using std::string;
 
+struct DEBUG_VARS {
+    static bool DEBUG_TRACING;
+};
+
 void __print(int x);
 void __print(long x);
 void __print(long long x);

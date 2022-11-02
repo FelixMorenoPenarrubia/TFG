@@ -66,16 +66,7 @@ Canvas::Canvas(vector<vector<int>> _al, int _l) {
     n = _al.size();
     m = 0;
     al = _al;
-    ral = vector<map<int, int>>(n);
-    for (int u=0; u < n; ++u) {
-        for (int j=0; j < (int)al[u].size(); ++j) {
-            int v = al[u][j];
-            ral[u][v] = j;
-            m++;
-        }
-    }
-    m /= 2;
-
+    generate_ral_and_m();
     init_inherited_values();
 }
 

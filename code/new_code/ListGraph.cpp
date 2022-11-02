@@ -9,7 +9,7 @@ void ListGraphCode::push_r(int x) {
 }
 
 void ListGraphCode::push_f(int list_size) {
-    code.push_back(-1-list_size);
+    code.push_back(F_OFFSET+list_size);
 }
 
 void ListGraphCode::push_b() {
@@ -25,7 +25,14 @@ string ListGraphCode::to_string() const {
     for (int i=0; i < size(); ++i) {
         if (code[i] < 0) {
             s.push_back('F');
-            s.push_back('0'-code[i]-1);
+            int ls = code[i]-F_OFFSET;
+            if (ls >= 0) {
+                s.push_back('0'+ls);
+            }
+            else {
+                s.push_back('-');
+                s.push_back('0'-ls);
+            }
         }
         else if (code[i] > 0) { 
             s.push_back('R');
@@ -61,15 +68,7 @@ ListGraph::ListGraph(vector<vector<int>> _al, vector<int> _list_sizes) {
     m = 0;
     al = _al;
     list_sizes = _list_sizes;
-    ral = vector<std::map<int, int>>(n);
-    for (int u=0; u < n; ++u) {
-        for (int j=0; j < (int)al[u].size(); ++j) {
-            int v = al[u][j];
-            ral[u][v] = j;
-            m++;
-        }
-    }
-    m /= 2;
+    generate_ral_and_m();
 }
 
 ListGraph ListGraph::remove_vertex(int w) const {
@@ -214,4 +213,15 @@ vector<ListGraph> ListGraph::connected_components() const {
         }
     }
     return ans;
+}
+
+//TODO: improve to linear complexity
+ListGraph ListGraph::degree_assignment_subgraph() const {
+    ListGraph lg = ListGraph(al, list_sizes);
+    for (int u=0; u < n; ++u) {
+        if ((int)al[u].size() > list_sizes[u]) {
+            return lg.precolor_vertex(u).degree_assignment_subgraph();
+        }
+    }
+    return lg;
 }

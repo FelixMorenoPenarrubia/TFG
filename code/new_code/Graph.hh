@@ -20,6 +20,10 @@ struct Graph {
 
     bool empty() const;
 
+    bool neighbors(int u, int v) const;
+
+    void generate_ral_and_m();
+
 };
 
 #endif

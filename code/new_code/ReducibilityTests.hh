@@ -7,7 +7,10 @@ bool degree_test(const ListGraph& g);
 
 bool alon_tarsi_test(const ListGraph& g);
 
-bool batch_test(const ListGraph& g);
+bool batch_reducible_test(const ListGraph& g);
+
+bool batch_colorable_test(const ListGraph& g);
+
 
 std::vector<int> minimal_irreducible_deletedvertices(const ListGraph& g);
 

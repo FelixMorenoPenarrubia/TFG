@@ -13,6 +13,7 @@
 
 struct ListGraphCode {
 	std::vector<int> code;
+    static const int F_OFFSET = -100;
 	
 	ListGraphCode() {
 	
@@ -38,6 +39,7 @@ struct ListGraphCode {
 struct ListGraph : public Graph {
     
     std::vector<int> list_sizes;
+    
 
     // FUNCTIONS
 
@@ -58,6 +60,8 @@ struct ListGraph : public Graph {
     ListGraphCode compute_list_code() const;
 
     void dfs_cc (int u, std::vector<int>& visited, std::vector<int>& vis_stack) const;
+
+    ListGraph degree_assignment_subgraph() const;
 
     std::vector<ListGraph> connected_components() const;
 

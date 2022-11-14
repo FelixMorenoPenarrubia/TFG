@@ -225,3 +225,46 @@ ListGraph ListGraph::degree_assignment_subgraph() const {
     }
     return lg;
 }
+
+bool ListGraph::subgraph_test(const ListGraph& h) const {
+    vector<int> f (h.n, -1); //to which vertex from g are the vertices of h mapped to
+    vector<int> used(n, 0); // which vertices are used
+    int cv = 0; //current vertex of h that we are mapping
+
+    // test three properties:
+    // 1. vertex not already used
+    // 2. lists of right size (incl. interior edges)
+    // 3. neighbors from previously selected vertices
+    auto test_vertex = [&] () -> bool {
+        if (used[f[cv]]) return false;
+        if (list_sizes[f[cv]] - (int) al[f[cv]].size() + (int)h.al[cv].size() < h.list_sizes[cv]) return false;
+
+        for (int cu = 0; cu < cv; ++cu) {
+            if (neighbors(f[cu], f[cv]) != h.neighbors(cu, cv)) return false;
+        }
+
+        return true;
+    };
+    while (cv != -1) {
+        if (cv == h.n) {
+            return true;
+        }
+        if (f[cv] > -1) {
+            used[f[cv]] = 0;
+        }
+        f[cv]++;
+        while (f[cv] < n && !test_vertex()) {
+            f[cv]++;
+        }
+        if (f[cv] == n) {
+            f[cv] = -1;
+            cv--;
+        }
+        else {
+            used[f[cv]] = 1;
+            cv++;
+        }
+
+    }
+    return false;
+}

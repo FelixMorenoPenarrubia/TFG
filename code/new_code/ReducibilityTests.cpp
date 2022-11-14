@@ -79,7 +79,45 @@ bool gadget5_test(const ListGraph& g) {
 		return false;
 }
 
+bool reducible_gadgets_test(const ListGraph& g) {
+    vector<ListGraph> gadgets = {
+        ListGraph( //Gadget4
+            {
+                {1, 2, 3},
+                {2, 0},
+                {3, 0, 1},
+                {0, 2}
+            },
+            {3, 2, 2, 2}
+        ), 
+        ListGraph(  //Gadget5
+            {
+                {4, 3, 2, 1},
+                {2, 0},
+                {3, 0, 1},
+                {4, 0, 2},
+                {0, 3}
+            },
+            {4, 2, 2, 2, 2}
+        ),
+        ListGraph(
+            {
+                {1, 2, 3, 4, 5},
+                {2, 0, 5},
+                {3, 0, 1},
+                {4, 0, 2},
+                {5, 0, 3},
+                {1, 0, 4}
+            },
+            {5, 3, 3, 2, 2, 2}
+        )
+    };
 
+    for (auto& h : gadgets) {
+        if (g.subgraph_test(h)) return true;
+    }
+    return false;
+}
 
 bool alon_tarsi_test(const ListGraph& g) {
     static map<ListGraphCode, bool> mem;
@@ -89,7 +127,7 @@ bool alon_tarsi_test(const ListGraph& g) {
 }
 
 bool batch_reducible_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, gadget4_test, gadget5_test, alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, reducible_gadgets_test, alon_tarsi_test};
 
     for (auto f : tests) {
         if (DEBUG_VARS::DEBUG_TRACING) {
@@ -141,6 +179,7 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
     static map<ListGraphCode, bool> mem;
 
     
+
 
     if (DEBUG_VARS::DEBUG_TRACING) {
 

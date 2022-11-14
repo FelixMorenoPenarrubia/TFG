@@ -65,6 +65,8 @@ struct ListGraph : public Graph {
 
     std::vector<ListGraph> connected_components() const;
 
+    bool subgraph_test(const ListGraph& h) const;
+
 };
 
 #endif

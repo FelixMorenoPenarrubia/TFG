@@ -1,10 +1,74 @@
 #include "TwoTriangleGraph.hh"
+#include "ReducibilityTests.hh"
 
 #include<iostream>
 #include<algorithm>
 
 using std::vector;
 using std::endl;
+using std::string;
+
+//TODO: Eliminate code duplication, make a general code
+//for all precolored graphs
+
+TwoTriangleGraphCode::TwoTriangleGraphCode() {
+	
+}
+	
+void TwoTriangleGraphCode::push(int x) {
+    code.push_back(x);
+}
+
+void TwoTriangleGraphCode::push_f() {
+    code.push_back(-1);
+}
+
+void TwoTriangleGraphCode::push_b() {
+    code.push_back(-2);
+}
+
+int TwoTriangleGraphCode::size() const {
+    return code.size();
+}
+
+string TwoTriangleGraphCode::to_string() const { //can be made better
+    string s = "";
+    for (int i=0; i < size(); ++i) {
+        if (code[i] == -1) s.push_back('F');
+        else if (code[i] == -2) s.push_back('B');
+        else if (code[i] <= 9) s.push_back('0'+code[i]);
+        else s.push_back('a'+code[i]-10);
+    }
+    return s;
+}
+
+int TwoTriangleGraphCode::operator[](int i) const {
+    return code[i];
+}
+
+TwoTriangleGraphCode::TwoTriangleGraphCode(const string& s) {
+    for (int i=0; i < (int)s.length(); ++i) {
+        if (s[i] == 'F') code.push_back(-1);
+        else if (s[i] == 'B') code.push_back(-2);
+        else if ('0' <= s[i] && s[i] <= '9') code.push_back(s[i]-'0');
+        else code.push_back(s[i]-'a'+10);
+    }
+}
+
+bool TwoTriangleGraphCode::operator<(const TwoTriangleGraphCode& b) const {
+	for (int i=0; i < std::min((int)code.size(), b.size()); ++i) {
+		if (code[i] < b[i]) return true;
+		if (code[i] > b[i]) return false;
+	}
+	return (int)code.size() < b.size();
+}
+
+
+//TODO: revise empty constructors, any way to avoid them?
+TwoTriangleGraph::TwoTriangleGraph() {
+    n = 0;
+    path_length = 0;
+}
 
 TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
     original_canvas = g;
@@ -87,6 +151,7 @@ TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
     }
 
     generate_ral_and_m();  
+    set_list_sizes();
 }
 
 void TwoTriangleGraph::write(std::ostream& os) const {
@@ -102,10 +167,89 @@ void TwoTriangleGraph::write(std::ostream& os) const {
     }
 }
 
+//TODO: only works for d = 1 (precolored vertices are prefix)
+void TwoTriangleGraph::write_prolog(std::ostream& os) const {
+    os << "numVertices(" << n << ")." << endl;
+    os << "numVerticesTSubgraph(6)." << endl;
+    for (int i=0; i < n; ++i) {
+        for (int j : al[i]) {
+            if (i < j) {
+                if(precolored[i] && precolored[j]) {
+                    os << "tEdge(" << i << "," << j << ")." << endl;
+                }
+            }
+        }
+    }
+    for (int i=0; i < n; ++i) {
+        for (int j : al[i]) {
+            if (i < j) {
+                if(!(precolored[i] && precolored[j])) {
+                    os << "iEdge(" << i << "," << j << ")." << endl;
+                }
+            }
+        }
+    }
+    
+}
+
 vector<TwoTriangleGraph> TwoTriangleGraph::generate_from_canvas(const Canvas& g) {
     vector<TwoTriangleGraph> ans;
     for (int i=0; i < g.l; ++i) {
         ans.push_back(TwoTriangleGraph(g, i));
     }
     return ans;
+}
+
+void TwoTriangleGraph::dfs_code(int u, int idx, int& c, vector<int>& an, TwoTriangleGraphCode& code) const {
+    if (an[u] != -1) {
+        code.push(an[u]);
+        return;
+    }
+    code.push_f();
+    an[u] = c++;
+    int als = (int)al[u].size();
+    for (int i=1; i < als; ++i) {
+        int v = al[u][(i+idx)%als];
+        dfs_code(v, ral[v].at(u), c, an, code);
+    }
+    code.push_b();
+}
+
+TwoTriangleGraphCode TwoTriangleGraph::compute_code_edge(int u, int v) const {
+    TwoTriangleGraphCode code = TwoTriangleGraphCode();
+    vector<int> assigned_numbers (n, -1);
+    assigned_numbers[u] = 0;
+    int c = 1;
+    dfs_code(v, ral[v].at(u), c, assigned_numbers, code);
+    return code;
+}
+
+//Note: may give different codes for isomorphic graphs if the outer orientation is reversed 
+TwoTriangleGraphCode TwoTriangleGraph::compute_code() const {
+    TwoTriangleGraphCode code;
+
+    for (int u=0; u < n; ++u) {
+        if (precolored[u]) {
+            for (int v = u+1; v < n; ++v) {
+                if (precolored[v] && ral[v].find(u) != ral[v].end()) {
+                    if (code.size() == 0) code = std::min(compute_code_edge(u, v), compute_code_edge(v, u));
+                    else code = std::min(code, std::min(compute_code_edge(u, v), compute_code_edge(v, u)));
+                }
+            }
+        }
+    }
+    
+    return code;
+}
+
+void TwoTriangleGraph::set_list_sizes() {
+    list_sizes = vector<int>(n, 5);
+    for (int i=0; i < n; ++i) {
+        if (precolored[i]) list_sizes[i] = 1;
+    }
+}
+
+bool TwoTriangleGraph::test_criticality() const {
+    if (n == 6) return true;
+    return !recursive_reducibility_batch_test(compute_list_graph());
 }

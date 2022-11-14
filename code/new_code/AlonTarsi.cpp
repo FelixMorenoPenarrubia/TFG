@@ -128,6 +128,7 @@ bool alon_tarsi(const ListGraph& g) {
     for (auto x : oridiffmap) {
         if (x.second != 0) return true;
     }
+    
 	return false;
 	
 }

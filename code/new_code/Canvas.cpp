@@ -88,6 +88,12 @@ void Canvas::write(std::ostream& os) const {
     }
 }
 
+Canvas Canvas::read_code(std::istream& is) {
+    string s;
+    is >> s;
+    return Canvas(CanvasCode(s));
+}
+
 Canvas Canvas::empty_cycle(int l) {
     vector<vector<int>> al(l);
     for (int i=0; i < l; ++i) {

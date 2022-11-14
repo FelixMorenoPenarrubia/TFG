@@ -53,6 +53,10 @@ struct Canvas : public PrecoloredGraph {
 
     void write(std::ostream& os) const;
 
+    static Canvas read(std::istream& is);
+    
+    static Canvas read_code(std::istream &is);
+
     static Canvas empty_cycle(int l);
 
     Canvas add_tripod(int s, int j, long long bm) const;

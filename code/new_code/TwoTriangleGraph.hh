@@ -54,9 +54,13 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     TwoTriangleGraph(const Canvas& g, int idx);
 
+    void set_list_sizes();
+
     static std::vector<TwoTriangleGraph> generate_from_canvas(const Canvas& g);
 
     void write(std::ostream& os) const;
+
+    void write_prolog(std::ostream& os) const;
 
     void dfs_code(int u, int idx, int& c, vector<int>& an, TwoTriangleGraphCode& code) const;
 

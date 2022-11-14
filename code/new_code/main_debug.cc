@@ -3,6 +3,7 @@
 #include<string>
 #include "Canvas.hh"
 #include "CanvasSearch.hh"
+#include "TwoTriangleGraph.hh"
 
 using std::cout;
 using std::cin;
@@ -35,7 +36,8 @@ void search() {
 
 	cout << v.size() << endl;
 	for (pg g : v) {
-		g.write(cout);
+		cout << g.compute_code().to_string() << endl;
+		//g.write(cout);
 	}
 }
 
@@ -217,6 +219,38 @@ void recursive_alon_tarsi_test() {
 	//cout << g.recursive_reducibility_alon_tarsi_test() << endl;
 }
 
+void generate_two_triangle_graphs() {
+	pg g = read_planegraph();
+	vector<TwoTriangleGraph> v = TwoTriangleGraph::generate_from_canvas(g);
+	for (auto t : v) {
+		t.write(cout);
+		cout << t.compute_code().to_string() << endl;
+	}
+}
+
+void generate_critical_two_triangle_graphs() {
+	 map<TwoTriangleGraphCode, TwoTriangleGraph> m;
+	Canvas c = Canvas::read_code(cin);
+       
+        
+        vector<TwoTriangleGraph> vec = TwoTriangleGraph::generate_from_canvas(c);
+
+        for (TwoTriangleGraph g : vec) {
+
+            g.compute_code();
+
+            if (m.find(g.compute_code()) == m.end()) {
+                if (g.test_criticality()) {
+                    m[g.compute_code()] = g;
+                }
+            }
+		}
+	cout << m.size() << endl;
+    for (auto p : m) {
+        p.second.write(cout);
+    }
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
@@ -232,7 +266,9 @@ int main() {
 	cerr << "11. Canvas test battery" << endl;
 	cerr << "12. Perform recursive Alon-Tarsi test" << endl;
 	cerr << "13. Print graph from code" << endl;
-	
+	cerr << "14. Generate two-triangle-graphs from canvas" << endl;
+	cerr << "15. Generate critical two-triangle-graphs from canvas" << endl;
+
 	int c;
 	cin >> c;
 	if(c == 1) {
@@ -273,5 +309,11 @@ int main() {
 	}
 	if(c == 13) {
 		print_graph_from_code();
+	}
+	if(c == 14) {
+		generate_two_triangle_graphs();
+	}
+	if(c == 15) {
+		generate_critical_two_triangle_graphs();
 	}
 }

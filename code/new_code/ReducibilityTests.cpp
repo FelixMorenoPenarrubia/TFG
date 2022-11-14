@@ -2,6 +2,7 @@
 #include "DFSGraph.hh"
 #include "AlonTarsi.hh"
 #include "debug_utility.hh"
+#include "Parallelism.hh"
 #include<functional>
 
 using std::vector;
@@ -122,8 +123,33 @@ bool reducible_gadgets_test(const ListGraph& g) {
 bool alon_tarsi_test(const ListGraph& g) {
     static map<ListGraphCode, bool> mem;
     ListGraphCode code = g.compute_list_code();
-    if (mem.find(code) == mem.end()) mem[code] = alon_tarsi(g);
-    return mem[code];
+    #ifdef PARALLEL
+    Parallelism::alon_tarsi_mutex.lock();
+    #endif
+    bool in_memory = mem.find(code) != mem.end();
+    #ifdef PARALLEL
+    Parallelism::alon_tarsi_mutex.unlock();
+    #endif
+    if (in_memory) {
+        #ifdef PARALLEL
+        Parallelism::alon_tarsi_mutex.lock();
+        #endif
+        bool ans = mem[code];
+        #ifdef PARALLEL
+        Parallelism::alon_tarsi_mutex.unlock();
+        #endif
+        return ans;
+    } 
+    bool ans = alon_tarsi(g);
+    #ifdef PARALLEL
+    Parallelism::alon_tarsi_mutex.lock();
+    #endif
+    mem[code] = ans;
+    #ifdef PARALLEL
+    Parallelism::alon_tarsi_mutex.unlock();
+    #endif
+
+    return ans;
 }
 
 bool batch_reducible_test(const ListGraph& g) {
@@ -206,25 +232,58 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
 
     ListGraphCode code = g.compute_list_code();
 
-    if (mem.find(code) != mem.end()) {
+    #ifdef PARALLEL
+    Parallelism::recursive_reducibility_test_mutex.lock();
+    #endif
+    bool in_memory = mem.find(code) != mem.end();
+    #ifdef PARALLEL
+    Parallelism::recursive_reducibility_test_mutex.unlock();
+    #endif
+
+    if (in_memory) {
 
         if (DEBUG_VARS::DEBUG_TRACING) {
             debug_msg("Already in memory");
         }
+        #ifdef PARALLEL
+        Parallelism::recursive_reducibility_test_mutex.lock();
+        #endif
+        bool ans = mem[code];
+        #ifdef PARALLEL
+        Parallelism::recursive_reducibility_test_mutex.unlock();
+        #endif
 
-        return mem[code];
+        return ans;
     }
 
-    if (g.nocolors()) return mem[code] = false;
+    auto setmem = [&] (bool x) {
+        #ifdef PARALLEL
+        Parallelism::recursive_reducibility_test_mutex.lock();
+        #endif
+        mem[code] = x;
+        #ifdef PARALLEL
+        Parallelism::recursive_reducibility_test_mutex.unlock();
+        #endif
+    };
+
+    if (g.nocolors()) {
+
+        setmem(false);
+        return false;
+    }
 
     for (int u = 0; u < g.n; ++u) {
         if (g.list_sizes[u] <= 0) {
-            return mem[code] = recursive_reducibility_batch_test(g.precolor_vertex(u));
+
+            bool ans = recursive_reducibility_batch_test(g.precolor_vertex(u));
+            setmem(ans);
+            return ans;
         }
     }
 
     if (batch_reducible_test(g)) {
-        return mem[code] = true;
+        setmem(true);
+        return true;
     }
     vector<int> deleted_vertices = minimal_irreducible_deletedvertices(g);
 
@@ -238,5 +297,7 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
     }
 
     ListGraph ng = g.precolor_vertex(undel_vertex);
-    return mem[code] = recursive_reducibility_batch_test(ng);
+    bool ans = recursive_reducibility_batch_test(ng);
+    setmem(ans);
+    return ans;
 }

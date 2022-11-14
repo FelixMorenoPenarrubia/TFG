@@ -1,7 +1,9 @@
 #include "CanvasSearch.hh"
 #include "debug_utility.hh"
+#include "Parallelism.hh"
 #include <queue>
 #include<iostream>
+#include<thread>
 
 using ll = long long; //for bitmasks
 
@@ -10,28 +12,74 @@ CanvasSearch::CanvasSearch() {
     critical_with_chords = vector<CanvasList>(3);
 }
 
-bool CanvasSearch::test_canvas(const Canvas& g) const {
+bool CanvasSearch::test_canvas(const Canvas& g) {
     
     bool res = g.test_criticality(); 
     
     return res;
 }
 
-bool CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) const {
-
+void CanvasSearch::add_canvas_real(const Canvas& g, CanvasList& cl) {
     CanvasCode cd = g.compute_code();
-    if (cl.find(cd) == cl.end()) {
-
-        
-
+    #ifdef PARALLEL
+    Parallelism::canvas_list_queue_mutex.lock();
+    #endif
+    bool nf = cl.find(cd) == cl.end();
+    #ifdef PARALLEL
+    Parallelism::canvas_list_queue_mutex.unlock();
+    #endif
+    if (nf) {
         if (test_canvas(g)) {
-            
-
+            #ifdef PARALLEL
+            Parallelism::canvas_list_queue_mutex.lock();
+            #endif
             cl.insert(cd);
-            return true;
+            #ifdef PARALLEL
+            Parallelism::canvas_list_queue_mutex.unlock();
+            #endif
         }
     }
-    return false;
+}
+
+void CanvasSearch::add_canvas_q_real(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q) {
+     CanvasCode cd = g.compute_code();
+    #ifdef PARALLEL
+    Parallelism::canvas_list_queue_mutex.lock();
+    #endif
+    bool nf = cl.find(cd) == cl.end();
+    #ifdef PARALLEL
+    Parallelism::canvas_list_queue_mutex.unlock();
+    #endif
+    if (nf) {
+        if (test_canvas(g)) {
+            #ifdef PARALLEL
+            Parallelism::canvas_list_queue_mutex.lock();
+            #endif
+            cl.insert(cd);
+            q.push(cd);
+            #ifdef PARALLEL
+            Parallelism::canvas_list_queue_mutex.unlock();
+            #endif
+        }
+    }
+}
+
+void CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) {
+    #ifdef PARALLEL
+    //Parallelism::thread_queue.push(std::thread(add_canvas_real, g, std::ref(cl)));
+    Parallelism::spawn_thread_addcanvas(g, cl);
+    #else
+    add_canvas_real(g, cl);
+    #endif
+}
+
+void CanvasSearch::add_canvas_q(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q) {
+    #ifdef PARALLEL
+    //Parallelism::thread_queue.push(std::thread(add_canvas_q_real, g, std::ref(cl), std::ref(q)));
+    Parallelism::spawn_thread_addcanvas_q(g, cl, q);
+    #else
+    add_canvas_q_real(g, cl, q);
+    #endif
 }
 
 void CanvasSearch::add_smaller_chords(int l, const vector<CanvasList>& prev, CanvasList& curr) const {
@@ -69,7 +117,14 @@ void CanvasSearch::add_smaller_tripods(int l, const vector<CanvasList>& prev, Ca
 	}
 }
 
+
+
 void CanvasSearch::add_same_size_tripods(int l, CanvasList& curr) const {
+    #ifdef PARALLEL
+    add_same_size_tripods_parallel(l, curr);
+    return;
+    #endif
+
     std::queue<CanvasCode> q;
     for (auto p : curr) {
         q.push(p);
@@ -79,8 +134,42 @@ void CanvasSearch::add_same_size_tripods(int l, CanvasList& curr) const {
 		q.pop();
 		for(int j=0; j < l; ++j) { //for each outer vertex of the canvas
 			Canvas ng = g.add_tripod(1, j, 1);
-			if(add_canvas(ng, curr)) q.push(ng.compute_code());
+			add_canvas_q(ng, curr, q);
 		}
+	}
+}
+
+
+
+void CanvasSearch::add_same_size_tripods_parallel(int l, CanvasList& curr) const {
+   
+    Parallelism::wait_for_threads();
+
+    std::queue<CanvasCode> q;
+    for (auto p : curr) {
+        q.push(p);
+    }
+
+    while(true) {
+
+        Parallelism::canvas_list_queue_mutex.lock();
+		Canvas g = Canvas(q.front());
+		q.pop();
+        Parallelism::canvas_list_queue_mutex.unlock();
+		for(int j=0; j < l; ++j) { //for each outer vertex of the canvas
+			Canvas ng = g.add_tripod(1, j, 1);
+			add_canvas_q(ng, curr, q);
+		}
+        Parallelism::canvas_list_queue_mutex.lock();
+        bool empt = q.empty();
+        Parallelism::canvas_list_queue_mutex.unlock();
+        if (empt) {
+            Parallelism::wait_for_threads();
+        }
+        Parallelism::canvas_list_queue_mutex.lock();
+        empt = q.empty();
+        Parallelism::canvas_list_queue_mutex.unlock();
+        if (empt) break;
 	}
 }
 

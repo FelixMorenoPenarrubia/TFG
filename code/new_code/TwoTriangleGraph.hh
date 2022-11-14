@@ -41,6 +41,8 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     int path_length;
 
+    std::vector<std::vector<int>> triangles;
+
     Canvas original_canvas;
 
 
@@ -67,6 +69,8 @@ struct TwoTriangleGraph : public PrecoloredGraph {
     TwoTriangleGraphCode compute_code_edge(int u, int v) const;
 
     TwoTriangleGraphCode compute_code() const;
+
+    int distance_between_triangles() const;
 
     bool test_criticality() const;
 

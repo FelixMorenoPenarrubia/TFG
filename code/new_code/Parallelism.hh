@@ -16,7 +16,7 @@
 
 struct Parallelism {
 
-    static const int MAX_THREADS = 1;
+    static const int MAX_THREADS = 32;
 
     static int curr_id;
     static std::vector<std::pair<int, std::thread>> thread_vector;

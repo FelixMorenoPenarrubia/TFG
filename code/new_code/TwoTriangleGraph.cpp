@@ -3,6 +3,7 @@
 
 #include<iostream>
 #include<algorithm>
+#include<queue>
 
 using std::vector;
 using std::endl;
@@ -102,6 +103,9 @@ TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
     precolored[path_length+2] = 1;
     precolored[path_length+3] = 1;
     precolored[path_length+4] = 1;
+
+    triangles.push_back({0, path_length+3, path_length+4});
+    triangles.push_back({path_length, path_length+1, path_length+2});
 
     vector<vector<int>> am(g.n, vector<int>(g.n));
 
@@ -249,7 +253,32 @@ void TwoTriangleGraph::set_list_sizes() {
     }
 }
 
+int TwoTriangleGraph::distance_between_triangles() const {
+    vector<int> dist(n, -1);
+    std::queue<int> q;
+    for (int u : triangles[0]) {
+        dist[u] = 0;
+        q.push(u);
+    }
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        for (int v : al[u]) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u]+1;
+                q.push(v);
+            }
+        }
+    }
+    int ans = dist[triangles[1][0]];
+    for (int u : triangles[1]) {
+        ans = std::min(ans, dist[u]);
+    }
+    return ans;
+}
+
 bool TwoTriangleGraph::test_criticality() const {
     if (n == 6) return true;
+    if (distance_between_triangles() < path_length) return false;
     return !recursive_reducibility_batch_test(compute_list_graph());
 }

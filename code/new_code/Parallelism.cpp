@@ -37,6 +37,7 @@ void Parallelism::wait_for_threads() {
 }
 
 void Parallelism::spawn_thread(std::function<void()> f) {
+    #ifdef PARALLEL
     if (thread_vector.size() == MAX_THREADS) {
         clear_finished_threads();
         if (thread_vector.size() == MAX_THREADS) {
@@ -51,6 +52,7 @@ void Parallelism::spawn_thread(std::function<void()> f) {
         Parallelism::parallelism_finished_mutex.unlock();
     });
     curr_id++;
+    #endif
 }
 
 void Parallelism::spawn_thread_addcanvas(Canvas g, CanvasList& cl) {

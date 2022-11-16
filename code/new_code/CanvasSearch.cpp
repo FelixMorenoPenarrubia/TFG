@@ -55,8 +55,10 @@ void CanvasSearch::add_canvas_q_real(const Canvas& g, CanvasList& cl, std::queue
             #ifdef PARALLEL
             Parallelism::canvas_list_queue_mutex.lock();
             #endif
-            cl.insert(cd);
-            q.push(cd);
+            if (cl.find(cd) == cl.end()) {
+                q.push(cd);
+                cl.insert(cd);
+            }
             #ifdef PARALLEL
             Parallelism::canvas_list_queue_mutex.unlock();
             #endif
@@ -210,4 +212,11 @@ vector<Canvas> CanvasSearch::get_with_chords(int l) {
         ans.push_back(Canvas(p));
     }
     return ans;
+}
+
+std::set<CanvasCode>& CanvasSearch::get_chordless_code(int l) {
+    for (int i=(int)critical_chordless.size(); i <= l; ++i) {
+        critical_chordless.push_back(generate_chordless(i));
+    }
+    return critical_chordless[l];
 }

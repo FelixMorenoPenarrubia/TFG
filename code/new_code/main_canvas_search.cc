@@ -15,11 +15,10 @@ int main() {
     CanvasSearch s;
 	int l;
 	cin >> l;
-	vector<Canvas> v = s.get_chordless(l);
+	std::set<CanvasCode>& v = s.get_chordless_code(l);
 
 	cout << v.size() << endl;
-	for (Canvas g : v) {
-		cout << g.compute_code().to_string() << endl;
-		//g.write(cout);
+	for (CanvasCode c : v) {
+		cout << c.to_string() << endl;
 	}
 }

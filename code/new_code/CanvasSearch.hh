@@ -54,6 +54,8 @@ struct CanvasSearch {
 
     vector<Canvas> get_with_chords(int l);
 
+    std::set<CanvasCode>& get_chordless_code(int l);
+
 };
 
 #endif

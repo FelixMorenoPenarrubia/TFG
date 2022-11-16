@@ -4,6 +4,7 @@
 #include "Canvas.hh"
 #include "CanvasSearch.hh"
 #include "TwoTriangleGraph.hh"
+#include "ReducibilityTests.hh"
 
 using std::cout;
 using std::cin;
@@ -13,8 +14,9 @@ using std::vector;
 using std::string;
 using pg = Canvas;
 
-
+//TODO: refactor this call
 pg read_planegraph() {
+	/*
 	//cout << "Introduce n, m, l of the graph" << endl;
 	int n, m, l;
 	cin >> n >> m >> l;
@@ -26,6 +28,8 @@ pg read_planegraph() {
 		al[u].push_back(v);
 	}
 	return pg(al, l);
+	*/
+	return Canvas::read(cin);
 }
 
 void search() {
@@ -251,23 +255,38 @@ void generate_critical_two_triangle_graphs() {
     }
 }
 
+void print_interior_list_graph() {
+	Canvas::read(cin).compute_list_graph().write(cout);
+}
+
+void recursive_reducibility_test_list_graph() {
+	cout << recursive_reducibility_batch_test(ListGraph::read(cin)) << endl;
+}
+
+void colorability_test_list_graph() {
+	cout << batch_colorable_test(ListGraph::read(cin)) << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
-	cerr << "2. Generate code for graph" << endl;
+	cerr << "2. Generate code for canvas" << endl;
 	cerr << "3. Isomorphism test for two canvases (adjacency list)" << endl;
 	cerr << "4. Isomorphism test for two canvases (list of operations)" << endl;
-	cerr << "5. Number of biconnected components of graph" << endl;
-	cerr << "6. Perform biconnected components of degree 5 test" << endl;
-	cerr << "7. Print all orientations with given bounds of graph" << endl;
-	cerr << "8. Perform (weak) Alon-Tarsi test" << endl;
-	cerr << "9. Perform (strong) Alon-Tarsi test" << endl;
-	cerr << "10. Bounds generation" << endl;
-	cerr << "11. Canvas test battery" << endl;
-	cerr << "12. Perform recursive Alon-Tarsi test" << endl;
+	//cerr << "5. Number of biconnected components of graph" << endl;
+	//cerr << "6. Perform biconnected components of degree 5 test" << endl;
+	//cerr << "7. Print all orientations with given bounds of graph" << endl;
+	//cerr << "8. Perform (weak) Alon-Tarsi test" << endl;
+	//cerr << "9. Perform (strong) Alon-Tarsi test" << endl;
+	//cerr << "10. Bounds generation" << endl;
+	cerr << "11. Canvas criticality test" << endl;
+	//cerr << "12. Perform recursive Alon-Tarsi test" << endl;
 	cerr << "13. Print graph from code" << endl;
 	cerr << "14. Generate two-triangle-graphs from canvas" << endl;
 	cerr << "15. Generate critical two-triangle-graphs from canvas" << endl;
+	cerr << "16. Print interior ListGraph from Canvas" << endl;
+	cerr << "17. Recursive reducibility on ListGraph" << endl;
+	cerr << "18. Colorability batch test on ListGraph" << endl;
 
 	int c;
 	cin >> c;
@@ -283,7 +302,7 @@ int main() {
 	if(c == 4) {
 		isomorphism_test_operation_list();
 	}
-	if(c == 5) {
+	/*if(c == 5) {
 		num_biconnected_components();
 	}
 	if(c == 6) {
@@ -300,13 +319,13 @@ int main() {
 	}
 	if(c == 10) {
 		bounds_generation();
-	}
+	}*/
 	if(c == 11) {
 		canvas_test();
 	}
-	if(c == 12) {
+	/*if(c == 12) {
 		recursive_alon_tarsi_test();
-	}
+	}*/
 	if(c == 13) {
 		print_graph_from_code();
 	}
@@ -315,5 +334,14 @@ int main() {
 	}
 	if(c == 15) {
 		generate_critical_two_triangle_graphs();
+	}
+	if(c == 16) {
+		print_interior_list_graph();
+	}
+	if(c == 17) {
+		recursive_reducibility_test_list_graph();
+	}
+	if(c == 18) {
+		colorability_test_list_graph();
 	}
 }

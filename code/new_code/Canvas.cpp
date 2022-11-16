@@ -88,6 +88,18 @@ void Canvas::write(std::ostream& os) const {
     }
 }
 
+Canvas Canvas::read(std::istream& is) {
+    int n, m, l;
+	is >> n >> m >> l;
+	vector<vector<int> > al(n);
+	for (int i=0; i < 2*m; ++i) {
+		int u, v;
+		is >> u >> v;
+		al[u].push_back(v);
+	}
+	return Canvas(al, l);
+}
+
 Canvas Canvas::read_code(std::istream& is) {
     string s;
     is >> s;

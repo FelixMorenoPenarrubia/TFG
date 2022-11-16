@@ -3,6 +3,7 @@
 
 using std::string;
 using std::vector;
+using std::endl;
 
 void ListGraphCode::push_r(int x) {
     code.push_back(1+x);
@@ -267,4 +268,34 @@ bool ListGraph::subgraph_test(const ListGraph& h) const {
 
     }
     return false;
+}
+
+void ListGraph::write(std::ostream& os) const {
+    os << n << " " << m << endl;
+    for (int i=0; i < n; ++i) {
+        if (i > 0) os << " ";
+        os << list_sizes[i];
+    }
+    os << endl;
+    for (int u=0; u < n; ++u) {
+        for (int v : al[u]) {
+            os << u << " " << v << endl;
+        }
+    }
+}
+
+ListGraph ListGraph::read(std::istream& is) {
+    int n, m;
+    is >> n >> m;
+    vector<int> ls(n);
+    for (int i=0; i < n; ++i) {
+        is >> ls[i];
+    }
+    vector<vector<int>> a(n);
+    for (int i=0; i < 2*m; ++i) {
+        int u, v;
+        is >> u >> v;
+        a[u].push_back(v);
+    }
+    return ListGraph(a, ls);
 }

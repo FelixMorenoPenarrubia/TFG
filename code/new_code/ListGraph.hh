@@ -47,6 +47,10 @@ struct ListGraph : public Graph {
 
     ListGraph(std::vector<std::vector<int>> _al, std::vector<int> _list_sizes);
 
+    void write(std::ostream& os) const;
+
+    static ListGraph read(std::istream& is);
+
     ListGraph remove_vertex(int w) const;
 
     ListGraph precolor_vertex(int w) const;

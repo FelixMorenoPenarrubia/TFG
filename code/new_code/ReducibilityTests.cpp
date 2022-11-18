@@ -122,6 +122,8 @@ bool reducible_gadgets_test(const ListGraph& g) {
 
 bool alon_tarsi_test(const ListGraph& g) {
     static map<ListGraphCode, bool> mem;
+
+    
     ListGraphCode code = g.compute_list_code();
     #ifdef PARALLEL
     Parallelism::alon_tarsi_mutex.lock();
@@ -150,6 +152,21 @@ bool alon_tarsi_test(const ListGraph& g) {
     #endif
 
     return ans;
+    
+    /*
+    ListGraphCode code = g.compute_list_code();
+    bool ans = alon_tarsi(g); 
+    if(mem.find(code) != mem.end()) {
+        if (ans != mem[code]) {
+            debug_msg("ERROR: answer differs for code " + code.to_string());
+            g.write(std::cerr);
+        }
+    }
+    else {
+        mem[code] = ans;
+    }
+    return ans;
+    */
 }
 
 bool batch_reducible_test(const ListGraph& g) {
@@ -167,6 +184,15 @@ bool batch_reducible_test(const ListGraph& g) {
 
 bool batch_colorable_test(const ListGraph& g) {
     vector<std::function<bool(const ListGraph&)>> tests = {alon_tarsi_test};
+
+    vector<ListGraph> vcc = g.connected_components();
+
+    if (vcc.size() > 1) {
+        for (ListGraph gi : vcc) {
+            if (!batch_colorable_test(gi)) return false;
+        }
+        return true;
+    }
 
     for (auto f : tests) {
         if (DEBUG_VARS::DEBUG_TRACING) {
@@ -204,9 +230,6 @@ vector<int> minimal_irreducible_deletedvertices(const ListGraph& g) {
 bool recursive_reducibility_batch_test(const ListGraph& g) {
     static map<ListGraphCode, bool> mem;
 
-    
-
-
     if (DEBUG_VARS::DEBUG_TRACING) {
 
         debug_msg("recursive_redu_b_t");
@@ -221,6 +244,9 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
 
     if (g.empty()) return false;
 
+    
+
+
     vector<ListGraph> vcc = g.connected_components();
 
     if (vcc.size() > 1) {
@@ -231,6 +257,8 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
     }
 
     ListGraphCode code = g.compute_list_code();
+
+    
 
     #ifdef PARALLEL
     Parallelism::recursive_reducibility_test_mutex.lock();

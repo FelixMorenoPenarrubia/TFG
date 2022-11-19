@@ -17,6 +17,12 @@ canvas_search_parallel_debug: main_canvas_search.cc $(SRC_FILES)
 canvas_to_triangles: main_canvas_to_triangles.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o canvas_to_triangles main_canvas_to_triangles.cc *.cpp
 
+canvas_to_triangles_parallel: main_canvas_to_triangles_parallel.cc $(SRC_FILES)
+	g++ $(PARALLELFLAGS) -o canvas_to_triangles_parallel main_canvas_to_triangles_parallel.cc *.cpp
+
+canvas_to_triangles_parallel_debug: main_canvas_to_triangles_parallel.cc $(SRC_FILES)
+	g++ $(PARALLELDEBUGFLAGS) -o canvas_to_triangles_parallel_debug main_canvas_to_triangles_parallel.cc *.cpp
+
 unpack_canvases: main_unpack_canvases.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o unpack_canvases main_unpack_canvases.cc *.cpp
 

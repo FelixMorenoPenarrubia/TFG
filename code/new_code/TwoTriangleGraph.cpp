@@ -20,8 +20,9 @@ void TwoTriangleGraphCode::push(int x) {
     code.push_back(x);
 }
 
-void TwoTriangleGraphCode::push_f() {
-    code.push_back(-1);
+void TwoTriangleGraphCode::push_f(bool precolored) {
+    if(!precolored) code.push_back(-1);
+    else code.push_back(-3);
 }
 
 void TwoTriangleGraphCode::push_b() {
@@ -37,6 +38,7 @@ string TwoTriangleGraphCode::to_string() const { //can be made better
     for (int i=0; i < size(); ++i) {
         if (code[i] == -1) s.push_back('F');
         else if (code[i] == -2) s.push_back('B');
+        else if (code[i] == -3) s.push_back('P');
         else if (code[i] <= 9) s.push_back('0'+code[i]);
         else s.push_back('a'+code[i]-10);
     }
@@ -51,6 +53,7 @@ TwoTriangleGraphCode::TwoTriangleGraphCode(const string& s) {
     for (int i=0; i < (int)s.length(); ++i) {
         if (s[i] == 'F') code.push_back(-1);
         else if (s[i] == 'B') code.push_back(-2);
+        else if (s[i] == 'P') code.push_back(-3);
         else if ('0' <= s[i] && s[i] <= '9') code.push_back(s[i]-'0');
         else code.push_back(s[i]-'a'+10);
     }
@@ -69,6 +72,21 @@ bool TwoTriangleGraphCode::operator<(const TwoTriangleGraphCode& b) const {
 TwoTriangleGraph::TwoTriangleGraph() {
     n = 0;
     path_length = 0;
+}
+
+TwoTriangleGraph::TwoTriangleGraph(vector<vector<int>> _al, vector<vector<int>> _triangles) {
+
+    n = _al.size();
+    al = _al;
+    triangles = _triangles;
+    precolored = vector<int>(n);
+    for (int u : triangles[0]) precolored[u] = 1;
+    for (int u : triangles[1]) precolored[u] = 1;
+
+    generate_ral_and_m();  
+    set_list_sizes();
+
+    path_length = distance_between_triangles();
 }
 
 TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
@@ -158,6 +176,21 @@ TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
     set_list_sizes();
 }
 
+TwoTriangleGraph TwoTriangleGraph::read(std::istream& is) {
+    int n, m, path_length;
+    is >> n >> m >> path_length;
+    vector<vector<int> > triangles (2, vector<int>(3));
+    is >> triangles[0][0] >> triangles[0][1] >> triangles[0][2] >> triangles[1][0] >> triangles[1][1] >> triangles[1][2];
+    vector<vector<int>> al(n);
+    for (int i=0; i < 2*m; ++i) {
+        int u, v;
+        is >> u >> v;
+        al[u].push_back(v);
+    }
+    return TwoTriangleGraph(al, triangles);
+}
+
+
 void TwoTriangleGraph::write(std::ostream& os) const {
     os << n << " " << m << " " << path_length << endl;
     for (int i=0; i < n; ++i) {
@@ -209,7 +242,7 @@ void TwoTriangleGraph::dfs_code(int u, int idx, int& c, vector<int>& an, TwoTria
         code.push(an[u]);
         return;
     }
-    code.push_f();
+    code.push_f(precolored[u]);
     an[u] = c++;
     int als = (int)al[u].size();
     for (int i=1; i < als; ++i) {

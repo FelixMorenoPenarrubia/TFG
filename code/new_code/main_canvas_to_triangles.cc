@@ -3,6 +3,7 @@
 #include<string>
 #include<fstream>
 #include<chrono>
+#include<set>
 #include "Canvas.hh"
 #include "TwoTriangleGraph.hh"
 
@@ -16,7 +17,8 @@ using std::string;
 int main() {
     int T;
     cin >> T;
-    map<TwoTriangleGraphCode, TwoTriangleGraph> m;
+    //map<TwoTriangleGraphCode, TwoTriangleGraph> m;
+    std::set<TwoTriangleGraphCode> s;
 
     int max_time = 0;
     long long total_time_50 = 0;
@@ -36,13 +38,20 @@ int main() {
 
         for (TwoTriangleGraph g : vec) {
 
-            g.compute_code();
+           auto start_subg = std::chrono::system_clock::now();
 
-            if (m.find(g.compute_code()) == m.end()) {
+            if (s.find(g.compute_code()) == s.end()) {
                 if (g.test_criticality()) {
-                    m[g.compute_code()] = g;
+                    s.insert(g.compute_code());
                 }
             }
+
+            auto end_subg = std::chrono::system_clock::now();
+
+            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_subg - start_subg);
+
+            g.write(cerr);
+            cerr << "Elapsed time for this graph: " << elapsed.count() << endl;
         }
 
         auto end = std::chrono::system_clock::now();
@@ -67,9 +76,9 @@ int main() {
     }
 
     
-    cout << m.size() << endl;
-    for (auto p : m) {
-        p.second.write(cout);
+    cout << s.size() << endl;
+    for (auto c : s) {
+        cout << c.to_string() << endl;
     }
     
     /*

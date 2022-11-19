@@ -27,6 +27,7 @@ struct Parallelism {
     static std::mutex recursive_reducibility_test_mutex;
     static std::mutex alon_tarsi_mutex;
     static std::mutex parallelism_finished_mutex;
+    static std::mutex two_triangle_list_mutex;
 
     static void clear_finished_threads();
 

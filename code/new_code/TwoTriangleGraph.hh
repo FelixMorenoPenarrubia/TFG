@@ -21,7 +21,7 @@ struct TwoTriangleGraphCode {
 
     void push(int x);
     
-    void push_f();
+    void push_f(bool precolored);
 
     void push_b();
 
@@ -52,13 +52,15 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     TwoTriangleGraph();
 
-    TwoTriangleGraph(std::vector<std::vector<int>> _al);
+    TwoTriangleGraph(std::vector<std::vector<int>> _al, std::vector<std::vector<int>> _triangles);
 
     TwoTriangleGraph(const Canvas& g, int idx);
 
     void set_list_sizes();
 
     static std::vector<TwoTriangleGraph> generate_from_canvas(const Canvas& g);
+
+    static TwoTriangleGraph read(std::istream& is);
 
     void write(std::ostream& os) const;
 

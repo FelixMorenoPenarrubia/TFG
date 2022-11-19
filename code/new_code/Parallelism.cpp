@@ -4,6 +4,7 @@ std::mutex Parallelism::canvas_list_queue_mutex;
 std::mutex Parallelism::recursive_reducibility_test_mutex;
 std::mutex Parallelism::alon_tarsi_mutex;
 std::mutex Parallelism::parallelism_finished_mutex;
+std::mutex Parallelism::two_triangle_list_mutex;
 std::vector<std::pair<int, std::thread>> Parallelism::thread_vector;
 std::set<int> Parallelism::finished_set;
 

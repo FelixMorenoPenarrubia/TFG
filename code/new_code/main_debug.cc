@@ -255,16 +255,24 @@ void generate_critical_two_triangle_graphs() {
     }
 }
 
-void print_interior_list_graph() {
+void print_interior_list_graph_canvas() {
 	Canvas::read(cin).compute_list_graph().write(cout);
 }
 
+void print_interior_list_graph_ttg() {
+	TwoTriangleGraph::read(cin).compute_list_graph().write(cout);
+}
+
 void recursive_reducibility_test_list_graph() {
-	cout << recursive_reducibility_batch_test(ListGraph::read(cin)) << endl;
+	cout << batch_test(ListGraph::read(cin)) << endl;
 }
 
 void colorability_test_list_graph() {
 	cout << batch_colorable_test(ListGraph::read(cin)) << endl;
+}
+
+void two_triangle_graph_test() {
+	cout << TwoTriangleGraph::read(cin).test_criticality() << endl;
 }
 
 int main() {
@@ -281,12 +289,14 @@ int main() {
 	//cerr << "10. Bounds generation" << endl;
 	cerr << "11. Canvas criticality test" << endl;
 	//cerr << "12. Perform recursive Alon-Tarsi test" << endl;
-	cerr << "13. Print graph from code" << endl;
+	cerr << "13. Print canvas from code" << endl;
 	cerr << "14. Generate two-triangle-graphs from canvas" << endl;
-	cerr << "15. Generate critical two-triangle-graphs from canvas" << endl;
+	cerr << "15. Generate critical two-triangle-graphs from canvas CODE" << endl;
 	cerr << "16. Print interior ListGraph from Canvas" << endl;
 	cerr << "17. Recursive reducibility on ListGraph" << endl;
 	cerr << "18. Colorability batch test on ListGraph" << endl;
+	cerr << "19. Criticality test on TwoTriangleGraph" << endl;
+	cerr << "20. Print interior ListGraph from TwoTriangleGraph" << endl;
 
 	int c;
 	cin >> c;
@@ -336,12 +346,18 @@ int main() {
 		generate_critical_two_triangle_graphs();
 	}
 	if(c == 16) {
-		print_interior_list_graph();
+		print_interior_list_graph_canvas();
 	}
 	if(c == 17) {
 		recursive_reducibility_test_list_graph();
 	}
 	if(c == 18) {
 		colorability_test_list_graph();
+	}
+	if(c == 19) {
+		two_triangle_graph_test();
+	}
+	if(c == 20) {
+		print_interior_list_graph_ttg();
 	}
 }

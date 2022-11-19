@@ -55,6 +55,8 @@ struct ListGraph : public Graph {
 
     ListGraph precolor_vertex(int w) const;
 
+    ListGraph precolor_vertex_smart(int w, int wp) const;
+
     bool nocolors() const;
 
     void dfs_code(int u, int idx, int& c, std::vector<int>& an, ListGraphCode& code) const;

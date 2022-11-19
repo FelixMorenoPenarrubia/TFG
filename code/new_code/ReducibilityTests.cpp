@@ -169,8 +169,22 @@ bool alon_tarsi_test(const ListGraph& g) {
     */
 }
 
+bool color_and_collapse_test(const ListGraph& g) {
+    if (g.n == 1) {
+        return g.list_sizes[0] > 0;
+    }
+    for (int u=0; u < g.n; ++u) {
+        if (g.list_sizes[u] <= 0) return false;
+        if (g.list_sizes[u] == 1) return color_and_collapse_test(g.precolor_vertex(u));
+        for (int v : g.al[u]) {
+            if (g.list_sizes[v] < g.list_sizes[u]) return color_and_collapse_test(g.precolor_vertex_smart(u, v));
+        }
+    }
+    return color_and_collapse_test(g.precolor_vertex(0));
+}
+
 bool batch_reducible_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, reducible_gadgets_test, alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, color_and_collapse_test, reducible_gadgets_test, alon_tarsi_test};
 
     for (auto f : tests) {
         if (DEBUG_VARS::DEBUG_TRACING) {
@@ -183,7 +197,7 @@ bool batch_reducible_test(const ListGraph& g) {
 }
 
 bool batch_colorable_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, alon_tarsi_test};
 
     vector<ListGraph> vcc = g.connected_components();
 
@@ -227,90 +241,27 @@ vector<int> minimal_irreducible_deletedvertices(const ListGraph& g) {
     return vector<int>();
 }
 
-bool recursive_reducibility_batch_test(const ListGraph& g) {
-    static map<ListGraphCode, bool> mem;
-
-    if (DEBUG_VARS::DEBUG_TRACING) {
-
-        debug_msg("recursive_redu_b_t");
-        debug_var(g.n);
-        debug_var(g.m);
-        debug_var(g.al);
-        debug_var(g.list_sizes);
-        debug_msg(g.compute_list_code().to_string());
-    }
-
-
-
+bool recursive_colorability_test(const ListGraph& g) {
     if (g.empty()) return false;
-
-    
-
+    if (g.nocolors()) {
+        return false;
+    }
 
     vector<ListGraph> vcc = g.connected_components();
 
     if (vcc.size() > 1) {
         for (ListGraph gi : vcc) {
-            if (recursive_reducibility_batch_test(gi)) return true;
+            if (recursive_colorability_test(gi)) return true;
         }
-        return false;
-    }
-
-    ListGraphCode code = g.compute_list_code();
-
-    
-
-    #ifdef PARALLEL
-    Parallelism::recursive_reducibility_test_mutex.lock();
-    #endif
-    bool in_memory = mem.find(code) != mem.end();
-    #ifdef PARALLEL
-    Parallelism::recursive_reducibility_test_mutex.unlock();
-    #endif
-
-    if (in_memory) {
-
-        if (DEBUG_VARS::DEBUG_TRACING) {
-            debug_msg("Already in memory");
-        }
-        #ifdef PARALLEL
-        Parallelism::recursive_reducibility_test_mutex.lock();
-        #endif
-        bool ans = mem[code];
-        #ifdef PARALLEL
-        Parallelism::recursive_reducibility_test_mutex.unlock();
-        #endif
-
-        return ans;
-    }
-
-    auto setmem = [&] (bool x) {
-        #ifdef PARALLEL
-        Parallelism::recursive_reducibility_test_mutex.lock();
-        #endif
-        mem[code] = x;
-        #ifdef PARALLEL
-        Parallelism::recursive_reducibility_test_mutex.unlock();
-        #endif
-    };
-
-    if (g.nocolors()) {
-
-        setmem(false);
         return false;
     }
 
     for (int u = 0; u < g.n; ++u) {
         if (g.list_sizes[u] <= 0) {
-
-            bool ans = recursive_reducibility_batch_test(g.precolor_vertex(u));
-            setmem(ans);
-            return ans;
+            return recursive_colorability_test(g.precolor_vertex(u));
         }
     }
-
-    if (batch_reducible_test(g)) {
-        setmem(true);
+    if (batch_colorable_test(g)) {
         return true;
     }
     vector<int> deleted_vertices = minimal_irreducible_deletedvertices(g);
@@ -320,12 +271,30 @@ bool recursive_reducibility_batch_test(const ListGraph& g) {
     int undel_vertex = 0;
     while (deleted[undel_vertex]) undel_vertex++;
 
-    if (DEBUG_VARS::DEBUG_TRACING) {
-        debug_var(undel_vertex);
+    return recursive_colorability_test(g.precolor_vertex(undel_vertex)); 
+}
+
+bool batch_test(const ListGraph& g) {
+    
+    if (g.empty()) return false;
+
+    if (g.nocolors()) return false; //TODO: necessary because Alon-Tarsi does not work correctly otherwise, fix?
+    
+
+    vector<ListGraph> vcc = g.connected_components();
+
+    if (vcc.size() > 1) {
+        for (ListGraph gi : vcc) {
+            if (batch_test(gi)) return true;
+        }
+        return false;
     }
 
-    ListGraph ng = g.precolor_vertex(undel_vertex);
-    bool ans = recursive_reducibility_batch_test(ng);
-    setmem(ans);
-    return ans;
+    if (batch_reducible_test(g)) {
+        return true;
+    }
+    if (recursive_colorability_test(g)) {
+        return true;
+    }
+    return false;
 }

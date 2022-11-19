@@ -310,5 +310,5 @@ CanvasCode Canvas::compute_code() const {
 
 bool Canvas::test_criticality() const {
     if (n == l) return true;
-    return !recursive_reducibility_batch_test(compute_list_graph());
+    return !batch_test(compute_list_graph());
 }

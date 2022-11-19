@@ -123,6 +123,34 @@ ListGraph ListGraph::precolor_vertex(int w) const {
     return ListGraph(nal, nls);
 }
 
+ListGraph ListGraph::precolor_vertex_smart(int w, int wp) const {
+    vector<int> morph(n);
+    for (int u = 0; u < w; ++u) {
+        morph[u] = u;
+    }
+    for (int u = w+1; u < n; ++u) {
+        morph[u] = u-1;
+    }
+    vector<int> nls (n-1, 0);
+    vector< vector<int> > nal (n-1);
+    for (int u = 0; u < n; ++u) {
+        if (u == w) {
+            for (int v : al[u]) {
+                if (v != wp) nls[morph[v]]--;
+            }
+        }
+        else {
+            nls[morph[u]] += list_sizes[u];
+            for (int v : al[u]) {
+                if (v != w) {
+                    nal[morph[u]].push_back(morph[v]);
+                }
+            }
+        }
+    }
+    return ListGraph(nal, nls);
+}
+
 bool ListGraph::nocolors() const {
     bool ans = true;
     for (int i = 0; i < n && ans; ++i) {

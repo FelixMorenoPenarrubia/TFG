@@ -313,5 +313,5 @@ int TwoTriangleGraph::distance_between_triangles() const {
 bool TwoTriangleGraph::test_criticality() const {
     if (n == 6) return true;
     if (distance_between_triangles() < path_length) return false;
-    return !recursive_reducibility_batch_test(compute_list_graph());
+    return !batch_test(compute_list_graph());
 }

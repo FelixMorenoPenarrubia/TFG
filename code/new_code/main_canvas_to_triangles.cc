@@ -38,7 +38,7 @@ int main() {
 
         for (TwoTriangleGraph g : vec) {
 
-           auto start_subg = std::chrono::system_clock::now();
+           //auto start_subg = std::chrono::system_clock::now();
 
             if (s.find(g.compute_code()) == s.end()) {
                 if (g.test_criticality()) {
@@ -46,12 +46,13 @@ int main() {
                 }
             }
 
-            auto end_subg = std::chrono::system_clock::now();
+            //auto end_subg = std::chrono::system_clock::now();
 
-            auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_subg - start_subg);
-
+            //auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end_subg - start_subg);
+            /*
             g.write(cerr);
             cerr << "Elapsed time for this graph: " << elapsed.count() << endl;
+            */
         }
 
         auto end = std::chrono::system_clock::now();
@@ -61,7 +62,7 @@ int main() {
         total_time_50 += elapsed.count()/50;
         total_time_500 += elapsed.count()/500;
 
-        if (elapsed.count() > max_time || t % 20000 == 0) {
+        if (elapsed.count() > max_time || t % 100000 == 0) {
             if (elapsed.count() > max_time) {
                 max_time = elapsed.count();
                 cerr << "New maximum time : " << max_time << "ms " << endl;

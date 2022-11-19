@@ -4,9 +4,71 @@
 using std::vector;
 using std::pair;
 
-
-
 bool alon_tarsi(const ListGraph& g) {
+
+    vector<pair<int, int> > el;
+    for (int u = 0; u < g.n; ++u) {
+        for (int v : g.al[u]) {
+            if (u < v) el.emplace_back(u, v);
+        }
+    }
+
+    if (el.empty()) {
+        for (int u = 0; u < g.n; ++u) {
+            if (g.list_sizes[u] <= 0) return false;
+        }
+        return true;
+    }
+
+    vector<int> bounds = g.list_sizes;
+
+    for (int& x : bounds) x--;
+
+    std::map<vector<int>, long long> odm;
+    odm[bounds] = 1;
+
+    sort(el.begin(), el.end(), [&](pair<int, int> e1, pair<int, int> e2) {
+        auto score = [&](pair<int, int> e) -> int {
+            int a = bounds[e.first];
+            int b = bounds[e.second];
+            return 4*std::min(a, b) + std::max(a, b);
+        };
+        return score(e1) < score(e2);
+    });
+
+    for (auto e : el) {
+        std::map<vector<int>, long long> nodm;
+        auto add_orientation = [&] (int u, int sg) {
+
+            for (auto& p : odm) {
+                if (p.first[u] > 0) {
+                    vector<int> r = vector<int>(p.first);
+                    r[u]--;
+                    nodm[r] += sg * p.second;
+                }
+            }
+        };
+
+        add_orientation(e.first, -1);
+        add_orientation(e.second, 1);
+
+        odm.clear();
+
+        for (auto& p : nodm) {
+            if (p.second != 0) {
+                odm[p.first] = p.second;
+            }
+        }
+    }
+
+    for (auto p : odm) {
+        if (p.second != 0) return true;
+    }
+
+    return false;
+}
+
+bool alon_tarsi_old(const ListGraph& g) {
     vector<pair<int, int> > el;
     for (int u = 0; u < g.n; ++u) {
         for (int v : g.al[u]) {

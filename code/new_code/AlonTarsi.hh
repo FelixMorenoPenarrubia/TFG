@@ -5,4 +5,6 @@
 
 bool alon_tarsi(const ListGraph& g);
 
+bool alon_tarsi_old(const ListGraph& g);
+
 #endif

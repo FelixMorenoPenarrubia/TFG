@@ -26,6 +26,9 @@ canvas_to_triangles_parallel_debug: main_canvas_to_triangles_parallel.cc $(SRC_F
 unpack_canvases: main_unpack_canvases.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o unpack_canvases main_unpack_canvases.cc *.cpp
 
+unpack_twotrianglegraphs: main_unpack_twotrianglegraphs.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o unpack_twotrianglegraphs main_unpack_twotrianglegraphs.cc *.cpp
+
 debug_sanitizer: main_debug.cc $(SRC_FILES)
 	g++ $(DEBUGFLAGS) -o debug main_debug.cc *.cpp 
 

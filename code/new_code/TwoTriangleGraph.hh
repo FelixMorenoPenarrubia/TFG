@@ -56,6 +56,8 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     TwoTriangleGraph(const Canvas& g, int idx);
 
+    TwoTriangleGraph(const TwoTriangleGraphCode& code);
+
     void set_list_sizes();
 
     static std::vector<TwoTriangleGraph> generate_from_canvas(const Canvas& g);

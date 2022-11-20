@@ -17,6 +17,7 @@ void Parallelism::clear_finished_threads() {
             it++;
         }
         else {
+            finished_set.erase(finished_set.find(it->first));
             it->second.join();
             it = thread_vector.erase(it);
         }

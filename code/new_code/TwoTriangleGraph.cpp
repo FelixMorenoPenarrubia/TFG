@@ -176,6 +176,71 @@ TwoTriangleGraph::TwoTriangleGraph(const Canvas& g, int s) {
     set_list_sizes();
 }
 
+TwoTriangleGraph::TwoTriangleGraph(const TwoTriangleGraphCode& code) {
+    n = 1;
+    for (int i = 0; i < code.size(); ++i) {
+        if (code[i] == -1 || code[i] == -3) n++;
+    }
+    al = vector<vector<int>>(n);
+    precolored = vector<int>(n);
+    precolored[0] = 1;
+    int cn = 0;
+    vector<int> cv_stack;
+    cv_stack.push_back(0);
+    vector<int> zero_neigh;
+    for (int i = 0; i < code.size(); ++i) {
+        if (code[i] == -1 || code[i] == -3) {
+            al[cv_stack.back()].push_back(++cn);
+            cv_stack.push_back(cn);
+            if (code[i] == -3) precolored[cn] = 1;
+        }
+        else if (code[i] == -2) {
+            int a = cv_stack.back();
+            cv_stack.pop_back();
+            int b = cv_stack.back();
+            al[a].push_back(b);
+        }
+        else {
+            al[cv_stack.back()].push_back(code[i]);
+            if (code[i] == 0) {
+                zero_neigh.push_back(cv_stack.back());
+            }
+        }
+    }
+    std::reverse(zero_neigh.begin(), zero_neigh.end());
+    for (int x : zero_neigh) al[0].push_back(x);
+
+    
+
+    generate_ral_and_m();
+    set_list_sizes();
+
+    vector<int> pcv;
+    for (int u = 0; u < n; ++u) {
+        if(precolored[u]) pcv.push_back(u);
+    }
+    int t2, t3;
+    t2 = t3 = -1;
+    for (int i=1; i < 6 && t2 == -1; ++i) {
+        for (int j=i+1; j < 6 && t2 == -1; ++j) {
+            if (neighbors(pcv[0], pcv[i]) && neighbors(pcv[0], pcv[j]) && neighbors(pcv[i], pcv[j])) {
+                t2 = i;
+                t3 = j;
+            }
+        }
+    }
+    triangles = vector<vector<int>>();
+    triangles.push_back({pcv[0], pcv[t2], pcv[t3]});
+    triangles.push_back({});
+
+    for (int i=1; i < 6; ++i) {
+        if (i != t2 && i != t3) triangles[1].push_back(pcv[i]);
+    }
+
+    path_length = distance_between_triangles();
+
+}
+
 TwoTriangleGraph TwoTriangleGraph::read(std::istream& is) {
     int n, m, path_length;
     is >> n >> m >> path_length;

@@ -36,12 +36,11 @@ void search() {
 	CanvasSearch s;
 	int l;
 	cin >> l;
-	vector<Canvas> v = s.get_chordless(l);
+	std::set<CanvasCode>& st = s.get_chordless_code(l);
 
-	cout << v.size() << endl;
-	for (pg g : v) {
-		cout << g.compute_code().to_string() << endl;
-		//g.write(cout);
+	cout << st.size() << endl;
+	for (auto c : st) {
+		cout << c.to_string() << endl;
 	}
 }
 
@@ -275,6 +274,16 @@ void two_triangle_graph_test() {
 	cout << TwoTriangleGraph::read(cin).test_criticality() << endl;
 }
 
+void print_twotrianglegraph_from_code() {
+	string s;
+	cin >> s;
+	TwoTriangleGraph(TwoTriangleGraphCode(s)).write(cout);
+}
+
+void generate_code_twotrianglegraph() {
+	cout << TwoTriangleGraph::read(cin).compute_code().to_string() << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Search" << endl;
@@ -289,7 +298,7 @@ int main() {
 	//cerr << "10. Bounds generation" << endl;
 	cerr << "11. Canvas criticality test" << endl;
 	//cerr << "12. Perform recursive Alon-Tarsi test" << endl;
-	cerr << "13. Print canvas from code" << endl;
+	cerr << "13. Print Canvas from code" << endl;
 	cerr << "14. Generate two-triangle-graphs from canvas" << endl;
 	cerr << "15. Generate critical two-triangle-graphs from canvas CODE" << endl;
 	cerr << "16. Print interior ListGraph from Canvas" << endl;
@@ -297,6 +306,8 @@ int main() {
 	cerr << "18. Colorability batch test on ListGraph" << endl;
 	cerr << "19. Criticality test on TwoTriangleGraph" << endl;
 	cerr << "20. Print interior ListGraph from TwoTriangleGraph" << endl;
+	cerr << "21. Print TwoTriangleGraph from code" << endl;
+	cerr << "22. Generate code for TwoTriangleGraph" << endl;
 
 	int c;
 	cin >> c;
@@ -359,5 +370,11 @@ int main() {
 	}
 	if(c == 20) {
 		print_interior_list_graph_ttg();
+	}
+	if(c == 21) {
+		print_twotrianglegraph_from_code();
+	}
+	if(c == 22) {
+		generate_code_twotrianglegraph();
 	}
 }

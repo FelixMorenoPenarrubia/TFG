@@ -57,6 +57,19 @@ bool CanvasCode::operator<(const CanvasCode& b) const {
 	return (int)code.size() < b.size();
 }
 
+cchash CanvasCode::hash() const {
+    cchash h = 0;
+    cchash x = 1;
+    cchash p = 101;
+    for (int i=0; i < size(); ++i) {
+        cchash c = cchash(code[i]+4);
+        c *= x;
+        h += c;
+        x *= p;
+    }
+    return h;
+}
+
 Canvas::Canvas() {
     l = 0;
 }

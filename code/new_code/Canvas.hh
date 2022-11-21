@@ -9,7 +9,7 @@
 #include<algorithm>
 #include<string>
 
-
+using cchash = __uint128_t;
 
 struct CanvasCode {
     std::vector<int8_t> code;
@@ -32,6 +32,7 @@ struct CanvasCode {
 
     bool operator<(const CanvasCode& b) const;
 
+    cchash hash() const;
 
 };
 

@@ -5,6 +5,7 @@
 #include<iostream>
 #include<thread>
 
+
 using ll = long long; //for bitmasks
 
 
@@ -12,6 +13,7 @@ using ll = long long; //for bitmasks
 
 bool CanvasSearch::DFS_MODE = false;
 bool CanvasSearch::HALFMEMORY_MODE = false;
+CanvasHashList CanvasSearch::ch;
 
 CanvasSearch::CanvasSearch() {
     critical_chordless = vector<CanvasList>(3);
@@ -91,11 +93,14 @@ void CanvasSearch::add_canvas_q_real(const Canvas& g, std::queue<CanvasCode>& q)
 }
 
 void CanvasSearch::add_canvas_dfs(const Canvas& g) {
-    if (test_canvas(g)) {
-        std::cout << g.compute_code().to_string() << std::endl;
-        for(int j=0; j < g.l; ++j) { //for each outer vertex of the canvas
-            Canvas ng = g.add_tripod(1, j, 1);
-            add_canvas_dfs(ng);
+    if (ch.find(g.compute_code().hash()) == ch.end()) {
+        if (test_canvas(g)) {
+            std::cout << g.compute_code().to_string() << std::endl;
+            ch.insert(g.compute_code().hash());
+            for(int j=0; j < g.l; ++j) { //for each outer vertex of the canvas
+                Canvas ng = g.add_tripod(1, j, 1);
+                add_canvas_dfs(ng);
+            }
         }
     }
 }

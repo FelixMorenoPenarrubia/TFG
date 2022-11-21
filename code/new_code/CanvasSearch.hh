@@ -9,12 +9,14 @@
 #include<set>
 #include<queue>
 #include<algorithm>
+#include<unordered_set>
 
 
 
 
 
 using CanvasList = std::set<CanvasCode>;
+using CanvasHashList = std::unordered_set<cchash>;
 
 struct CanvasSearch {
     
@@ -23,6 +25,7 @@ struct CanvasSearch {
 
     static bool DFS_MODE;
     static bool HALFMEMORY_MODE;
+    static CanvasHashList ch;
 
 
 

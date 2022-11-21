@@ -8,6 +8,9 @@ SRC_FILES := $(wildcard *.cpp)
 canvas_search: main_canvas_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o canvas_search main_canvas_search.cc *.cpp
 
+canvas_search_lessmemory: main_canvas_search_lessmemory.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o canvas_search_lessmemory main_canvas_search_lessmemory.cc *.cpp
+
 canvas_search_parallel: main_canvas_search.cc $(SRC_FILES)
 	g++ $(PARALLELFLAGS) -o canvas_search_parallel main_canvas_search.cc *.cpp
 
@@ -28,6 +31,9 @@ unpack_canvases: main_unpack_canvases.cc $(SRC_FILES)
 
 unpack_twotrianglegraphs: main_unpack_twotrianglegraphs.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o unpack_twotrianglegraphs main_unpack_twotrianglegraphs.cc *.cpp
+
+sort_codes: main_sort_codes.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o sort_codes main_sort_codes.cc *.cpp
 
 debug_sanitizer: main_debug.cc $(SRC_FILES)
 	g++ $(DEBUGFLAGS) -o debug main_debug.cc *.cpp 

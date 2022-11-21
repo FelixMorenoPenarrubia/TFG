@@ -121,7 +121,7 @@ bool reducible_gadgets_test(const ListGraph& g) {
 }
 
 bool alon_tarsi_test(const ListGraph& g) {
-    static map<ListGraphCode, bool> mem;
+    /*static map<ListGraphCode, bool> mem;
 
     
     ListGraphCode code = g.compute_list_code();
@@ -151,7 +151,9 @@ bool alon_tarsi_test(const ListGraph& g) {
     Parallelism::alon_tarsi_mutex.unlock();
     #endif
 
-    return ans;
+    return ans;*/
+
+    return alon_tarsi(g);
     
     /*
     ListGraphCode code = g.compute_list_code();

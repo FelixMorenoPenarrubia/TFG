@@ -63,8 +63,8 @@ void Parallelism::spawn_thread_addcanvas(Canvas g, CanvasList& cl) {
     });
 }
 
-void Parallelism::spawn_thread_addcanvas_q(Canvas g, CanvasList& cl, std::queue<CanvasCode>& q) {
+void Parallelism::spawn_thread_addcanvas_q(Canvas g, std::queue<CanvasCode>& q) {
     spawn_thread([&, g]() {
-        CanvasSearch::add_canvas_q_real(g, cl, q);
+        CanvasSearch::add_canvas_q_real(g, q);
     });
 }

@@ -40,7 +40,7 @@ struct Parallelism {
 
     static void spawn_thread_addcanvas(Canvas g, CanvasList& cl);
 
-    static void spawn_thread_addcanvas_q(Canvas g, CanvasList& cl, std::queue<CanvasCode>& q);
+    static void spawn_thread_addcanvas_q(Canvas g, std::queue<CanvasCode>& q);
 
 };
 

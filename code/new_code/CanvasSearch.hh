@@ -21,17 +21,26 @@ struct CanvasSearch {
     std::vector<CanvasList> critical_chordless;
     std::vector<CanvasList> critical_with_chords;
 
+    static bool DFS_MODE;
+    static bool HALFMEMORY_MODE;
+
 
 
     CanvasSearch();
 
     static void add_canvas(const Canvas& g, CanvasList& cl);
 
-    static void add_canvas_q(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q);
+    static void add_canvas_dfs(const Canvas& g);
+
+    static void add_canvas_q(const Canvas& g, std::queue<CanvasCode>& q);
+
+    static void add_canvas_q_and_cl(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q);
 
     static void add_canvas_real(const Canvas& g, CanvasList& cl);
 
-    static void add_canvas_q_real(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q);
+    static void add_canvas_q_real(const Canvas& g, std::queue<CanvasCode>& q);
+
+    static void add_canvas_q_and_cl_real(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q);
 
     static bool test_canvas(const Canvas& g);
 
@@ -41,7 +50,11 @@ struct CanvasSearch {
 
     void add_same_size_tripods(int l, CanvasList& curr) const;
 
+    void add_same_size_tripods_halfmemory(int l, CanvasList& curr) const;
+
     void add_same_size_tripods_parallel(int l, CanvasList& curr) const;
+
+    void add_same_size_tripods_parallel_halfmemory(int l, CanvasList& curr) const;
 
     
 
@@ -55,6 +68,8 @@ struct CanvasSearch {
     vector<Canvas> get_with_chords(int l);
 
     std::set<CanvasCode>& get_chordless_code(int l);
+
+    void print_chordless_lessmemory(int l);
 
 };
 

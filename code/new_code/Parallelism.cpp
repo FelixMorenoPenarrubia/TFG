@@ -5,6 +5,7 @@ std::mutex Parallelism::recursive_reducibility_test_mutex;
 std::mutex Parallelism::alon_tarsi_mutex;
 std::mutex Parallelism::parallelism_finished_mutex;
 std::mutex Parallelism::two_triangle_list_mutex;
+std::mutex Parallelism::canvas_hash_list_mutex;
 std::vector<std::pair<int, std::thread>> Parallelism::thread_vector;
 std::set<int> Parallelism::finished_set;
 
@@ -57,6 +58,13 @@ void Parallelism::spawn_thread(std::function<void()> f) {
     #endif
 }
 
+void Parallelism::spawn_thread_free(std::function<void()> f) {
+    #ifdef PARALLEL
+    std::thread t = std::thread(f);
+    t.detach();
+    #endif
+}
+
 void Parallelism::spawn_thread_addcanvas(Canvas g, CanvasList& cl) {
     spawn_thread([&, g]() {
         CanvasSearch::add_canvas_real(g, cl);
@@ -66,5 +74,11 @@ void Parallelism::spawn_thread_addcanvas(Canvas g, CanvasList& cl) {
 void Parallelism::spawn_thread_addcanvas_q(Canvas g, std::queue<CanvasCode>& q) {
     spawn_thread([&, g]() {
         CanvasSearch::add_canvas_q_real(g, q);
+    });
+}
+
+void Parallelism::spawn_thread_addcanvas_q_and_cl(Canvas g, CanvasList& cl, std::queue<CanvasCode>& q) {
+    spawn_thread([&, g]() {
+        CanvasSearch::add_canvas_q_and_cl_real(g, cl, q);
     });
 }

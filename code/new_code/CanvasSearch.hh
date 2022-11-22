@@ -35,6 +35,8 @@ struct CanvasSearch {
 
     static void add_canvas_dfs(const Canvas& g);
 
+    static void add_canvas_dfs_real(const Canvas& g);
+
     static void add_canvas_q(const Canvas& g, std::queue<CanvasCode>& q);
 
     static void add_canvas_q_and_cl(const Canvas& g, CanvasList& cl, std::queue<CanvasCode>& q);

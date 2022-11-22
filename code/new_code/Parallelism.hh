@@ -28,6 +28,7 @@ struct Parallelism {
     static std::mutex alon_tarsi_mutex;
     static std::mutex parallelism_finished_mutex;
     static std::mutex two_triangle_list_mutex;
+    static std::mutex canvas_hash_list_mutex;
 
     static void clear_finished_threads();
 
@@ -38,9 +39,13 @@ struct Parallelism {
     //TODO: true generic thread spawning function - ugh, I need to do this better
     static void spawn_thread(std::function<void()> f);
 
+    static void spawn_thread_free(std::function<void()> f);
+
     static void spawn_thread_addcanvas(Canvas g, CanvasList& cl);
 
     static void spawn_thread_addcanvas_q(Canvas g, std::queue<CanvasCode>& q);
+
+    static void spawn_thread_addcanvas_q_and_cl(Canvas g, CanvasList& cl, std::queue<CanvasCode>& q);
 
 };
 

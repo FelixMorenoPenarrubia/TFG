@@ -92,11 +92,28 @@ void CanvasSearch::add_canvas_q_real(const Canvas& g, std::queue<CanvasCode>& q)
     
 }
 
-void CanvasSearch::add_canvas_dfs(const Canvas& g) {
-    if (ch.find(g.compute_code().hash()) == ch.end()) {
+void CanvasSearch::add_canvas_dfs_real(const Canvas& g) {
+
+    CanvasCode c = g.compute_code();
+    cchash h = c.hash();
+    
+    #ifdef PARALLEL
+    Parallelism::canvas_hash_list_mutex.lock();
+    #endif
+    bool found = ch.find(h) != ch.end();
+    #ifdef PARALLEL
+    Parallelism::canvas_hash_list_mutex.unlock();
+    #endif
+    if (!found) {
         if (test_canvas(g)) {
-            std::cout << g.compute_code().to_string() << std::endl;
-            ch.insert(g.compute_code().hash());
+            #ifdef PARALLEL
+            Parallelism::canvas_hash_list_mutex.lock();
+            #endif
+            std::cout << c.to_string() << '\n';
+            ch.insert(h);
+            #ifdef PARALLEL
+            Parallelism::canvas_hash_list_mutex.unlock();
+            #endif
             for(int j=0; j < g.l; ++j) { //for each outer vertex of the canvas
                 Canvas ng = g.add_tripod(1, j, 1);
                 add_canvas_dfs(ng);
@@ -105,18 +122,30 @@ void CanvasSearch::add_canvas_dfs(const Canvas& g) {
     }
 }
 
-void CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) {
+void CanvasSearch::add_canvas_dfs(const Canvas& g) {
     #ifdef PARALLEL
-    //Parallelism::thread_queue.push(std::thread(add_canvas_real, g, std::ref(cl)));
-    Parallelism::spawn_thread_addcanvas(g, cl);
+    Parallelism::spawn_thread_free([g] {
+        add_canvas_dfs_real(g);
+    });
     #else
+    add_canvas_dfs_real(g);
+    #endif
+}
+
+void CanvasSearch::add_canvas(const Canvas& g, CanvasList& cl) {
+    
     if (DFS_MODE) {
         add_canvas_dfs(g);
     }
     else {
+        #ifdef PARALLEL
+        //Parallelism::thread_queue.push(std::thread(add_canvas_real, g, std::ref(cl)));
+        Parallelism::spawn_thread_addcanvas(g, cl);
+        #else
         add_canvas_real(g, cl);
+        #endif
     }
-    #endif
+    
 }
 
 void CanvasSearch::add_canvas_q(const Canvas& g, std::queue<CanvasCode>& q) {

@@ -4,6 +4,7 @@
 #include <queue>
 #include<iostream>
 #include<thread>
+#include<unistd.h>
 
 
 using ll = long long; //for bitmasks
@@ -14,6 +15,11 @@ using ll = long long; //for bitmasks
 bool CanvasSearch::DFS_MODE = false;
 bool CanvasSearch::HALFMEMORY_MODE = false;
 CanvasHashList CanvasSearch::ch;
+
+//TODO: fix this trash
+//#ifdef PARALLEL
+//std::vector<std::thread> CanvasSearch::root_threads;
+//#endif
 
 CanvasSearch::CanvasSearch() {
     critical_chordless = vector<CanvasList>(3);
@@ -92,31 +98,89 @@ void CanvasSearch::add_canvas_q_real(const Canvas& g, std::queue<CanvasCode>& q)
     
 }
 
-void CanvasSearch::add_canvas_dfs_real(const Canvas& g) {
+void CanvasSearch::add_canvas_dfs_parallel(const Canvas& g) {
+    CanvasCode c = g.compute_code();
+    cchash h = c.hash();
+    //Parallelism::canvas_hash_list_mutex.lock();
+    bool found = ch.find(h) != ch.end();
+    //Parallelism::canvas_hash_list_mutex.unlock();
+    if (!found) {
+        if (test_canvas(g)) {
+          //  Parallelism::canvas_hash_list_mutex.lock();
+            std::cout << c.to_string() << '\n';
+            ch.insert(h);
+           // Parallelism::canvas_hash_list_mutex.unlock();
+            std::vector<CanvasCode> st;
+            st.push_back(c);
+
+            while(true) {
+
+                Parallelism::canvas_list_queue_mutex.lock();
+                Canvas g = Canvas(st.back());
+                st.pop_back();
+                Parallelism::canvas_list_queue_mutex.unlock();
+                for(int j=0; j < g.l; ++j) { //for each outer vertex of the canvas
+                    Canvas ng = g.add_tripod(1, j, 1);
+                    Parallelism::spawn_thread_addcanvas_st(ng, st);
+                }
+                Parallelism::canvas_list_queue_mutex.lock();
+                bool empt = st.empty();
+                Parallelism::canvas_list_queue_mutex.unlock();
+                if (empt) {
+                    Parallelism::wait_for_threads();
+                    Parallelism::canvas_list_queue_mutex.lock();
+                    empt = st.empty();
+                    Parallelism::canvas_list_queue_mutex.unlock();
+                    if (empt) break;
+                }
+            }
+        }
+    }
+}
+
+
+void CanvasSearch::add_canvas_st_real(const Canvas& g, vector<CanvasCode>& st) {
+
+    CanvasCode c = g.compute_code();
+    cchash h = c.hash();
+    Parallelism::canvas_hash_list_mutex.lock();
+    bool found = ch.find(h) != ch.end();
+    Parallelism::canvas_hash_list_mutex.unlock();
+    
+    if (!found) {
+        if (test_canvas(g)) {
+            Parallelism::canvas_hash_list_mutex.lock();
+            found = ch.find(h) != ch.end();
+            Parallelism::canvas_hash_list_mutex.unlock();
+            if (!found) {
+                Parallelism::canvas_hash_list_mutex.lock();
+                std::cout << c.to_string() << '\n';
+                ch.insert(h);
+                Parallelism::canvas_hash_list_mutex.unlock();
+                Parallelism::canvas_list_queue_mutex.lock();
+                st.push_back(c);
+                Parallelism::canvas_list_queue_mutex.unlock();
+            }
+        }
+    }
+}
+
+void CanvasSearch::add_canvas_dfs_serial(const Canvas& g) {
 
     CanvasCode c = g.compute_code();
     cchash h = c.hash();
     
-    #ifdef PARALLEL
-    Parallelism::canvas_hash_list_mutex.lock();
-    #endif
+   
     bool found = ch.find(h) != ch.end();
-    #ifdef PARALLEL
-    Parallelism::canvas_hash_list_mutex.unlock();
-    #endif
+
+    
     if (!found) {
         if (test_canvas(g)) {
-            #ifdef PARALLEL
-            Parallelism::canvas_hash_list_mutex.lock();
-            #endif
             std::cout << c.to_string() << '\n';
             ch.insert(h);
-            #ifdef PARALLEL
-            Parallelism::canvas_hash_list_mutex.unlock();
-            #endif
-            for(int j=0; j < g.l; ++j) { //for each outer vertex of the canvas
+            for(int j=0; j < g.l; ++j) { 
                 Canvas ng = g.add_tripod(1, j, 1);
-                add_canvas_dfs(ng);
+                add_canvas_dfs(ng);    
             }
         }
     }
@@ -124,11 +188,9 @@ void CanvasSearch::add_canvas_dfs_real(const Canvas& g) {
 
 void CanvasSearch::add_canvas_dfs(const Canvas& g) {
     #ifdef PARALLEL
-    Parallelism::spawn_thread_free([g] {
-        add_canvas_dfs_real(g);
-    });
+    add_canvas_dfs_parallel(g);
     #else
-    add_canvas_dfs_real(g);
+    add_canvas_dfs_serial(g);
     #endif
 }
 
@@ -250,11 +312,12 @@ void CanvasSearch::add_same_size_tripods_parallel(int l, CanvasList& curr) const
         Parallelism::canvas_list_queue_mutex.unlock();
         if (empt) {
             Parallelism::wait_for_threads();
+             Parallelism::canvas_list_queue_mutex.lock();
+            empt = q.empty();
+            Parallelism::canvas_list_queue_mutex.unlock();
+            if (empt) break;
         }
-        Parallelism::canvas_list_queue_mutex.lock();
-        empt = q.empty();
-        Parallelism::canvas_list_queue_mutex.unlock();
-        if (empt) break;
+       
 	}
 }
 
@@ -262,7 +325,7 @@ void CanvasSearch::add_same_size_tripods_parallel(int l, CanvasList& curr) const
 
 void CanvasSearch::add_same_size_tripods_halfmemory(int l, CanvasList& curr) const {
     #ifdef PARALLEL
-    add_same_size_tripods_parallel(l, curr);
+    add_same_size_tripods_parallel_halfmemory(l, curr);
     return;
     #endif
 
@@ -317,11 +380,12 @@ void CanvasSearch::add_same_size_tripods_parallel_halfmemory(int l, CanvasList& 
         Parallelism::canvas_list_queue_mutex.unlock();
         if (empt) {
             Parallelism::wait_for_threads();
+            Parallelism::canvas_list_queue_mutex.lock();
+            empt = q.empty();
+            Parallelism::canvas_list_queue_mutex.unlock();
+            if (empt) break;
         }
-        Parallelism::canvas_list_queue_mutex.lock();
-        empt = q.empty();
-        Parallelism::canvas_list_queue_mutex.unlock();
-        if (empt) break;
+        
 	}
 }
 
@@ -379,6 +443,8 @@ std::set<CanvasCode>& CanvasSearch::get_chordless_code(int l) {
 }
 
 void CanvasSearch::print_chordless_lessmemory(int l) {
+    DFS_MODE = false;
+    HALFMEMORY_MODE = false;
     for (int i=(int)critical_chordless.size(); i <= l-2; ++i) {
         critical_chordless.push_back(generate_chordless(i));
     }
@@ -388,8 +454,13 @@ void CanvasSearch::print_chordless_lessmemory(int l) {
         critical_chordless.push_back(generate_chordless(l-1));
         HALFMEMORY_MODE = false;
     }
+
+    std::cerr << "DFS mode" << std::endl;
+
     DFS_MODE = true;
     generate_chordless(l);
     DFS_MODE = false;
+
+    
 
 }

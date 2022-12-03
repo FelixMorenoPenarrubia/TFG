@@ -27,7 +27,7 @@ void __print(const char *x);
 void __print(const string &x);
 void __print(bool x);
 
-void pause();
+//void pause();
 
 //TODO: fix templates
 template<typename T, typename V>

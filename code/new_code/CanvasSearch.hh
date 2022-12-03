@@ -10,6 +10,7 @@
 #include<queue>
 #include<algorithm>
 #include<unordered_set>
+#include<thread>
 
 
 
@@ -27,6 +28,10 @@ struct CanvasSearch {
     static bool HALFMEMORY_MODE;
     static CanvasHashList ch;
 
+    #ifdef PARALLEL
+    static std::vector<std::thread> root_threads;
+    #endif
+
 
 
     CanvasSearch();
@@ -35,7 +40,11 @@ struct CanvasSearch {
 
     static void add_canvas_dfs(const Canvas& g);
 
-    static void add_canvas_dfs_real(const Canvas& g);
+    static void add_canvas_dfs_serial(const Canvas& g);
+
+    static void add_canvas_dfs_parallel(const Canvas& g);
+
+    static void add_canvas_st_real(const Canvas& g, std::vector<CanvasCode>& st);
 
     static void add_canvas_q(const Canvas& g, std::queue<CanvasCode>& q);
 

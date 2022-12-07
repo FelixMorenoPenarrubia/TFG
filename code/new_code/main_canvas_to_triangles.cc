@@ -15,8 +15,9 @@ using std::vector;
 using std::string;
 
 int main() {
-    int T;
-    cin >> T;
+    //int T;
+    //cin >> T;
+    int T = 100'000'000;
     //map<TwoTriangleGraphCode, TwoTriangleGraph> m;
     std::set<TwoTriangleGraphCode> s;
 
@@ -43,6 +44,9 @@ int main() {
             if (s.find(g.compute_code()) == s.end()) {
                 if (g.test_criticality()) {
                     s.insert(g.compute_code());
+                    cerr << g.compute_code().to_string() << endl;
+                    cerr << "!!!" << endl;
+                    return 0;
                 }
             }
 

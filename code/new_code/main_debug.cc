@@ -5,6 +5,8 @@
 #include "CanvasSearch.hh"
 #include "TwoTriangleGraph.hh"
 #include "ReducibilityTests.hh"
+#include "PrecoloredPathGraph.hh"
+#include "PrecoloredPathGraphSearch.hh"
 
 using std::cout;
 using std::cin;
@@ -32,7 +34,7 @@ pg read_planegraph() {
 	return Canvas::read(cin);
 }
 
-void search() {
+void canvas_search() {
 	CanvasSearch s;
 	int l;
 	cin >> l;
@@ -41,6 +43,18 @@ void search() {
 	cout << st.size() << endl;
 	for (auto c : st) {
 		cout << c.to_string() << endl;
+	}
+}
+
+void pp_search() {
+	PrecoloredPathGraphSearch s;
+	int l;
+	cin >> l;
+	vector<PrecoloredPathGraph> v = s.get_all(l);
+
+	cout << v.size() << endl;
+	for (PrecoloredPathGraph g : v) {
+		g.write(cout);
 	}
 }
 
@@ -120,6 +134,56 @@ void isomorphism_test_operation_list() {
 		cerr << i << ": " << endl;
 		print_canvas(g);
 	}*/
+}
+
+void isomorphism_test_operation_list_precoloredpathgraph() {
+	vector<PrecoloredPathGraph> vppg;
+	vppg.push_back(PrecoloredPathGraph::read(cin));
+	vppg.push_back(PrecoloredPathGraph::read(cin));
+	//Number of operations
+	int q;
+	cin >> q;
+	for(int i=0; i < q; ++i) {
+
+		string s;
+		cin >> s;
+		if (s == "add_tripod") {
+			//add_tripod idx s j bm
+			int idx, s, j;
+			long long bm;
+			cin >> idx >> s >> j >> bm;
+			vppg.push_back(vppg[idx].add_tripod(s, j, bm));
+		}
+		else if (s == "fuse_chord") {
+			//fuse_chord idx1 idx2 ls
+			int idx1,idx2,ls;
+			cin >> idx1 >> idx2 >> ls;
+			vppg.push_back(PrecoloredPathGraph::fuse_chord(vppg[idx1], vppg[idx2], ls));
+		}
+		else if (s == "print_isomorphism") {
+			//print_isomorphism idx1 idx2
+			int idx1, idx2;
+			cin >> idx1 >> idx2;
+			cout << (vppg[idx1].compute_code().to_string() == vppg[idx2].compute_code().to_string()) << endl;
+		}
+		else if (s == "empty_cycle") {
+			int n, l;
+			cin >> n >> l;
+			vector<int> ls(n);
+			for (int& x : ls) cin >> x;
+			vppg.push_back(PrecoloredPathGraph::empty_cycle(l, ls));
+		}
+		else if (s == "read_graph") {
+			vppg.push_back(PrecoloredPathGraph::read(cin));
+		}
+		else if (s == "read_code") {
+			vppg.push_back(PrecoloredPathGraph::read_code(cin));
+		}
+	}
+
+	for (int i=0; i < (int)vppg.size(); ++i) { 
+		cerr << i << ": " << vppg[i].compute_code().to_string() << endl;
+	}
 }
 
 void num_biconnected_components() {
@@ -284,9 +348,13 @@ void generate_code_twotrianglegraph() {
 	cout << TwoTriangleGraph::read(cin).compute_code().to_string() << endl;
 }
 
+void pp_test() {
+	cout << PrecoloredPathGraph::read(cin).test_criticality() << endl;
+}
+
 int main() {
 	cerr << "Select program: " << endl;
-	cerr << "1. Search" << endl;
+	cerr << "1. Canvas Search" << endl;
 	cerr << "2. Generate code for canvas" << endl;
 	cerr << "3. Isomorphism test for two canvases (adjacency list)" << endl;
 	cerr << "4. Isomorphism test for two canvases (list of operations)" << endl;
@@ -308,11 +376,14 @@ int main() {
 	cerr << "20. Print interior ListGraph from TwoTriangleGraph" << endl;
 	cerr << "21. Print TwoTriangleGraph from code" << endl;
 	cerr << "22. Generate code for TwoTriangleGraph" << endl;
+	cerr << "23. Isomorphism test for two PrecoloredPathGraphs (list of operations)" << endl;
+	cerr << "24. Precolored Path Graph search" << endl;
+	cerr << "25. Precolored Path Graph criticality test" << endl;
 
 	int c;
 	cin >> c;
 	if(c == 1) {
-		search();
+		canvas_search();
 	}
 	if(c == 2) {
 		generate_code();
@@ -376,5 +447,14 @@ int main() {
 	}
 	if(c == 22) {
 		generate_code_twotrianglegraph();
+	}
+	if(c == 23) {
+		isomorphism_test_operation_list_precoloredpathgraph();
+	}
+	if(c == 24) {
+		pp_search();
+	}
+	if(c == 25) {
+		pp_test();
 	}
 }

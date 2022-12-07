@@ -8,6 +8,12 @@ SRC_FILES := $(wildcard *.cpp)
 canvas_search: main_canvas_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o canvas_search main_canvas_search.cc *.cpp
 
+pp_search: main_precolored_path_graph_search.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o pp_search main_precolored_path_graph_search.cc *.cpp
+
+pp_search_prolog: main_precolored_path_graph_search_prolog.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o pp_search_prolog main_precolored_path_graph_search_prolog.cc *.cpp
+
 canvas_search_lessmemory: main_canvas_search_lessmemory.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o canvas_search_lessmemory main_canvas_search_lessmemory.cc *.cpp
 

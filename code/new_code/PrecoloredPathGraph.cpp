@@ -1,5 +1,6 @@
 #include "PrecoloredPathGraph.hh"
 #include "ReducibilityTests.hh"
+#include "debug_utility.hh"
 
 using ll = long long;
 using std::string;
@@ -386,42 +387,60 @@ PrecoloredPathGraph PrecoloredPathGraph::fuse_articulation_point(const Precolore
 PrecoloredPathGraph::PrecoloredPathGraph(const PrecoloredPathGraphCode& code) {
     l = 1;
     n = 1;
-    for (int i = 0; i < code.size(); ++i) {
-        if (code[i] == PrecoloredPathGraphCode::F_OFFSET+1) l++;
-        else break;
-    }
 
     for (int i = 0; i < code.size(); ++i) {
         if (code[i] < 0) n++;
     }
-    al = vector<vector<int>>(n);
-    list_sizes = vector<int>(n);
-    list_sizes[0] = 1;
+    vector<vector<int>> nal = vector<vector<int>>(n);
+    vector<int> nlistsizes = vector<int>(n);
+    nlistsizes[0] = 1;
     int cn = 0;
     vector<int> cv_stack;
     cv_stack.push_back(0);
     vector<int> zero_neigh;
+    vector<int> morph(n, -1);
+    morph[0] = 0;
     for (int i = 0; i < code.size(); ++i) {
         if (code[i] < 0) {
-            al[cv_stack.back()].push_back(++cn);
+            nal[cv_stack.back()].push_back(++cn);
             cv_stack.push_back(cn);
-            list_sizes[cn] = code[i]-PrecoloredPathGraphCode::F_OFFSET;
+            nlistsizes[cn] = code[i]-PrecoloredPathGraphCode::F_OFFSET;
+            if (nlistsizes[cn] == 1) {
+                morph[cn] = l++;
+            }
         }
         else if (code[i] == 0) {
             int a = cv_stack.back();
             cv_stack.pop_back();
             int b = cv_stack.back();
-            al[a].push_back(b);
+            nal[a].push_back(b);
         }
         else {
-            al[cv_stack.back()].push_back(code[i]-1);
+            nal[cv_stack.back()].push_back(code[i]-1);
             if (code[i] == 1) {
                 zero_neigh.push_back(cv_stack.back());
             }
         }
     }
     std::reverse(zero_neigh.begin(), zero_neigh.end());
-    for (int x : zero_neigh) al[0].push_back(x);
+    for (int x : zero_neigh) nal[0].push_back(x);
+
+    int cm = l;
+
+    for (int i=0; i < n; ++i) {
+        if (morph[i] == -1) {
+            morph[i] = cm++;
+        }
+    }
+
+    al = vector<vector<int>>(n);
+    list_sizes = vector<int>(n);
+    for (int u = 0; u < n; ++u) {
+        list_sizes[morph[u]] = nlistsizes[u];
+        for (int v : nal[u]) {
+            al[morph[u]].push_back(morph[v]);
+        }
+    }
 
     generate_ral_and_m();
     init_inherited_values();

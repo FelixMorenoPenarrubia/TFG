@@ -8,6 +8,7 @@
 #include "PrecoloredPathGraph.hh"
 #include "PrecoloredPathGraphSearch.hh"
 #include "TwoPrecoloredPathsGraph.hh"
+#include "TwoPrecoloredPathsGraphSearch.hh"
 
 using std::cout;
 using std::cin;
@@ -55,6 +56,18 @@ void pp_search() {
 
 	cout << v.size() << endl;
 	for (PrecoloredPathGraph g : v) {
+		g.write(cout);
+	}
+}
+
+void tpp_search() {
+	TwoPrecoloredPathsGraphSearch s;
+	int d;
+	cin >> d;
+	vector<TwoPrecoloredPathsGraph> v = s.get(d);
+
+	cout << v.size() << endl;
+	for (TwoPrecoloredPathsGraph g : v) {
 		g.write(cout);
 	}
 }
@@ -403,6 +416,7 @@ int main() {
 	cerr << "23. Isomorphism test for PrecoloredPathGraphs and TwoPrecoloredPathsGraphs (list of operations)" << endl;
 	cerr << "24. Precolored Path Graph search" << endl;
 	cerr << "25. Precolored Path Graph criticality test" << endl;
+	cerr << "26. Two Precolored Path Graph search" << endl;
 
 	int c;
 	cin >> c;
@@ -480,5 +494,8 @@ int main() {
 	}
 	if(c == 25) {
 		pp_test();
+	}
+	if(c == 26) {
+		tpp_search();
 	}
 }

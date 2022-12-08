@@ -64,6 +64,8 @@ struct TwoPrecoloredPathsGraph : public PrecoloredGraph {
 
     TwoPrecoloredPathsGraphCode compute_code() const;
 
+    int distance_between_paths() const;
+
     bool test_no_l3_adjacent() const;
 
     bool test_criticality() const;

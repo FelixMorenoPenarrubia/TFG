@@ -66,6 +66,8 @@ struct PrecoloredPathGraph : public PrecoloredGraph {
     PrecoloredPathGraph add_tripod(int s, int j, long long bm) const;
 
     PrecoloredPathGraph extend_path_chord(int s, int j) const;
+
+    PrecoloredPathGraph reverse() const;
     
     static PrecoloredPathGraph fuse_chord(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2, int list_size_joint);
 

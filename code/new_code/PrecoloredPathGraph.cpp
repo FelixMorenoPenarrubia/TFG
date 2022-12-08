@@ -128,6 +128,7 @@ void PrecoloredPathGraph::write_prolog(std::ostream& os) const {
     for (int i=0; i < n; ++i) {
         for (int j : al[i]) {
             if (i < j) {
+                //TODO: does not take into account chords!
                 if(precolored[i] && precolored[j]) {
                     os << "tEdge(" << i << "," << j << ")." << endl;
                 }
@@ -351,10 +352,10 @@ PrecoloredPathGraph PrecoloredPathGraph::fuse_articulation_point(const Precolore
         morph2[i] = i+g1.l-1;
     }
     for (int i=g1.l; i < g1.n; ++i) {
-        morph1[i] = (i-g1.l) + morph2[g2.l-1] + 1;
+        morph1[i] = (i-g1.l) + g1.l+g2.l-1;
     }
     for (int i=g2.l; i < g2.n; ++i) {
-        morph2[i] = (i-g2.l) + morph1[g1.n-1] + 1;
+        morph2[i] = (i-g2.l) + g1.n + g2.l - 1;
     }
 
     for (int u = 0; u < g2.n; ++u) {
@@ -382,6 +383,32 @@ PrecoloredPathGraph PrecoloredPathGraph::fuse_articulation_point(const Precolore
     
     return PrecoloredPathGraph(nal, g1.l+g2.l-1, nlistsizes);
 
+}
+
+PrecoloredPathGraph PrecoloredPathGraph::reverse() const {
+    vector<vector<int>> nal(n);
+    vector<int> nlistsizes(n);
+    vector<int> morph(n);
+
+    for (int i=0; i < l; ++i) {
+        morph[i] = l-1-i;
+    }
+    for (int i=l; i < n; ++i) {
+        morph[i] = i;
+    }
+
+    for (int u = 0; u < n; ++u) {
+        nlistsizes[morph[u]] = list_sizes[u];
+        for (int v : al[u]) {
+            nal[morph[u]].push_back(morph[v]);
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        std::reverse(nal[i].begin(), nal[i].end());
+    }
+
+    return PrecoloredPathGraph(nal, l, nlistsizes);
 }
 
 PrecoloredPathGraph::PrecoloredPathGraph(const PrecoloredPathGraphCode& code) {

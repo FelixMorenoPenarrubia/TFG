@@ -47,6 +47,8 @@ struct PrecoloredPathGraphSearch {
 
     vector<PrecoloredPathGraph> get_all(int l);
 
+    GraphList get_all_codes(int l);
+
 };
 
 #endif

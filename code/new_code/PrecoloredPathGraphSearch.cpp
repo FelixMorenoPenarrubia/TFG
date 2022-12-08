@@ -166,3 +166,13 @@ vector<PrecoloredPathGraph> PrecoloredPathGraphSearch::get_all(int l) {
     return ans;
 }
 
+GraphList PrecoloredPathGraphSearch::get_all_codes(int l) {
+    for (int i=(int)critical_biconnected.size(); i <= l; ++i) {
+        critical_biconnected.push_back(generate_biconnected(i));
+    }
+    for (int i=(int)critical_all.size(); i <= l; ++i) {
+        critical_all.push_back(generate_all(i));
+    }
+    return critical_all[l];
+}
+

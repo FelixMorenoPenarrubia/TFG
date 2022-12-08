@@ -1,6 +1,7 @@
 #include "TwoPrecoloredPathsGraph.hh"
 #include "ReducibilityTests.hh"
 #include "debug_utility.hh"
+#include <queue>
 
 using ll = long long;
 using std::string;
@@ -88,6 +89,9 @@ TwoPrecoloredPathsGraph::TwoPrecoloredPathsGraph() {
 
 TwoPrecoloredPathsGraph::TwoPrecoloredPathsGraph(vector<vector<int>> _al, vector<int> _list_sizes) {
     n = _al.size();
+
+    debug_assert(n >= 4);
+
     list_sizes = _list_sizes;
     m = 0;
     al = _al;
@@ -128,6 +132,7 @@ void TwoPrecoloredPathsGraph::write_prolog(std::ostream& os) const {
     for (int i=0; i < n; ++i) {
         for (int j : al[i]) {
             if (i < j) {
+                //TODO: does not take into account chords!
                 if(precolored[i] && precolored[j]) {
                     os << "tEdge(" << i << "," << j << ")." << endl;
                 }
@@ -265,6 +270,9 @@ TwoPrecoloredPathsGraph::TwoPrecoloredPathsGraph(const TwoPrecoloredPathsGraphCo
     for (int i = 0; i < code.size(); ++i) {
         if (code[i] < 0) n++;
     }
+
+    debug_assert(n >= 4);
+
     al = vector<vector<int>>(n);
     list_sizes = vector<int>(n);
     list_sizes[0] = 1;
@@ -339,6 +347,45 @@ TwoPrecoloredPathsGraphCode TwoPrecoloredPathsGraph::compute_code() const {
     }
     
     return code;
+}
+
+int TwoPrecoloredPathsGraph::distance_between_paths() const {
+    int pu, pv;
+    pu = -1;
+    for (int u = 0; u < n && pu == -1; ++u) {
+        if (precolored[u]) {
+            pu = u;
+            for (int v : al[u]) {
+                if (precolored[v]) {
+                    pv = v;
+                    break;
+                }
+            }
+        }
+    }
+    std::queue<int> q;
+    vector<int> dist(n, -1);
+    q.push(pu);
+    q.push(pv);
+    dist[pu] = dist[pv] = 0;
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        for (int v : al[u]) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u]+1;
+                q.push(v);
+            }
+        }
+    }
+
+    int md = n+1;
+    for (int u = 0; u < n; ++u) {
+        if (u != pu && u != pv && precolored[u]) {
+            md = std::min(md, dist[u]);
+        }
+    }
+    return md;
 }
 
 bool TwoPrecoloredPathsGraph::test_no_l3_adjacent() const  {

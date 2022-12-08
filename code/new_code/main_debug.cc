@@ -7,6 +7,7 @@
 #include "ReducibilityTests.hh"
 #include "PrecoloredPathGraph.hh"
 #include "PrecoloredPathGraphSearch.hh"
+#include "TwoPrecoloredPathsGraph.hh"
 
 using std::cout;
 using std::cin;
@@ -138,6 +139,7 @@ void isomorphism_test_operation_list() {
 
 void isomorphism_test_operation_list_precoloredpathgraph() {
 	vector<PrecoloredPathGraph> vppg;
+	vector<TwoPrecoloredPathsGraph> vtppg;
 	vppg.push_back(PrecoloredPathGraph::read(cin));
 	vppg.push_back(PrecoloredPathGraph::read(cin));
 	//Number of operations
@@ -179,10 +181,32 @@ void isomorphism_test_operation_list_precoloredpathgraph() {
 		else if (s == "read_code") {
 			vppg.push_back(PrecoloredPathGraph::read_code(cin));
 		}
+		else if (s == "read_tpp_graph") {
+			vtppg.push_back(TwoPrecoloredPathsGraph::read(cin));
+		}
+		else if (s == "print_isomorphism_tpp") {
+			int idx1, idx2;
+			cin >> idx1 >> idx2;
+			cout << (vtppg[idx1].compute_code().to_string() == vtppg[idx2].compute_code().to_string()) << endl;
+		}
+		else if (s == "fuse_pp_sameside") {
+			int idx1, idx2;
+			cin >> idx1 >> idx2;
+			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(vppg[idx1], vppg[idx2]));
+		}
+		else if (s == "fuse_pp_oppositeside") {
+			int idx1, idx2;
+			cin >> idx1 >> idx2;
+			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(vppg[idx1], vppg[idx2]));
+		}
 	}
 
 	for (int i=0; i < (int)vppg.size(); ++i) { 
 		cerr << i << ": " << vppg[i].compute_code().to_string() << endl;
+	}
+
+	for (int i=0; i < (int)vtppg.size(); ++i) { 
+		cerr << i << ": " << vtppg[i].compute_code().to_string() << endl;
 	}
 }
 
@@ -376,7 +400,7 @@ int main() {
 	cerr << "20. Print interior ListGraph from TwoTriangleGraph" << endl;
 	cerr << "21. Print TwoTriangleGraph from code" << endl;
 	cerr << "22. Generate code for TwoTriangleGraph" << endl;
-	cerr << "23. Isomorphism test for two PrecoloredPathGraphs (list of operations)" << endl;
+	cerr << "23. Isomorphism test for PrecoloredPathGraphs and TwoPrecoloredPathsGraphs (list of operations)" << endl;
 	cerr << "24. Precolored Path Graph search" << endl;
 	cerr << "25. Precolored Path Graph criticality test" << endl;
 

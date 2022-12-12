@@ -59,8 +59,10 @@ void PrecoloredPathGraphSearch::add_smaller_crossing_chords(int l, const vector<
                 //TODO: check if it is necessary to use both orders
                 add_graph(PrecoloredPathGraph::fuse_chord(g1, g2, 3), curr);
                 add_graph(PrecoloredPathGraph::fuse_chord(g1, g2, 4), curr);
+                add_graph(PrecoloredPathGraph::fuse_chord(g1, g2, 5), curr);
                 add_graph(PrecoloredPathGraph::fuse_chord(g2, g1, 3), curr);
                 add_graph(PrecoloredPathGraph::fuse_chord(g2, g1, 4), curr);
+                add_graph(PrecoloredPathGraph::fuse_chord(g2, g1, 5), curr);
             }
         }
     }
@@ -129,6 +131,8 @@ void PrecoloredPathGraphSearch::add_same_size_tripods_and_chords(int l, GraphLis
             add_graph_q_and_cl(PrecoloredPathGraph::fuse_chord(g2, g, 3), curr, q);
             add_graph_q_and_cl(PrecoloredPathGraph::fuse_chord(g, g2, 4), curr, q);
             add_graph_q_and_cl(PrecoloredPathGraph::fuse_chord(g2, g, 4), curr, q);
+            add_graph_q_and_cl(PrecoloredPathGraph::fuse_chord(g, g2, 5), curr, q);
+            add_graph_q_and_cl(PrecoloredPathGraph::fuse_chord(g2, g, 5), curr, q);
         }
 	}
 }

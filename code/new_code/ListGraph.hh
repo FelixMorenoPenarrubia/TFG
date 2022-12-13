@@ -57,6 +57,8 @@ struct ListGraph : public Graph {
 
     ListGraph precolor_vertex_smart(int w, int wp) const;
 
+    ListGraph precolor_vertices_smart_twoneighbors(int wp, int w1, int w2) const;
+
     bool nocolors() const;
 
     void dfs_code(int u, int idx, int& c, std::vector<int>& an, ListGraphCode& code) const;

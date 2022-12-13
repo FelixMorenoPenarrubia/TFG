@@ -1,4 +1,5 @@
 #include "ListGraph.hh"
+#include "debug_utility.hh"
 
 
 using std::string;
@@ -148,6 +149,40 @@ ListGraph ListGraph::precolor_vertex_smart(int w, int wp) const {
             }
         }
     }
+    return ListGraph(nal, nls);
+}
+
+ListGraph ListGraph::precolor_vertices_smart_twoneighbors(int wp, int w1, int w2) const {
+    debug_assert(neighbors(wp, w1) && neighbors(wp, w2) && !neighbors(w1, w2));
+    if (w1 > w2) std::swap(w1, w2);
+    vector<int> morph(n);
+    for (int u = 0; u < w1; ++u) {
+        morph[u] = u;
+    }
+    for (int u = w1+1; u < w2; ++u) {
+        morph[u] = u-1;
+    }
+    for (int u = w2+1; u < n; ++u) {
+        morph[u] = u-2;
+    }
+    vector<int> nls (n-2, 0);
+    vector< vector<int> > nal (n-2);
+    for (int u = 0; u < n; ++u) {
+        if (u == w1 || u == w2) {
+            for (int v : al[u]) {
+                nls[morph[v]]--;
+            }
+        }
+        else {
+            nls[morph[u]] += list_sizes[u];
+            for (int v : al[u]) {
+                if (v != w1 && v != w2) {
+                    nal[morph[u]].push_back(morph[v]);
+                }
+            }
+        }
+    }
+    nls[morph[wp]]++;
     return ListGraph(nal, nls);
 }
 

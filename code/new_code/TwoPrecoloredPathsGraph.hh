@@ -54,9 +54,15 @@ struct TwoPrecoloredPathsGraph : public PrecoloredGraph {
     
     static TwoPrecoloredPathsGraph read_code(std::istream &is);
 
-    static TwoPrecoloredPathsGraph fuse_precoloredpaths_sameside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2);
+    static std::vector<TwoPrecoloredPathsGraph> fuse_precoloredpaths_sameside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2);
 
-    static TwoPrecoloredPathsGraph fuse_precoloredpaths_oppositeside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2);
+    static std::vector<TwoPrecoloredPathsGraph> fuse_precoloredpaths_oppositeside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2);
+
+    static std::vector<TwoPrecoloredPathsGraph> fuse_paths(const TwoPrecoloredPathsGraph& g1, const TwoPrecoloredPathsGraph& g2);
+
+    static TwoPrecoloredPathsGraph fuse_edge(const TwoPrecoloredPathsGraph&g1, int u1, int v1, const TwoPrecoloredPathsGraph& g2, int u2, int v2, int uls, int vls, bool reverse);
+
+    vector<vector<int>> get_paths() const;
 
     void dfs_code(int u, int idx, int& c, vector<int>& an, TwoPrecoloredPathsGraphCode& code) const;
 
@@ -69,6 +75,8 @@ struct TwoPrecoloredPathsGraph : public PrecoloredGraph {
     bool test_no_l3_adjacent() const;
 
     bool test_criticality() const;
+
+    TwoPrecoloredPathsGraph reverse() const;
 
 };
 

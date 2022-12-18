@@ -20,5 +20,6 @@ int main() {
 	cout << v.size() << endl;
 	for (TwoPrecoloredPathsGraph g : v) {
 		g.write(cout);
+		//cout << g.compute_code().to_string() << endl;
 	}
 }

@@ -504,6 +504,11 @@ PrecoloredPathGraphCode PrecoloredPathGraph::compute_code() const {
     return code;
 }
 
+bool PrecoloredPathGraph::is_interior_path_vertex_articulation_point(int u) const {
+    debug_assert(1 <= u && u <= l-2);
+    return remove_vertex(u).connected_components().size() != 1;
+}
+
 bool PrecoloredPathGraph::test_no_l3_adjacent() const  {
     for (int u = 0; u < n; ++u) {
         if (list_sizes[u] == 3) {

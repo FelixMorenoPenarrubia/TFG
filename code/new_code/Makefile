@@ -14,6 +14,9 @@ pp_search: main_precolored_path_graph_search.cc $(SRC_FILES)
 tpp_search: main_two_precolored_paths_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o tpp_search main_two_precolored_paths_search.cc *.cpp
 
+tpp_verifier: main_two_precolored_paths_verifier.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o tpp_verifier main_two_precolored_paths_verifier.cc *.cpp
+
 pp_search_prolog: main_precolored_path_graph_search_prolog.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o pp_search_prolog main_precolored_path_graph_search_prolog.cc *.cpp
 
@@ -49,6 +52,12 @@ unpack_twotrianglegraphs: main_unpack_twotrianglegraphs.cc $(SRC_FILES)
 
 sort_codes: main_sort_codes.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o sort_codes main_sort_codes.cc *.cpp
+
+sort_wedges: main_sort_wedges.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o sort_wedges main_sort_wedges.cc *.cpp
+
+compare_pp: main_compare_precoloredpathgraphs.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o compare_pp main_compare_precoloredpathgraphs.cc *.cpp
 
 debug_sanitizer: main_debug.cc $(SRC_FILES)
 	g++ $(DEBUGFLAGS) -o debug main_debug.cc *.cpp 

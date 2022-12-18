@@ -203,14 +203,16 @@ void isomorphism_test_operation_list_precoloredpathgraph() {
 			cout << (vtppg[idx1].compute_code().to_string() == vtppg[idx2].compute_code().to_string()) << endl;
 		}
 		else if (s == "fuse_pp_sameside") {
+			//with lists of size 5
 			int idx1, idx2;
 			cin >> idx1 >> idx2;
-			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(vppg[idx1], vppg[idx2]));
+			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(vppg[idx1], vppg[idx2]).back());
 		}
 		else if (s == "fuse_pp_oppositeside") {
+			//with lists of size 5
 			int idx1, idx2;
 			cin >> idx1 >> idx2;
-			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(vppg[idx1], vppg[idx2]));
+			vtppg.push_back(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(vppg[idx1], vppg[idx2]).back());
 		}
 	}
 
@@ -389,6 +391,38 @@ void pp_test() {
 	cout << PrecoloredPathGraph::read(cin).test_criticality() << endl;
 }
 
+void print_precoloredpathgraph_from_code() {
+	string s;
+	cin >> s;
+	PrecoloredPathGraph(PrecoloredPathGraphCode(s)).write(cout);
+}
+
+void generate_code_twoprecoloredpathgraph() {
+	cout << TwoPrecoloredPathsGraph::read(cin).compute_code().to_string() << endl;
+}
+
+void print_twoprecoloredpathgraph_from_code() {
+	TwoPrecoloredPathsGraph::read_code(cin).write(cout);
+}
+
+void twoprecoloredpathgraph_test() {
+	cout << TwoPrecoloredPathsGraph::read(cin).test_criticality() << endl;
+}
+
+void generate_code_precoloredpathgraph() {
+	cout << PrecoloredPathGraph::read(cin).compute_code().to_string() << endl;
+}
+
+void fuse_precoloredpaths_sameside() {
+	PrecoloredPathGraph g1 = PrecoloredPathGraph::read(cin);
+	PrecoloredPathGraph g2 = PrecoloredPathGraph::read(cin);
+	vector<TwoPrecoloredPathsGraph> vtppg = TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(g1, g2);
+	for (auto g : vtppg) {
+		g.write(cout);
+	}
+}
+
+
 int main() {
 	cerr << "Select program: " << endl;
 	cerr << "1. Canvas Search" << endl;
@@ -417,7 +451,13 @@ int main() {
 	cerr << "24. Precolored Path Graph search" << endl;
 	cerr << "25. Precolored Path Graph criticality test" << endl;
 	cerr << "26. Two Precolored Path Graph search" << endl;
-
+	cerr << "27. Print PrecoloredPathGraph from code" << endl;
+	cerr << "28. Generate code for TwoPrecoloredPathGraph" << endl;
+	cerr << "29. Print TwoPrecoloredPathGraph from code" << endl;
+	cerr << "30. Critical test for TwoPrecoloredPathGraph" << endl;
+	cerr << "31. Generate code for PrecoloredPathGraph" << endl;
+	cerr << "32. Fuse two precolored paths on the same side to generate TwoPrecoloredPathGraph" << endl;
+	
 	int c;
 	cin >> c;
 	if(c == 1) {
@@ -497,5 +537,23 @@ int main() {
 	}
 	if(c == 26) {
 		tpp_search();
+	}
+	if(c == 27) {
+		print_precoloredpathgraph_from_code();
+	}
+	if(c == 28) {
+		generate_code_twoprecoloredpathgraph();
+	}
+	if(c == 29) {
+		print_twoprecoloredpathgraph_from_code();
+	}
+	if(c == 30) {
+		twoprecoloredpathgraph_test();
+	}
+	if(c == 31) {
+		generate_code_precoloredpathgraph();
+	}
+	if(c == 32) {
+		fuse_precoloredpaths_sameside();
 	}
 }

@@ -29,3 +29,21 @@ void Graph::generate_ral_and_m() {
     }
     m /= 2;
 }
+
+void Graph::set_starting_edge_in_al(int u, int v) {
+    vector<int> newal;
+    int oldidx = ral[u][v];
+    int als = al[u].size();
+    for (int i=0; i < als; ++i) {
+        newal.push_back(al[u][(i+oldidx)%als]);
+        ral[u][al[u][(i+oldidx)%als]] = i;
+    }
+    al[u] = newal;
+}
+
+void Graph::set_outer_face(vector<int> of) {
+    int ofs = of.size();
+    for (int i=0; i < ofs; ++i) {
+        set_starting_edge_in_al(of[i], of[(i+1)%ofs]);
+    }
+}

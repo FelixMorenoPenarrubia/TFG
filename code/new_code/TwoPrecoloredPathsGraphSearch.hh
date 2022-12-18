@@ -26,6 +26,8 @@ struct TwoPrecoloredPathsGraphSearch {
 
     static void add_graph(const TwoPrecoloredPathsGraph& g, std::set<TwoPrecoloredPathsGraphCode>& gl, int d);
 
+    static void add_graphs(const vector<TwoPrecoloredPathsGraph>& vg, std::set<TwoPrecoloredPathsGraphCode>& gl, int d);
+
     static bool test_graph(const TwoPrecoloredPathsGraph& g, int d);
 
     void add_same_side(int d, std::set<TwoPrecoloredPathsGraphCode>& gl);
@@ -35,6 +37,8 @@ struct TwoPrecoloredPathsGraphSearch {
     std::set<TwoPrecoloredPathsGraphCode> generate(int d);
 
     vector<TwoPrecoloredPathsGraph> get(int d);
+
+    std::set<TwoPrecoloredPathsGraphCode> get_codes(int d);
 
 };
 

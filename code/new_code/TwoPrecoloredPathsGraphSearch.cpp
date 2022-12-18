@@ -1,4 +1,5 @@
 #include "TwoPrecoloredPathsGraphSearch.hh"
+#include "debug_utility.hh"
 #include <queue>
 #include<iostream>
 #include<thread>
@@ -30,6 +31,13 @@ void TwoPrecoloredPathsGraphSearch::add_graph(const TwoPrecoloredPathsGraph& g, 
     }
 }
 
+void TwoPrecoloredPathsGraphSearch::add_graphs(const vector<TwoPrecoloredPathsGraph>& vg, std::set<TwoPrecoloredPathsGraphCode>& gl, int d) {
+    for (const TwoPrecoloredPathsGraph& g : vg) {
+        add_graph(g, gl, d);
+        add_graph(g.reverse(), gl, d);
+    }
+}
+
 void TwoPrecoloredPathsGraphSearch::add_same_side(int d, std::set<TwoPrecoloredPathsGraphCode>& gl) {
     std::set<PrecoloredPathGraphCode> v1 = ppsearch.get_all_codes(d+3);
     std::set<PrecoloredPathGraphCode> v2 = ppsearch.get_all_codes(d+1);
@@ -37,8 +45,11 @@ void TwoPrecoloredPathsGraphSearch::add_same_side(int d, std::set<TwoPrecoloredP
         PrecoloredPathGraph g1 = PrecoloredPathGraph(c1);
         for (PrecoloredPathGraphCode c2 : v2) {
             PrecoloredPathGraph g2 = PrecoloredPathGraph(c2);
-            add_graph(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(g1, g2), gl, d);
-            add_graph(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(g1, g2.reverse()), gl, d);
+            /*if (c1.to_string() == "F1F1F1F1F1RcRdBBRfBRfF3RaRbBBRgB" && c2.to_string() == "F1F1F1F3F4F3RaRbBRbRcBRcBBReRfBRfRgB") {
+                debug_msg("hello world");
+            }*/
+            add_graphs(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(g1, g2), gl, d);
+            add_graphs(TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(g1, g2.reverse()), gl, d);
         }
     }
 }
@@ -49,8 +60,11 @@ void TwoPrecoloredPathsGraphSearch::add_opposite_side(int d, std::set<TwoPrecolo
         PrecoloredPathGraph g1 = PrecoloredPathGraph(c1);
         for (PrecoloredPathGraphCode c2 : v) {
             PrecoloredPathGraph g2 = PrecoloredPathGraph(c2);
-            add_graph(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(g1, g2), gl, d);
-            add_graph(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(g1, g2.reverse()), gl, d);
+           /* if (c1.to_string() == "F1F1F1F3F4F3RaF5RaRbRcRfBBRhRcBRcBBReRfRhBRhB" && c2.to_string() == "F1F1F1BF3RaRbBBReB") {
+                debug_msg("hello world");
+            }*/
+            add_graphs(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(g1, g2), gl, d);
+            add_graphs(TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(g1, g2.reverse()), gl, d);
         }
     }
 }
@@ -76,5 +90,12 @@ vector<TwoPrecoloredPathsGraph> TwoPrecoloredPathsGraphSearch::get(int d) {
       
     }
     return ans;
+}
+
+std::set<TwoPrecoloredPathsGraphCode> TwoPrecoloredPathsGraphSearch::get_codes(int d) {
+    for (int i=(int)critical.size(); i <= d; ++i) {
+        critical.push_back(generate(d));
+    }
+    return critical[d];
 }
 

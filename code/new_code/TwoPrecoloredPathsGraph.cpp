@@ -2,6 +2,7 @@
 #include "ReducibilityTests.hh"
 #include "debug_utility.hh"
 #include <queue>
+#include <functional>
 
 using ll = long long;
 using std::string;
@@ -182,7 +183,7 @@ TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::read_code(std::istream& is) {
 }
 
 
-TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2) {
+vector<TwoPrecoloredPathsGraph> TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2) {
     debug_assert(g1.l == g2.l+2);
     vector<vector<int>> nal (g1.n + g2.n - g2.l);
     vector<int> nlistsizes(g1.n + g2.n - g2.l);
@@ -214,14 +215,56 @@ TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::fuse_precoloredpaths_sameside(c
         }
     }
 
+    vector<TwoPrecoloredPathsGraph> ans;
+    std::function<void(int)> baq = [&nal, &nlistsizes, &ans, &g1, &g2, &baq] (int i) -> void {
+        if (i == g2.l) {
+            ans.emplace_back(nal, nlistsizes);
+        }
+        else {
+            if (g1.is_interior_path_vertex_articulation_point(i) || g2.is_interior_path_vertex_articulation_point(g2.l-i)) {
+                nlistsizes[i] = 3;
+                baq(i+1);
+                nlistsizes[i] = 4;
+                baq(i+1);
+            }
+            nlistsizes[i] = 5;
+            baq(i+1);
+        }
+    };
+    baq(2);
+    vector<int> outer_face;
+
+    outer_face.push_back(0);
+    int cu2 = g2.l-1;
+    int pcu2 = g2.l-2;
+    while (cu2 != 0) {
+        outer_face.push_back(morph2[cu2]);
+        int temp = cu2;
+        cu2 = g2.al[cu2][(g2.ral[cu2].at(pcu2)+1)%g2.al[cu2].size()];
+        pcu2 = temp;
+    }
+    outer_face.push_back(g1.l-2);
+    int cu1 = g1.l-1;
+    int pcu1 = g1.l-2;
+    while (cu1 != 0) {
+        outer_face.push_back(morph1[cu1]);
+        int temp = cu1;
+        cu1 = g1.al[cu1][(g1.ral[cu1].at(pcu1)+1)%g1.al[cu1].size()];
+        pcu1 = temp;
+    }
+
+    for (auto& g : ans) g.set_outer_face(outer_face);
+
+    /*
     for (int i=2; i < g2.l; ++i) {
         nlistsizes[i] = 5;
     }
+    */
 
-    return TwoPrecoloredPathsGraph(nal, nlistsizes);
+    return ans;
 }
 
-TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2) {
+vector<TwoPrecoloredPathsGraph> TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositeside(const PrecoloredPathGraph& g1, const PrecoloredPathGraph& g2) {
     debug_assert(g1.l == g2.l);
     vector<vector<int>> nal (g1.n + g2.n - g1.l +1);
     vector<int> nlistsizes(g1.n + g2.n - g1.l +1);
@@ -254,13 +297,168 @@ TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::fuse_precoloredpaths_oppositesi
         }
     }
 
+    vector<TwoPrecoloredPathsGraph> ans;
+    std::function<void(int)> baq = [&nal, &nlistsizes, &ans, &g1, &g2, &baq] (int i) -> void {
+        if (i == g2.l-1) {
+            ans.emplace_back(nal, nlistsizes);
+        }
+        else {
+            if (g1.is_interior_path_vertex_articulation_point(i) || g2.is_interior_path_vertex_articulation_point(g2.l-i)) {
+                nlistsizes[i] = 3;
+                baq(i+1);
+                nlistsizes[i] = 4;
+                baq(i+1);
+            }
+            nlistsizes[i] = 5;
+            baq(i+1);
+        }
+    };
+    baq(2);
+
+    vector<int> outer_face;
+
+    outer_face.push_back(0);
+    int cu2 = g2.l-1;
+    int pcu2 = g2.l-2;
+    while (cu2 != 0) {
+        outer_face.push_back(morph2[cu2]);
+        int temp = cu2;
+        cu2 = g2.al[cu2][(g2.ral[cu2].at(pcu2)+1)%g2.al[cu2].size()];
+        pcu2 = temp;
+    }
+    outer_face.push_back(morph2[0]);
+    int cu1 = g1.l-1;
+    int pcu1 = g1.l-2;
+    while (cu1 != 0) {
+        outer_face.push_back(morph1[cu1]);
+        int temp = cu1;
+        cu1 = g1.al[cu1][(g1.ral[cu1].at(pcu1)+1)%g1.al[cu1].size()];
+        pcu1 = temp;
+    }
+
+    for (auto& g : ans) g.set_outer_face(outer_face);
+    /*
     for (int i=2; i+1 < g1.l; ++i) {
         nlistsizes[i] = 5;
     }
+    */
 
-    return TwoPrecoloredPathsGraph(nal, nlistsizes);
+    return ans;
 }
 
+vector<TwoPrecoloredPathsGraph> TwoPrecoloredPathsGraph::fuse_paths(const TwoPrecoloredPathsGraph& g1, const TwoPrecoloredPathsGraph& g2) {
+    vector<vector<int>> p1 = g1.get_paths();
+    vector<vector<int>> p2 = g2.get_paths();
+    vector<TwoPrecoloredPathsGraph> ans;
+
+
+    for (int path1=0; path1 <= 1; ++path1) {
+        for (int ord1=0; ord1 <= 1; ++ord1) {
+            for (int path2=0; path2 <= 1; ++path2) {
+                for (int ord2=0; ord2 <= 1; ++ord2) {
+                    for (int ul=3; ul <= 5; ++ul) {
+                        for (int vl=3; vl <= 5; ++vl) {
+                            ans.push_back(TwoPrecoloredPathsGraph::fuse_edge(g1, p1[path1][ord1], p1[path1][1-ord1], g2, p2[path2][ord2], p2[path2][1-ord2], ul, vl, !(ord1^ord2)));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return ans;
+}
+
+//TODO test
+TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::fuse_edge(const TwoPrecoloredPathsGraph& g1, int u1, int v1, const TwoPrecoloredPathsGraph& g2, int u2, int v2, int uls, int vls, bool reverse) {
+    vector<int> morph1(g1.n);
+    vector<int> morph2(g2.n);
+
+    for (int i=0; i < g1.n; ++i) {
+        morph1[i] = i;
+    }
+    for (int i=0; i < g2.n; ++i) {
+        morph2[i] = i + g1.n - (i > u2) - (i > v2);
+    }
+    morph2[u2] = morph1[u1];
+    morph2[v2] = morph1[v1];
+
+    vector<vector<int> > nal (g1.n + g2.n - 2);
+    vector<int> nls (g1.n + g2.n - 2);
+
+    for (int u = 0; u < g2.n; ++u) {
+        nls[morph2[u]] = g2.list_sizes[u];
+        for (int v : g2.al[u]) {
+            nal[morph2[u]].push_back(morph2[v]);
+        }
+    }
+
+    if (reverse) {
+        for (int u = 0; u < g2.n; ++u) {
+            std::reverse(nal[morph2[u]].begin(), nal[morph2[u]].end());
+        }
+    }
+    vector<int> v1neigh;
+    for (int u = 0; u < g1.n; ++u) {
+        nls[morph1[u]] = g1.list_sizes[u];
+        for (int v : g1.al[u]) {
+            if (u == u1 && v == v1) continue;
+            if (u == v1 && v == u1) continue;
+            if (u == v1) v1neigh.push_back(morph1[v]);
+            else nal[morph1[u]].push_back(morph1[v]);
+        }
+    }
+
+    std::reverse(nal[morph1[v1]].begin(), nal[morph1[v1]].end());
+    std::reverse(v1neigh.begin(), v1neigh.end());
+    for (int x : v1neigh) nal[morph1[v1]].push_back(x);
+    std::reverse(nal[morph1[v1]].begin(), nal[morph1[v1]].end());
+
+    nls[morph1[u1]] = uls;
+    nls[morph1[v1]] = vls;
+
+    return TwoPrecoloredPathsGraph(nal, nls);
+
+}
+
+
+//Returns paths with orientation
+//TODO: verify that orientation invariant is mantained, otherwise this could get chaotic
+vector<vector<int>> TwoPrecoloredPathsGraph::get_paths() const {
+    int pu, pv;
+    pu = pv = -1;
+    for (int u = 0; u < n && pu == -1; ++u) {
+        if (precolored[u]) {
+            pu = u;
+            for (int v : al[u]) {
+                if (precolored[v]) {
+                    pv = v;
+                    break;
+                }
+            }
+        }
+    }
+    int pu2, pv2;
+    pu2 = pv2 = -1;
+    for (int u = 0; u < n; ++u) {
+        if (u != pu && u != pv && precolored[u]) {
+            if (pu2 == -1) {
+                pu2 = u;
+            }
+            else {
+                pv2 =  u;
+            }
+        }
+    }
+
+    if (ral[pu].at(pv) != 0) std::swap(pu, pv);
+    if (ral[pu2].at(pv2) != 0) std::swap(pu2, pv2);
+
+    debug_assert(ral[pu].at(pv) == 0);
+    debug_assert(ral[pu2].at(pv2) == 0);
+
+    return {{pu, pv}, {pu2, pv2}};
+}
 
 
 TwoPrecoloredPathsGraph::TwoPrecoloredPathsGraph(const TwoPrecoloredPathsGraphCode& code) {
@@ -349,6 +547,7 @@ TwoPrecoloredPathsGraphCode TwoPrecoloredPathsGraph::compute_code() const {
     return code;
 }
 
+//TODO:  make this function use get_paths
 int TwoPrecoloredPathsGraph::distance_between_paths() const {
     int pu, pv;
     pu = -1;
@@ -386,6 +585,28 @@ int TwoPrecoloredPathsGraph::distance_between_paths() const {
         }
     }
     return md;
+}
+
+TwoPrecoloredPathsGraph TwoPrecoloredPathsGraph::reverse() const {
+    vector<vector<int>> nal(n);
+    vector<int> nlistsizes(n);
+    vector<int> morph(n);
+    for (int i=0; i < n; ++i) {
+        morph[i] = i;
+    }
+
+    for (int u = 0; u < n; ++u) {
+        nlistsizes[morph[u]] = list_sizes[u];
+        for (int v : al[u]) {
+            nal[morph[u]].push_back(morph[v]);
+        }
+    }
+
+    for (int i = 0; i < n; ++i) {
+        std::reverse(nal[i].begin(), nal[i].end());
+    }
+
+    return TwoPrecoloredPathsGraph(nal, nlistsizes);
 }
 
 bool TwoPrecoloredPathsGraph::test_no_l3_adjacent() const  {

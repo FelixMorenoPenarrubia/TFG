@@ -24,6 +24,10 @@ struct Graph {
 
     void generate_ral_and_m();
 
+    void set_starting_edge_in_al(int u, int v);
+
+    void set_outer_face(std::vector<int> of);
+
 };
 
 #endif

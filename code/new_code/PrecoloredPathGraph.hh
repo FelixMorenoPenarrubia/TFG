@@ -79,6 +79,8 @@ struct PrecoloredPathGraph : public PrecoloredGraph {
 
     PrecoloredPathGraphCode compute_code() const;
 
+    bool is_interior_path_vertex_articulation_point(int u) const;
+
     bool test_no_l3_adjacent() const;
 
     bool test_criticality() const;

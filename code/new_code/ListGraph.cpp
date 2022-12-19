@@ -362,3 +362,32 @@ ListGraph ListGraph::read(std::istream& is) {
     }
     return ListGraph(a, ls);
 }
+
+ListGraph ListGraph::reverse_al_order_lg() const {
+    vector<int> ls = list_sizes;
+    vector<vector<int>> nal = al;
+    for (int u=0; u < n; ++u) std::reverse(nal[u].begin(), nal[u].end());
+    return ListGraph(nal, ls);
+}
+
+ListGraph ListGraph::shuffle_order(std::mt19937 gen) const {
+    vector<int> morph(n);
+    for (int i=0; i < n; ++i) {
+        morph[i] = i;
+    }
+    std::shuffle(morph.begin(), morph.end(), gen);
+    vector<int> ls(n);
+    for (int i=0; i < n; ++i) {
+        ls[morph[i]] = list_sizes[i];
+    }
+    vector<vector<int>> nal(n);
+    for (int u=0; u < n; ++u) {
+        for (int v : al[u]) {
+            nal[morph[u]].push_back(morph[v]);
+        }
+        std::shuffle(nal[morph[u]].begin(), nal[morph[u]].end(), gen);
+    }
+
+    return ListGraph(nal, ls);
+}
+

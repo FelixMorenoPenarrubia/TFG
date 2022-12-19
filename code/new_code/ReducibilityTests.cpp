@@ -151,7 +151,7 @@ bool alon_tarsi_test(const ListGraph& g) {
     #endif
 
     return ans;*/
-    const int ALON_TARSI_LIMIT_M = 35;
+    const int ALON_TARSI_LIMIT_M = 33;
     if (g.m > ALON_TARSI_LIMIT_M) return false;
     return alon_tarsi(g);
     
@@ -171,32 +171,42 @@ bool alon_tarsi_test(const ListGraph& g) {
     */
 }
 
-bool color_and_collapse_test(const ListGraph& g) {
+bool color_and_collapse(const ListGraph& g) {
     if (g.n == 1) {
         return g.list_sizes[0] > 0;
     }
     for (int u=0; u < g.n; ++u) {
         if (g.list_sizes[u] <= 0) return false;
-        if (g.list_sizes[u] == 1) return color_and_collapse_test(g.precolor_vertex(u));
+        if (g.list_sizes[u] == 1) return color_and_collapse(g.precolor_vertex(u));
         for (int v : g.al[u]) {
-            if (g.list_sizes[v] < g.list_sizes[u]) return color_and_collapse_test(g.precolor_vertex_smart(u, v));
+            if (g.list_sizes[v] < g.list_sizes[u]) return color_and_collapse(g.precolor_vertex_smart(u, v));
         }
     }
-    return color_and_collapse_test(g.precolor_vertex(0));
+    return color_and_collapse(g.precolor_vertex(0));
 }
 
-bool two_neighbors_heuristic_test(const ListGraph& g) {
+bool color_and_collapse_test(const ListGraph& g) {
+    if (color_and_collapse(g)) return true;
+    const int N_REP = 10;
+    std::mt19937 gen;
+    for (int i=0; i < N_REP; ++i) {
+        if (color_and_collapse(g.shuffle_order(gen))) return true;
+    }
+    return color_and_collapse(g.reverse_al_order_lg());
+}
+
+bool two_neighbors_heuristic(const ListGraph& g) {
     if (g.n == 1) {
         return g.list_sizes[0] > 0;
     }
     vector<ListGraph> vcc = g.connected_components();
     if (vcc.size() > 1) {
         for (ListGraph gi : vcc) {
-            if (!two_neighbors_heuristic_test(gi)) return false;
+            if (!two_neighbors_heuristic(gi)) return false;
         }
         return true;
     }
-    const int ALON_TARSI_THRESHOLD = 5;
+    const int ALON_TARSI_THRESHOLD = 20;
     if (g.m <= ALON_TARSI_THRESHOLD) {
         return alon_tarsi_test(g);
     }
@@ -204,18 +214,20 @@ bool two_neighbors_heuristic_test(const ListGraph& g) {
         if (g.list_sizes[u] <= 0) return false;
     }
     for (int u=0; u < g.n; ++u) {
-         if (g.list_sizes[u] == 1) return two_neighbors_heuristic_test(g.precolor_vertex(u));
+         if (g.list_sizes[u] == 1) return two_neighbors_heuristic(g.precolor_vertex(u));
     }
 
     for (int l=3; l <= 5; ++l) {
         for (int u=0; u < g.n; ++u) {
             if (g.list_sizes[u] <= l && g.list_sizes[u] >= 3) {
-                for (int v : g.al[u]) {
-                    for (int w : g.al[u]) {
-                        if (v == w) continue;
-                        if (g.neighbors(v, w)) continue;
-                        if (g.list_sizes[v] + g.list_sizes[w] > g.list_sizes[u] && g.list_sizes[v] <= g.list_sizes[u] && g.list_sizes[w] <= g.list_sizes[u]) {
-                            return two_neighbors_heuristic_test(g.precolor_vertices_smart_twoneighbors(u, v, w));
+                for (int s=g.list_sizes[u]+1; s <= 2*g.list_sizes[u]-2; ++s) {
+                    for (int v : g.al[u]) {
+                        for (int w : g.al[u]) {
+                            if (v == w) continue;
+                            if (g.neighbors(v, w)) continue;
+                            if (g.list_sizes[v] + g.list_sizes[w] > g.list_sizes[u] && g.list_sizes[v] + g.list_sizes[w] <= s && g.list_sizes[v] < g.list_sizes[u] && g.list_sizes[w] < g.list_sizes[u]) {
+                                return two_neighbors_heuristic(g.precolor_vertices_smart_twoneighbors(u, v, w));
+                            }
                         }
                     }
                 }
@@ -224,16 +236,115 @@ bool two_neighbors_heuristic_test(const ListGraph& g) {
     }
     for (int u=0; u < g.n; ++u) {
         for (int v : g.al[u]) {
-            if (g.list_sizes[v] < g.list_sizes[u]) return two_neighbors_heuristic_test(g.precolor_vertex_smart(u, v));
+            if (g.list_sizes[v] < g.list_sizes[u]) return two_neighbors_heuristic(g.precolor_vertex_smart(u, v));
         }
     }
-    return two_neighbors_heuristic_test(g.precolor_vertex(0));
+    return two_neighbors_heuristic(g.precolor_vertex(0));
 
 
 }
 
+bool two_neighbors_heuristic_test(const ListGraph& g) {
+    if (two_neighbors_heuristic(g)) return true;
+    const int N_REP = 10;
+    std::mt19937 gen;
+    for (int i=0; i < N_REP; ++i) {
+        if (two_neighbors_heuristic(g.shuffle_order(gen))) return true;
+    }
+    return two_neighbors_heuristic(g.reverse_al_order_lg());
+}
+
+bool hill_climbing_two_neighbors_test(const ListGraph& g) {
+    if (g.n == 1) {
+        return g.list_sizes[0] > 0;
+    }
+    for (int u=0; u < g.n; ++u) {
+        if (g.list_sizes[u] <= 0) return false;
+    }
+    vector<ListGraph> vcc = g.connected_components();
+    if (vcc.size() > 1) {
+        for (ListGraph gi : vcc) {
+            if (!two_neighbors_heuristic(gi)) return false;
+        }
+        return true;
+    }
+    const int ALON_TARSI_THRESHOLD = 20;
+    if (g.m <= ALON_TARSI_THRESHOLD) {
+        return alon_tarsi_test(g);
+    }
+
+    std::function<int(const ListGraph&)> score_fun = [ALON_TARSI_THRESHOLD, &score_fun] (const ListGraph& g) -> int {
+        if (g.n == 1) {
+            return g.list_sizes[0] > 0 ? 1e9 : -1e9;
+        }
+        vector<ListGraph> vcc = g.connected_components();
+        if (vcc.size() > 1) {
+            int cs = 1e9;
+            for (ListGraph gi : vcc) {
+                cs = std::min(cs, score_fun(gi));
+            }
+            return cs;
+        }
+
+        if(g.m <= ALON_TARSI_THRESHOLD) {
+            return alon_tarsi_test(g) ? 1e9 : -1e9;
+        }
+        for (int u=0; u < g.n; ++u) {
+           if (g.list_sizes[u] <= 0) return -1e9;
+        }
+        int cs = -g.n*g.n-g.m;
+
+        for (int u = 0; u < g.n; ++u) {
+            if (g.list_sizes[u] == 1) cs -= 50;
+            for (int v : g.al[u]) {
+                cs -= (6-g.list_sizes[u])*(6-g.list_sizes[v]);
+            }
+        }
+
+        return cs;
+    };
+
+    int best_score = -2e9;
+    ListGraph best_graph = g.precolor_vertex(0);
+
+    auto add_graph = [&score_fun, &best_score, &best_graph] (const ListGraph& g) -> void {
+        int g_score = score_fun(g);
+        if (g_score > best_score) {
+            best_score = g_score;
+            best_graph = g;
+        }
+    };
+
+    for (int u=0; u < g.n; ++u) {
+        add_graph(g.precolor_vertex(u));
+        if ((int)g.al[u].size() < g.list_sizes[u]) {
+            add_graph(g.remove_vertex(u));
+        }
+    }
+
+    for (int u=0; u < g.n; ++u) {    
+        for (int v : g.al[u]) {
+            for (int w : g.al[u]) {
+                if (v == w) continue;
+                if (g.neighbors(v, w)) continue;
+                if (g.list_sizes[v] + g.list_sizes[w] > g.list_sizes[u] && g.list_sizes[v] <= g.list_sizes[u] && g.list_sizes[w] <= g.list_sizes[u]) {
+                    add_graph(g.precolor_vertices_smart_twoneighbors(u, v, w));
+                }
+            }
+        }     
+    }
+    
+    for (int u=0; u < g.n; ++u) {
+        for (int v : g.al[u]) {
+            if (g.list_sizes[v] < g.list_sizes[u]) add_graph(g.precolor_vertex_smart(u, v));
+        }
+    }
+
+    return hill_climbing_two_neighbors_test(best_graph);
+}
+
 bool batch_reducible_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, color_and_collapse_test, reducible_gadgets_test, /*two_neighbors_heuristic_test,*/ alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, color_and_collapse_test, reducible_gadgets_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, alon_tarsi_test};
 
     for (auto f : tests) {
         if (DEBUG_VARS::DEBUG_TRACING) {
@@ -246,7 +357,7 @@ bool batch_reducible_test(const ListGraph& g) {
 }
 
 bool batch_colorable_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, /*two_neighbors_heuristic_test,*/ alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, alon_tarsi_test};
 
     vector<ListGraph> vcc = g.connected_components();
 
@@ -310,9 +421,24 @@ bool recursive_colorability_test(const ListGraph& g) {
             return recursive_colorability_test(g.precolor_vertex(u));
         }
     }
+    
+     for (int u=0; u < g.n; ++u) {
+        if (g.list_sizes[u] == 1) {
+            for (int v : g.al[u]) {
+                if (g.list_sizes[v] == 1) {
+                    return recursive_colorability_test(g.precolor_vertex(u));
+                }
+            }
+        }
+    }
+    
+
     if (batch_colorable_test(g)) {
         return true;
     }
+
+   
+
     vector<int> deleted_vertices = minimal_irreducible_deletedvertices(g);
 
     vector<int> deleted(g.n);

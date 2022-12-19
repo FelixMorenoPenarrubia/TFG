@@ -7,6 +7,7 @@
 #include<vector>
 #include<map>
 #include<algorithm>
+#include<random>
 
 
 
@@ -74,6 +75,10 @@ struct ListGraph : public Graph {
     std::vector<ListGraph> connected_components() const;
 
     bool subgraph_test(const ListGraph& h) const;
+
+    ListGraph reverse_al_order_lg() const;
+
+    ListGraph shuffle_order(std::mt19937 gen) const;
 
 };
 

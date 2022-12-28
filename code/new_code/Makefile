@@ -56,6 +56,12 @@ sort_codes: main_sort_codes.cc $(SRC_FILES)
 sort_wedges: main_sort_wedges.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o sort_wedges main_sort_wedges.cc *.cpp
 
+sort_biwedges: main_sort_biwedges.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o sort_biwedges main_sort_biwedges.cc *.cpp
+
+bucket_biwedges: main_bucket_biwedges.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o bucket_biwedges main_bucket_biwedges.cc *.cpp
+
 compare_pp: main_compare_precoloredpathgraphs.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o compare_pp main_compare_precoloredpathgraphs.cc *.cpp
 

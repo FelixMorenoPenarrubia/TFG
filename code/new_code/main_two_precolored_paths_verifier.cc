@@ -27,7 +27,7 @@ int main() {
             TwoPrecoloredPathsGraph g2 = TwoPrecoloredPathsGraph(c2);
             vector<TwoPrecoloredPathsGraph> vg = TwoPrecoloredPathsGraph::fuse_paths(g1, g2);
             for (auto g : vg) {
-                if (G.find(g.compute_code()) == G.end()) {
+                if (g.distance_between_paths() > D && g.count_l3_adjacent_pairs() <= 1) {
                     if (g.test_criticality()) {
                         cout << "BAD GRAPH" << endl;
                         g1.write(cout);

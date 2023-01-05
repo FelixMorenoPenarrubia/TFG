@@ -620,8 +620,36 @@ bool TwoPrecoloredPathsGraph::test_no_l3_adjacent() const  {
     return true;
 }
 
+int TwoPrecoloredPathsGraph::count_l3_adjacent_pairs() const  {
+    int cnt = 0;
+    for (int u = 0; u < n; ++u) {
+        if (list_sizes[u] == 3) {
+            for (int v : al[u]) {
+                if (v > u && list_sizes[v] == 3) cnt++;
+            }
+        }
+    }
+    return cnt;
+}
+
 bool TwoPrecoloredPathsGraph::test_criticality() const {
     if (n == 4) return true;
-    if (!test_no_l3_adjacent()) return false;
+    //if (!test_no_l3_adjacent()) return false;
     return !batch_test(compute_list_graph());
+}
+
+vector<PrecoloredPathAndVertexGraph> TwoPrecoloredPathsGraph::unprecolor_vertices() const {
+    vector<PrecoloredPathAndVertexGraph> ans;
+    vector<vector<int>> p = get_paths();
+    for (int i=0; i <= 1; ++i) {
+        for (int j=0; j <= 1; ++j) {
+            for (int uls=3; uls <= 5; ++uls) {
+                vector<int> nls = vector<int>(list_sizes);
+                nls[p[i][j]] = uls;
+                ans.emplace_back(al, nls);
+            }
+        }
+    }
+
+    return ans;
 }

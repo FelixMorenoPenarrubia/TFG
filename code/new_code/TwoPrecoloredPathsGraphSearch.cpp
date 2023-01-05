@@ -14,7 +14,7 @@ TwoPrecoloredPathsGraphSearch::TwoPrecoloredPathsGraphSearch() {
 
 bool TwoPrecoloredPathsGraphSearch::test_graph(const TwoPrecoloredPathsGraph& g, int d) {
     
-    bool res = (g.distance_between_paths() == d && g.test_criticality()); 
+    bool res = (g.distance_between_paths() == d && g.test_no_l3_adjacent() && g.test_criticality()); 
     return res;
 }
 

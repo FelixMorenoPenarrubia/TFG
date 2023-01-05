@@ -11,11 +11,17 @@ canvas_search: main_canvas_search.cc $(SRC_FILES)
 pp_search: main_precolored_path_graph_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o pp_search main_precolored_path_graph_search.cc *.cpp
 
+ppv_search: main_precolored_path_and_vertex_graph_search.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o ppv_search main_precolored_path_and_vertex_graph_search.cc *.cpp
+
 tpp_search: main_two_precolored_paths_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o tpp_search main_two_precolored_paths_search.cc *.cpp
 
 tpp_verifier: main_two_precolored_paths_verifier.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o tpp_verifier main_two_precolored_paths_verifier.cc *.cpp
+
+ppv_verifier: main_precolored_path_and_vertex_verifier.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o ppv_verifier main_precolored_path_and_vertex_verifier.cc *.cpp
 
 pp_search_prolog: main_precolored_path_graph_search_prolog.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o pp_search_prolog main_precolored_path_graph_search_prolog.cc *.cpp

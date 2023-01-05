@@ -3,6 +3,7 @@
 
 #include "PrecoloredGraph.hh"
 #include "PrecoloredPathGraph.hh"
+#include "PrecoloredPathAndVertexGraph.hh"
 
 #include<iostream>
 #include<vector>
@@ -73,10 +74,14 @@ struct TwoPrecoloredPathsGraph : public PrecoloredGraph {
     int distance_between_paths() const;
 
     bool test_no_l3_adjacent() const;
+    
+    int count_l3_adjacent_pairs() const;
 
     bool test_criticality() const;
 
     TwoPrecoloredPathsGraph reverse() const;
+
+    std::vector<PrecoloredPathAndVertexGraph> unprecolor_vertices() const;
 
 };
 

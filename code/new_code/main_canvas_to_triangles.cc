@@ -15,24 +15,25 @@ using std::vector;
 using std::string;
 
 int main() {
-    //int T;
-    //cin >> T;
-    int T = 100'000'000;
+   // int T;
+   // cin >> T;
+    //int T = 100'000'000;
     //map<TwoTriangleGraphCode, TwoTriangleGraph> m;
     std::set<TwoTriangleGraphCode> s;
 
-    int max_time = 0;
+    /*int max_time = 0;
     long long total_time_50 = 0;
     long long total_time_500 = 0;
 
-    auto begin_time = std::chrono::system_clock::now();
+    auto begin_time = std::chrono::system_clock::now();*/
 
-	for (int t=0; t < T; ++t) {
+    string str;
+	while (cin >> str) {
 
-        auto start = std::chrono::system_clock::now();
+        //auto start = std::chrono::system_clock::now();
 
         
-        Canvas c = Canvas::read_code(cin);
+        Canvas c = Canvas(CanvasCode(str));
        
         
         vector<TwoTriangleGraph> vec = TwoTriangleGraph::generate_from_canvas(c);
@@ -43,10 +44,8 @@ int main() {
 
             if (s.find(g.compute_code()) == s.end()) {
                 if (g.test_criticality()) {
+                    g.write(cerr);
                     s.insert(g.compute_code());
-                    cerr << g.compute_code().to_string() << endl;
-                    cerr << "!!!" << endl;
-                    return 0;
                 }
             }
 
@@ -59,7 +58,7 @@ int main() {
             */
         }
 
-        auto end = std::chrono::system_clock::now();
+      /*  auto end = std::chrono::system_clock::now();
 
         auto elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
 
@@ -78,12 +77,13 @@ int main() {
             cerr << "Total time elapsed (50ms granularity): " << total_time_50/20 << "s" << endl;
             cerr << "Total time elapsed (500ms granularity): " << total_time_500/2 << "s" << endl;
         }
+        */
     }
 
     
     cout << s.size() << endl;
     for (auto c : s) {
-        cout << c.to_string() << endl;
+        TwoTriangleGraph(c).write(cout);
     }
     
     /*

@@ -62,13 +62,31 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     static std::vector<TwoTriangleGraph> generate_from_canvas(const Canvas& g);
 
+    //Returns all possible combinations of fusing the triangular faces of g1 and g2
+    static std::vector<TwoTriangleGraph> fuse_triangles(TwoTriangleGraph g1, TwoTriangleGraph g2);
+
+    //Fuses the second triangle of g1 with the first triangle of g2. TODO: may not respect orientation
+    static TwoTriangleGraph fuse_triangles_fixed(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2);
+
+    //Fuses all subgraphs of a tetrahedral band with g
+    static std::vector<TwoTriangleGraph> add_tetrahedral_band(const TwoTriangleGraph& g);
+
+    //Fuses g1 with every connected subgraph of g2. PRE: g2 must be small
+    static std::vector<TwoTriangleGraph> fuse_triangles_subgraph_connected(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2);
+
+    //Fuses all subgraphs of an octahedral band with g
+    static std::vector<TwoTriangleGraph> add_octahedral_band(const TwoTriangleGraph& g);
+
+    //Fuses all subgraphs of a hexadecahedral band with g
+    static std::vector<TwoTriangleGraph> add_hexadecahedral_band(const TwoTriangleGraph& g);
+
     static TwoTriangleGraph read(std::istream& is);
 
     void write(std::ostream& os) const;
 
     void write_prolog(std::ostream& os) const;
 
-    void dfs_code(int u, int idx, int& c, vector<int>& an, TwoTriangleGraphCode& code) const;
+    void dfs_code(int u, int idx, int& c, std::vector<int>& an, TwoTriangleGraphCode& code) const;
 
     TwoTriangleGraphCode compute_code_edge(int u, int v) const;
 

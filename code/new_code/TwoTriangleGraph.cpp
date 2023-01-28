@@ -258,9 +258,11 @@ TwoTriangleGraph TwoTriangleGraph::read(std::istream& is) {
 
 void TwoTriangleGraph::write(std::ostream& os) const {
     os << n << " " << m << " " << path_length << endl;
-    for (int i=0; i < n; ++i) {
+    /*for (int i=0; i < n; ++i) {
         if (precolored[i]) os << i << " ";
-    }
+    }*/
+    for (int u : triangles[0]) os << u << " ";
+    for (int u : triangles[1]) os << u << " ";
     os << endl;
     for (int u = 0; u < n; ++u) {
         for (int v : al[u]) {
@@ -379,4 +381,95 @@ bool TwoTriangleGraph::test_criticality() const {
     if (n == 6) return true;
     if (distance_between_triangles() < path_length) return false;
     return !batch_test(compute_list_graph());
+}
+
+vector<TwoTriangleGraph> TwoTriangleGraph::fuse_triangles(TwoTriangleGraph g1, TwoTriangleGraph g2) {
+    vector<TwoTriangleGraph> ans;
+    for(int t_idx_1=0; t_idx_1 <= 1; ++t_idx_1) {
+        for (int t_idx_2=0; t_idx_2 <= 1; ++t_idx_2) {
+           // for (int t_ord_1=0; t_ord_1 < 3; ++t_ord_1) {
+                for (int t_ord_2=0; t_ord_2 < 3; ++t_ord_2) {
+                    //g1.set_outer_face(g1.triangles[t_idx_1]);
+                    //g2.set_outer_face(g2.triangles[t_idx_2]);
+
+                    ans.push_back(fuse_triangles_fixed(g1, g2));
+                    ans.push_back(fuse_triangles_fixed(g2, g1));
+
+                    g2.triangles[t_idx_2] = {g2.triangles[t_idx_2][1], g2.triangles[t_idx_2][2], g2.triangles[t_idx_2][0]};
+                }
+            //    g1.triangles[t_idx_1] = {g1.triangles[t_idx_1][1], g1.triangles[t_idx_1][2], g1.triangles[t_idx_1][0]};
+            //}
+        }
+    }
+    return ans;
+}
+
+TwoTriangleGraph TwoTriangleGraph::fuse_triangles_fixed(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2) {
+    vector<vector<int>> nal(g1.n + g2.n - 3);
+   
+    vector<int> morph1(g1.n);
+    for (int i=0; i < g1.n; ++i) {
+        morph1[i] = i;
+    }
+    vector<int> morph2(g2.n);
+    int cm2 = g1.n;
+    for (int i=0; i < g2.n; ++i) {
+        if (std::find(g2.triangles[0].begin(), g2.triangles[0].end(), i) == g2.triangles[0].end()) {
+            morph2[i] = cm2++;
+        }
+    }
+    for (int i=0; i < 3; ++i) {
+        morph2[g2.triangles[0][i]] = morph1[g1.triangles[1][i]];
+    }
+    
+    for (int u=0; u < g1.n; ++u) {
+        for (int v : g1.al[u]) {
+            nal[morph1[u]].push_back(morph1[v]);
+        }
+    }
+
+    for (int u=0; u < g2.n; ++u) {
+        for (int v : g2.al[u]) {
+            if (std::find(g2.triangles[0].begin(), g2.triangles[0].end(), u) == g2.triangles[0].end() || std::find(g2.triangles[0].begin(), g2.triangles[0].end(), v) == g2.triangles[0].end()) {
+                nal[morph2[u]].push_back(morph2[v]);
+            }
+        }
+    }
+
+    vector<vector<int>> ntri = {{morph1[g1.triangles[0][0]], morph1[g1.triangles[0][1]], morph1[g1.triangles[0][2]]},
+    {morph2[g2.triangles[1][0]], morph2[g2.triangles[1][1]], morph2[g2.triangles[1][2]]}};
+    return TwoTriangleGraph(nal, ntri);
+    
+}
+
+vector<TwoTriangleGraph> fuse_triangles_subgraph_connected(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2) {
+    using ii = std::pair<int, int>;
+    vector<ii> el;
+    for (int u = 0; u < g2.n; ++u) {
+        if (g2.precolored[u]) continue;
+        for (int v : g2.al[u]) {
+            if (g2.precolored[v]) continue;
+            el.emplace_back(u, v);
+        }
+    }
+    int m = el.size();
+    for (int bm = 0; bm < (1<<m); ++bm) {
+
+    }
+
+}
+
+vector<TwoTriangleGraph> TwoTriangleGraph::add_tetrahedral_band(const TwoTriangleGraph& g) {
+    vector<TwoTriangleGraph> ans;
+    for (int t_idx = 0; t_idx < 2; ++t_idx) {
+        for (int v_idx = 0; v_idx < 3; ++v_idx) {
+            vector<vector<int>> nal = g.al;
+            nal.push_back({g.triangles[t_idx][v_idx], g.triangles[t_idx][(v_idx+2)%3]});
+            ans.push_back(TwoTriangleGraph(nal, {{g.triangles[t_idx][v_idx], g.triangles[t_idx][(v_idx+2)%3], g.n}, g.triangles[1-t_idx]}));
+            nal.pop_back();
+            nal.push_back({g.triangles[t_idx][v_idx], g.triangles[t_idx][(v_idx+1)%3], g.triangles[t_idx][(v_idx+2)%3]});
+            ans.push_back(TwoTriangleGraph(nal, {{g.triangles[t_idx][v_idx], g.triangles[t_idx][(v_idx+2)%3], g.n}, g.triangles[1-t_idx]}));
+        }
+    }
+    return ans;
 }

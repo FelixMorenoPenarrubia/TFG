@@ -422,6 +422,15 @@ void fuse_precoloredpaths_sameside() {
 	}
 }
 
+void fuse_twotrianglegraphs() {
+	TwoTriangleGraph g1 = TwoTriangleGraph::read(cin);
+	TwoTriangleGraph g2 = TwoTriangleGraph::read(cin);
+	vector<TwoTriangleGraph> ans = TwoTriangleGraph::fuse_triangles(g1, g2);
+	for (TwoTriangleGraph g : ans) {
+		g.write(cout);
+	}
+}
+
 
 int main() {
 	cerr << "Select program: " << endl;
@@ -457,6 +466,7 @@ int main() {
 	cerr << "30. Critical test for TwoPrecoloredPathGraph" << endl;
 	cerr << "31. Generate code for PrecoloredPathGraph" << endl;
 	cerr << "32. Fuse two precolored paths on the same side to generate TwoPrecoloredPathGraph" << endl;
+	cerr << "33. Fuse two TwoTriangleGraphs" << endl;
 	
 	int c;
 	cin >> c;
@@ -555,5 +565,8 @@ int main() {
 	}
 	if(c == 32) {
 		fuse_precoloredpaths_sameside();
+	}
+	if(c == 33) {
+		fuse_twotrianglegraphs();
 	}
 }

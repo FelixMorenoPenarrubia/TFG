@@ -3,6 +3,7 @@
 #include "AlonTarsi.hh"
 #include "debug_utility.hh"
 #include "Parallelism.hh"
+#include "GlobalSettings.hh"
 #include<functional>
 
 using std::vector;
@@ -151,8 +152,20 @@ bool alon_tarsi_test(const ListGraph& g) {
     #endif
 
     return ans;*/
+
+    static map<ListGraphCode, bool> mem;
+
     const int ALON_TARSI_LIMIT_M = 33;
     if (g.m > ALON_TARSI_LIMIT_M) return false;
+
+    if(GlobalSettings::ALON_TARSI_MEMOIZE) {
+        ListGraphCode code = g.compute_list_code();
+        if (mem.find(code) == mem.end()) {
+            mem[code] = alon_tarsi(g);
+        }
+        return mem[code];
+    }
+
     return alon_tarsi(g);
     
     /*

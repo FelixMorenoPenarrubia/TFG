@@ -101,15 +101,15 @@ void CanvasSearch::add_canvas_q_real(const Canvas& g, std::queue<CanvasCode>& q)
 void CanvasSearch::add_canvas_dfs_parallel(const Canvas& g) {
     CanvasCode c = g.compute_code();
     cchash h = c.hash();
-    //Parallelism::canvas_hash_list_mutex.lock();
+    Parallelism::canvas_hash_list_mutex.lock();
     bool found = ch.find(h) != ch.end();
-    //Parallelism::canvas_hash_list_mutex.unlock();
+    Parallelism::canvas_hash_list_mutex.unlock();
     if (!found) {
         if (test_canvas(g)) {
-          //  Parallelism::canvas_hash_list_mutex.lock();
+            Parallelism::canvas_hash_list_mutex.lock();
             std::cout << c.to_string() << '\n';
             ch.insert(h);
-           // Parallelism::canvas_hash_list_mutex.unlock();
+            Parallelism::canvas_hash_list_mutex.unlock();
             std::vector<CanvasCode> st;
             st.push_back(c);
 

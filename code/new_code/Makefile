@@ -44,6 +44,9 @@ canvas_search_lessmemory_parallel_debug: main_canvas_search_lessmemory.cc $(SRC_
 canvas_to_triangles: main_canvas_to_triangles.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o canvas_to_triangles main_canvas_to_triangles.cc *.cpp
 
+triangle_fusion_verifier: main_triangle_fusion_verifier.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o triangle_fusion_verifier main_triangle_fusion_verifier.cc *.cpp
+
 canvas_to_triangles_parallel: main_canvas_to_triangles_parallel.cc $(SRC_FILES)
 	g++ $(PARALLELFLAGS) -o canvas_to_triangles_parallel main_canvas_to_triangles_parallel.cc *.cpp
 

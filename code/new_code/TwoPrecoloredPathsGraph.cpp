@@ -356,8 +356,8 @@ vector<TwoPrecoloredPathsGraph> TwoPrecoloredPathsGraph::fuse_paths(const TwoPre
         for (int ord1=0; ord1 <= 1; ++ord1) {
             for (int path2=0; path2 <= 1; ++path2) {
                 for (int ord2=0; ord2 <= 1; ++ord2) {
-                    for (int ul=3; ul <= 5; ++ul) {
-                        for (int vl=3; vl <= 5; ++vl) {
+                    for (int ul=3; ul <= /*5*/ 3; ++ul) {
+                        for (int vl=3; vl <= /*5*/ 3; ++vl) {
                             ans.push_back(TwoPrecoloredPathsGraph::fuse_edge(g1, p1[path1][ord1], p1[path1][1-ord1], g2, p2[path2][ord2], p2[path2][1-ord2], ul, vl, !(ord1^ord2)));
                         }
                     }

@@ -27,15 +27,17 @@ int main() {
             TwoPrecoloredPathsGraph g2 = TwoPrecoloredPathsGraph(c2);
             vector<TwoPrecoloredPathsGraph> vg = TwoPrecoloredPathsGraph::fuse_paths(g1, g2);
             for (auto g : vg) {
-                if (g.distance_between_paths() > D && g.count_l3_adjacent_pairs() <= 1) {
+                if (g.distance_between_paths() > 3 && g.count_l3_adjacent_pairs() <= 1) {
+                   
                     if (g.test_criticality()) {
-                        cout << "BAD GRAPH" << endl;
+                        cout << "GRAPH" << endl;
                         g1.write(cout);
                         cout << "---" << endl;
                         g2.write(cout);
                         cout << "---" << endl;
                         g.write(cout);
-                        return 0;
+                        cout << "---" << endl;
+                        //return 0;
                     }
                 }
             }

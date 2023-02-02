@@ -442,7 +442,8 @@ TwoTriangleGraph TwoTriangleGraph::fuse_triangles_fixed(const TwoTriangleGraph& 
     
 }
 
-vector<TwoTriangleGraph> fuse_triangles_subgraph_connected(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2) {
+//TODO: finish implementation
+/*vector<TwoTriangleGraph> fuse_triangles_subgraph_connected(const TwoTriangleGraph& g1, const TwoTriangleGraph& g2) {
     using ii = std::pair<int, int>;
     vector<ii> el;
     for (int u = 0; u < g2.n; ++u) {
@@ -457,7 +458,7 @@ vector<TwoTriangleGraph> fuse_triangles_subgraph_connected(const TwoTriangleGrap
 
     }
 
-}
+}*/
 
 vector<TwoTriangleGraph> TwoTriangleGraph::add_tetrahedral_band(const TwoTriangleGraph& g) {
     vector<TwoTriangleGraph> ans;

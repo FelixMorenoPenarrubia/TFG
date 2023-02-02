@@ -9,6 +9,7 @@
 #include "PrecoloredPathGraphSearch.hh"
 #include "TwoPrecoloredPathsGraph.hh"
 #include "TwoPrecoloredPathsGraphSearch.hh"
+#include "PrecoloredPathAndTriangleGraph.hh"
 
 using std::cout;
 using std::cin;
@@ -431,6 +432,26 @@ void fuse_twotrianglegraphs() {
 	}
 }
 
+void fuse_canvas_and_precoloredpathgraph_triangle_path() {
+	Canvas c = Canvas::read(cin);
+	PrecoloredPathGraph p = PrecoloredPathGraph::read(cin);
+	vector<PrecoloredPathAndTriangleGraph> v = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_path(c, p);
+	for (auto g : v) {
+	//	g.write(cout);
+	}
+	v[0].write(cout);
+}
+
+void fuse_canvas_and_precoloredpathgraph_triangle_canvas() {
+	Canvas c = Canvas::read(cin);
+	PrecoloredPathGraph p = PrecoloredPathGraph::read(cin);
+	vector<PrecoloredPathAndTriangleGraph> v = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_canvas(c, p);
+	for (auto g : v) {
+	//	g.write(cout);
+	}
+	v[0].write(cout);
+}
+
 
 int main() {
 	cerr << "Select program: " << endl;
@@ -467,6 +488,8 @@ int main() {
 	cerr << "31. Generate code for PrecoloredPathGraph" << endl;
 	cerr << "32. Fuse two precolored paths on the same side to generate TwoPrecoloredPathGraph" << endl;
 	cerr << "33. Fuse two TwoTriangleGraphs" << endl;
+	cerr << "34. Fuse Canvas and PrecoloredPathGraph with triangle in path" << endl;
+	cerr << "35. Fuse Canvas and PrecoloredPathGraph with triangle in canvas" << endl;
 	
 	int c;
 	cin >> c;
@@ -568,5 +591,11 @@ int main() {
 	}
 	if(c == 33) {
 		fuse_twotrianglegraphs();
+	}
+	if(c == 34) {
+		fuse_canvas_and_precoloredpathgraph_triangle_path();
+	}
+	if(c == 35) {
+		fuse_canvas_and_precoloredpathgraph_triangle_canvas();
 	}
 }

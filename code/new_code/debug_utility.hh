@@ -37,11 +37,11 @@ inline void __print(const T &x) {int f = 0; cerr << '{'; for (auto &i: x) cerr <
 inline void _print() {cerr << "]\n";}
 template <typename T, typename... V>
 inline void _print(T t, V... v) {__print(t); if (sizeof...(v)) cerr << ", "; _print(v...);}
-void _assert(bool x);
+void assert_fail();
 #ifdef DEBUG
 #define debug_var(x...) cerr <<  __FILE__ << ":" << __LINE__ << " [" << #x << "] = ["; __print(x); cerr << "]\n";
 #define debug_msg(x) cerr <<  __FILE__ << ":" << __LINE__ << " " << x << "\n";
-#define debug_assert(x) if(!(x)) cerr << __FILE__ << ":" << __LINE__ << " Assert failed!" << "\n";
+#define debug_assert(x) if(!(x)) { cerr << __FILE__ << ":" << __LINE__ << " Assert failed!" << "\n"; assert_fail();};
 #else
 #define debug_var(x...)
 #define debug_msg(x)

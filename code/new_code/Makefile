@@ -11,6 +11,12 @@ canvas_search: main_canvas_search.cc $(SRC_FILES)
 pp_search: main_precolored_path_graph_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o pp_search main_precolored_path_graph_search.cc *.cpp
 
+fail_red_search: main_fail_reduction_search.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o fail_red_search main_fail_reduction_search.cc *.cpp
+
+fail_red_search2: main_fail_reduction_search_precompute_critical_indices.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o fail_red_search main_fail_reduction_search_precompute_critical_indices.cc *.cpp
+
 ppv_search: main_precolored_path_and_vertex_graph_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o ppv_search main_precolored_path_and_vertex_graph_search.cc *.cpp
 

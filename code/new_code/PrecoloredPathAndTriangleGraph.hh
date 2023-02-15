@@ -38,6 +38,13 @@ struct PrecoloredPathAndTriangleGraphCode {
 
 };
 
+struct CanvasWithIndices {
+    Canvas c;
+    int i;
+    int dj;
+    int mask;
+};
+
 struct PrecoloredPathAndTriangleGraph : public PrecoloredGraph {
 
     std::vector<int> path;
@@ -80,6 +87,15 @@ struct PrecoloredPathAndTriangleGraph : public PrecoloredGraph {
     //Important: list sizes are left as-is, and the indices of the corresponding vertices of the canvas are not changed
     static PrecoloredPathAndTriangleGraph fuse_canvas_and_path_triangle_in_canvas_indices(const Canvas& c, const PrecoloredPathGraph& p, int i, int j);
 
+    static vector<PrecoloredPathAndTriangleGraph> fuse_canvas_with_indices_and_path_triangle_in_path(const CanvasWithIndices& c, const PrecoloredPathGraph& p);
+
+    static vector<PrecoloredPathAndTriangleGraph> fuse_canvas_with_indices_and_path_triangle_in_canvas(const CanvasWithIndices& c, const PrecoloredPathGraph& p);
+
+    //Returns all CanvasWithIndices that are critical with the modified list sizes and precoloring the fusion path
+    static vector<CanvasWithIndices> critical_canvases_with_indices_triangle_in_path(Canvas c);
+
+    static vector<CanvasWithIndices> critical_canvases_with_indices_triangle_in_canvas(Canvas c);
+
     void dfs_code(int u, int idx, int& c, vector<int>& an, PrecoloredPathAndTriangleGraphCode& code) const;
 
     PrecoloredPathAndTriangleGraphCode compute_code_edge(int u, int v) const;
@@ -98,5 +114,7 @@ struct PrecoloredPathAndTriangleGraph : public PrecoloredGraph {
     bool test_criticality() const;
 
 };
+
+
 
 #endif

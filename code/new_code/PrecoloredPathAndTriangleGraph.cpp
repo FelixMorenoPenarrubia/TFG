@@ -207,7 +207,8 @@ vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canv
                     ppt.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
                     x /= 3;
                 }
-                ans.emplace_back(ppt.al, ppt.list_sizes);
+                PrecoloredPathAndTriangleGraph nppt = PrecoloredPathAndTriangleGraph(ppt.al, ppt.list_sizes);
+                if(nppt.test_no_l3_adjacent()) ans.push_back(nppt);
             }
         }
     }
@@ -238,11 +239,178 @@ vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canv
                     ppt.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
                     x /= 3;
                 }
-                ans.emplace_back(ppt.al, ppt.list_sizes);
+
+                PrecoloredPathAndTriangleGraph nppt = PrecoloredPathAndTriangleGraph(ppt.al, ppt.list_sizes);
+                if(nppt.test_no_l3_adjacent()) ans.push_back(nppt);
             }
         }
     }
     return ans;
+}
+
+vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with_indices_triangle_in_path(Canvas c) {
+    vector<CanvasWithIndices> ans;
+    for (int i=0; i < c.l; ++i) {
+        for (int dj=std::max(2, c.l-2-6); dj <= std::min(4, c.l-6); ++dj) {
+            ListGraph g = ListGraph(c.al, c.list_sizes);
+            //g.list_sizes[(i+dj+1)%c.l] = 5;
+            //g.list_sizes[(i+dj+4)%c.l] = 5;
+            vector<int> variable_list_size_vertices;
+            for (int k=2; k < dj; ++k) {
+                variable_list_size_vertices.push_back((i+k)%c.l);
+            }
+            for (int k=(i+dj+6)%c.l; k != i; k=(k+1)%c.l) {
+                variable_list_size_vertices.push_back(k);
+            }
+            int pow3 = 1;
+            int vlsvs = variable_list_size_vertices.size();
+            for (int k=0; k < vlsvs; ++k) pow3 *= 3;
+            for (int mask=0; mask < pow3; ++mask) {
+                int x = mask;
+                for (int k=0; k < vlsvs; ++k) {
+                    g.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
+                    x /= 3;
+                }
+                if (!batch_reducible_test(g)) {
+                    CanvasWithIndices cwi;
+                    cwi.c = c;
+                    cwi.i = i;
+                    cwi.dj = dj;
+                    cwi.mask = mask;
+                    ans.push_back(cwi);
+                }
+            }
+        }
+    }
+    return ans;
+}
+
+vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with_indices_triangle_in_canvas(Canvas c) {
+    vector<CanvasWithIndices> ans;
+    for (int i=0; i < c.l; ++i) {
+        for (int dj=std::max(2, c.l-2-7); dj <= std::min(4, c.l-7); ++dj) {
+            ListGraph g = ListGraph(c.al, c.list_sizes);
+            //g.list_sizes[(i+dj+1)%c.l] = 5;
+            //g.list_sizes[(i+dj+5)%c.l] = 5;
+            vector<int> variable_list_size_vertices;
+            for (int k=2; k < dj; ++k) {
+                variable_list_size_vertices.push_back((i+k)%c.l);
+            }
+            for (int k=(i+dj+7)%c.l; k != i; k=(k+1)%c.l) {
+                variable_list_size_vertices.push_back(k);
+            }
+            int pow3 = 1;
+            int vlsvs = variable_list_size_vertices.size();
+            for (int k=0; k < vlsvs; ++k) pow3 *= 3;
+            for (int mask=0; mask < pow3; ++mask) {
+                int x = mask;
+                for (int k=0; k < vlsvs; ++k) {
+                    g.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
+                    x /= 3;
+                }
+                if (!batch_reducible_test(g)) {
+                    CanvasWithIndices cwi;
+                    cwi.c = c;
+                    cwi.i = i;
+                    cwi.dj = dj;
+                    cwi.mask = mask;
+                    ans.push_back(cwi);
+                }
+               
+            }
+        }
+    }
+    return ans;
+}
+
+vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_path(const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
+    debug_assert(p.l == 7);
+    int i = cwi.i;
+    int dj = cwi.dj;
+    int mask = cwi.mask;
+    Canvas c = cwi.c;
+    PrecoloredPathAndTriangleGraph ppt = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_path_indices(c, p, i, (i+dj)%c.l);
+
+    vector<PrecoloredPathAndTriangleGraph> ans;
+    vector<int> variable_list_size_vertices;
+    for (int k=2; k < dj; ++k) {
+        variable_list_size_vertices.push_back((i+k)%c.l);
+    }
+    for (int k=(i+dj+6)%c.l; k != i; k=(k+1)%c.l) {
+        variable_list_size_vertices.push_back(k);
+    }
+    int pow3 = 1;
+    int vlsvs = variable_list_size_vertices.size();
+    for (int k=0; k < vlsvs; ++k) pow3 *= 3;
+    
+    int x = mask;
+    for (int k=0; k < vlsvs; ++k) {
+        ppt.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
+        x /= 3;
+    }
+
+    ppt.list_sizes[(i+dj+1)%c.l] = 5;
+    ppt.list_sizes[(i+dj+4)%c.l] = 5;
+    
+    vector<int> variable_list_size_vertices2 = {(i+dj)%c.l, (i+dj+5)%c.l};
+
+    for (int mask2=0; mask2 < 9; ++mask2) {
+        int x = mask2;
+        for (int k=0; k < 2; ++k) {
+            ppt.list_sizes[variable_list_size_vertices2[k]] = (x%3)+3;
+            x /= 3;
+        }
+        PrecoloredPathAndTriangleGraph nppt = PrecoloredPathAndTriangleGraph(ppt.al, ppt.list_sizes);
+        if(nppt.test_no_l3_adjacent()) ans.push_back(nppt);
+    }
+
+    return ans;
+        
+}
+
+vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_canvas(const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
+    debug_assert(p.l == 6);
+    int i = cwi.i;
+    int dj = cwi.dj;
+    int mask = cwi.mask;
+    Canvas c = cwi.c;
+    PrecoloredPathAndTriangleGraph ppt = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_canvas_indices(c, p, i, (i+dj)%c.l);
+
+    vector<PrecoloredPathAndTriangleGraph> ans;
+    vector<int> variable_list_size_vertices;
+    for (int k=2; k < dj; ++k) {
+        variable_list_size_vertices.push_back((i+k)%c.l);
+    }
+    for (int k=(i+dj+7)%c.l; k != i; k=(k+1)%c.l) {
+        variable_list_size_vertices.push_back(k);
+    }
+    int pow3 = 1;
+    int vlsvs = variable_list_size_vertices.size();
+    for (int k=0; k < vlsvs; ++k) pow3 *= 3;
+    
+    int x = mask;
+    for (int k=0; k < vlsvs; ++k) {
+        ppt.list_sizes[variable_list_size_vertices[k]] = (x%3)+3;
+        x /= 3;
+    }
+
+    ppt.list_sizes[(i+dj+1)%c.l] = 5;
+    ppt.list_sizes[(i+dj+5)%c.l] = 5;
+    
+    vector<int> variable_list_size_vertices2 = {(i+dj)%c.l, (i+dj+6)%c.l};
+
+    for (int mask2=0; mask2 < 9; ++mask2) {
+        int x = mask2;
+        for (int k=0; k < 2; ++k) {
+            ppt.list_sizes[variable_list_size_vertices2[k]] = (x%3)+3;
+            x /= 3;
+        }
+        PrecoloredPathAndTriangleGraph nppt = PrecoloredPathAndTriangleGraph(ppt.al, ppt.list_sizes);
+        if(nppt.test_no_l3_adjacent()) ans.push_back(nppt);
+    }
+
+    return ans;
+        
 }
 
 PrecoloredPathAndTriangleGraph PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_path_indices(const Canvas& c, const PrecoloredPathGraph& p, int i, int j) {

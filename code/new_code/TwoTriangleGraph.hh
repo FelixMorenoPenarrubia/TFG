@@ -96,6 +96,12 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     bool test_criticality() const;
 
+    bool in_precolored_triangle(int u) const;
+
+    bool is_separating_triangle(std::vector<int> tri) const;
+
+    bool has_separating_triangle() const;
+
 };
 
 #endif

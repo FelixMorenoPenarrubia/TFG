@@ -3,6 +3,7 @@
 #include "debug_utility.hh"
 #include <queue>
 #include <functional>
+#include <set>
 
 using ll = long long;
 using std::string;
@@ -250,7 +251,12 @@ vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canv
 
 vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with_indices_triangle_in_path(Canvas c) {
     vector<CanvasWithIndices> ans;
+    std::set<CanvasCode> edge_codes;
     for (int i=0; i < c.l; ++i) {
+        if(edge_codes.find(c.compute_code_edge(i, (i+1)%c.l)) != edge_codes.end()) {
+            continue;
+        }
+        edge_codes.insert(c.compute_code_edge(i, (i+1)%c.l));
         for (int dj=std::max(2, c.l-2-6); dj <= std::min(4, c.l-6); ++dj) {
             ListGraph g = ListGraph(c.al, c.list_sizes);
             //g.list_sizes[(i+dj+1)%c.l] = 5;
@@ -273,7 +279,7 @@ vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with
                 }
                 if (!batch_reducible_test(g)) {
                     CanvasWithIndices cwi;
-                    cwi.c = c;
+                    //cwi.c = c;
                     cwi.i = i;
                     cwi.dj = dj;
                     cwi.mask = mask;
@@ -287,7 +293,12 @@ vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with
 
 vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with_indices_triangle_in_canvas(Canvas c) {
     vector<CanvasWithIndices> ans;
+    std::set<CanvasCode> edge_codes;
     for (int i=0; i < c.l; ++i) {
+        if(edge_codes.find(c.compute_code_edge(i, (i+1)%c.l)) != edge_codes.end()) {
+            continue;
+        }
+        edge_codes.insert(c.compute_code_edge(i, (i+1)%c.l));
         for (int dj=std::max(2, c.l-2-7); dj <= std::min(4, c.l-7); ++dj) {
             ListGraph g = ListGraph(c.al, c.list_sizes);
             //g.list_sizes[(i+dj+1)%c.l] = 5;
@@ -310,7 +321,7 @@ vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with
                 }
                 if (!batch_reducible_test(g)) {
                     CanvasWithIndices cwi;
-                    cwi.c = c;
+                    //cwi.c = c;
                     cwi.i = i;
                     cwi.dj = dj;
                     cwi.mask = mask;
@@ -323,12 +334,11 @@ vector<CanvasWithIndices> PrecoloredPathAndTriangleGraph::critical_canvases_with
     return ans;
 }
 
-vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_path(const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
+vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_path(const Canvas& c,const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
     debug_assert(p.l == 7);
     int i = cwi.i;
     int dj = cwi.dj;
     int mask = cwi.mask;
-    Canvas c = cwi.c;
     PrecoloredPathAndTriangleGraph ppt = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_path_indices(c, p, i, (i+dj)%c.l);
 
     vector<PrecoloredPathAndTriangleGraph> ans;
@@ -368,12 +378,11 @@ vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canv
         
 }
 
-vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_canvas(const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
+vector<PrecoloredPathAndTriangleGraph> PrecoloredPathAndTriangleGraph::fuse_canvas_with_indices_and_path_triangle_in_canvas(const Canvas& c, const CanvasWithIndices& cwi, const PrecoloredPathGraph& p) {
     debug_assert(p.l == 6);
     int i = cwi.i;
     int dj = cwi.dj;
     int mask = cwi.mask;
-    Canvas c = cwi.c;
     PrecoloredPathAndTriangleGraph ppt = PrecoloredPathAndTriangleGraph::fuse_canvas_and_path_triangle_in_canvas_indices(c, p, i, (i+dj)%c.l);
 
     vector<PrecoloredPathAndTriangleGraph> ans;

@@ -377,6 +377,51 @@ int TwoTriangleGraph::distance_between_triangles() const {
     return ans;
 }
 
+bool TwoTriangleGraph::in_precolored_triangle(int u) const {
+    return std::find(triangles[0].begin(), triangles[0].end(), u) != triangles[0].end() || std::find(triangles[1].begin(), triangles[1].end(), u) != triangles[1].end();
+}
+
+bool TwoTriangleGraph::is_separating_triangle(vector<int> tri) const {
+    vector<int> dist(n, -1);
+    std::queue<int> q;
+    for (int u : triangles[0]) {
+        dist[u] = 0;
+        q.push(u);
+    }
+    while (!q.empty()) {
+        int u = q.front();
+        q.pop();
+        if (std::find(tri.begin(), tri.end(), u) != tri.end()) continue;
+        for (int v : al[u]) {
+            if (dist[v] == -1) {
+                dist[v] = dist[u]+1;
+                q.push(v);
+            }
+        }
+    }
+
+    int ans = dist[triangles[1][0]];
+    for (int u : triangles[1]) {
+        ans = std::max(ans, dist[u]);
+    }
+    return ans == -1;
+}
+
+bool TwoTriangleGraph::has_separating_triangle() const {
+    vector<int> tri(3);
+    for (tri[0] = 0; tri[0] < n; ++tri[0]) {
+        for (tri[1] = tri[0] + 1; tri[1] < n; ++tri[1]) {
+            if (!neighbors(tri[0], tri[1])) continue;
+            for (tri[2] = tri[1] + 1; tri[2] < n; ++tri[2]) {
+                if (!neighbors(tri[0], tri[2]) || !neighbors(tri[1], tri[2])) continue;
+                if (in_precolored_triangle(tri[0]) && in_precolored_triangle(tri[1]) && in_precolored_triangle(tri[2])) continue;
+                if(is_separating_triangle(tri)) return true;
+            }
+        }
+    }
+    return false;
+}
+
 bool TwoTriangleGraph::test_criticality() const {
     if (n == 6) return true;
     if (distance_between_triangles() < path_length) return false;

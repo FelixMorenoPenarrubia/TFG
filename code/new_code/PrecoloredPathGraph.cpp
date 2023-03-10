@@ -522,6 +522,6 @@ bool PrecoloredPathGraph::test_no_l3_adjacent() const  {
 
 bool PrecoloredPathGraph::test_criticality() const {
     if (n == l) return true;
-    if (!test_no_l3_adjacent()) return false;
+    //if (!test_no_l3_adjacent()) return false;
     return !batch_test(compute_list_graph());
 }

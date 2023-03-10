@@ -21,7 +21,7 @@ PrecoloredPathGraphSearch::PrecoloredPathGraphSearch() {
 
 bool PrecoloredPathGraphSearch::test_graph(const PrecoloredPathGraph& g) {
     
-    bool res = g.test_criticality(); 
+    bool res = (g.test_criticality() && g.test_no_l3_adjacent()); 
     
     return res;
 }

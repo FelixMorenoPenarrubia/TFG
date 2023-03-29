@@ -1,4 +1,5 @@
 #include "Graph.hh"
+#include "debug_utility.hh"
 
 using std::vector;
 using std::map;
@@ -46,4 +47,21 @@ void Graph::set_outer_face(vector<int> of) {
     for (int i=0; i < ofs; ++i) {
         set_starting_edge_in_al(of[i], of[(i+1)%ofs]);
     }
+}
+
+vector<int> Graph::get_face_ccw(int u, int v) const {
+    debug_assert(neighbors(u, v));
+
+    vector<int> ans;
+    ans.push_back(u);
+    int nxt = v;
+    int prev = u;
+    while (nxt != u && (int)ans.size() < n+1) {
+        ans.push_back(nxt);
+        int tmp = al[nxt][(ral[nxt].at(prev)+1)%al[nxt].size()];
+        prev = nxt;
+        nxt = tmp;
+    }
+    if ((int)ans.size() == n+1) return vector<int>();
+    return ans;
 }

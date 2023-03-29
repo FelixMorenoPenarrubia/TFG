@@ -10,6 +10,7 @@
 #include "TwoPrecoloredPathsGraph.hh"
 #include "TwoPrecoloredPathsGraphSearch.hh"
 #include "PrecoloredPathAndTriangleGraph.hh"
+#include "RestrictedPrecoloredPathGraphSearch.hh"
 
 using std::cout;
 using std::cin;
@@ -452,6 +453,30 @@ void fuse_canvas_and_precoloredpathgraph_triangle_canvas() {
 	v[0].write(cout);
 }
 
+void fan_length_in_endpoints() {
+	cout << PrecoloredPathGraph::read(cin).fan_length_in_endpoints() << endl;
+}
+
+void restricted_precolored_path_graph_search() {
+	RestrictedPrecoloredPathGraphSearch s;
+	int l;
+	cin >> l;
+	vector<PrecoloredPathGraph> v = s.get_all(l);
+
+	cout << v.size() << endl;
+	for (PrecoloredPathGraph g : v) {
+		g.write(cout);
+	}
+}
+
+void has_large_fans_or_bellows() {
+	cout << PrecoloredPathGraph::read(cin).has_large_fans_or_bellows() << endl;
+}
+
+void largest_left_cut() {
+	PrecoloredPathGraph::read(cin).largest_left_endpoint_cut().write(cout);
+}
+
 
 int main() {
 	cerr << "Select program: " << endl;
@@ -490,6 +515,10 @@ int main() {
 	cerr << "33. Fuse two TwoTriangleGraphs" << endl;
 	cerr << "34. Fuse Canvas and PrecoloredPathGraph with triangle in path" << endl;
 	cerr << "35. Fuse Canvas and PrecoloredPathGraph with triangle in canvas" << endl;
+	cerr << "36. Fan length in endpoints of PrecoloredPathGraph" << endl;
+	cerr << "37. Restricted PrecoloredPathGraph search" << endl;
+	cerr << "38. PrecoloredPathGraph has large fans or bellows" << endl;
+	cerr << "39. PrecoloredPathGraph largest left cut" << endl;
 	
 	int c;
 	cin >> c;
@@ -597,5 +626,17 @@ int main() {
 	}
 	if(c == 35) {
 		fuse_canvas_and_precoloredpathgraph_triangle_canvas();
+	}
+	if(c == 36) {
+		fan_length_in_endpoints();
+	}
+	if(c == 37) {
+		restricted_precolored_path_graph_search();
+	}
+	if (c == 38) {
+		has_large_fans_or_bellows();
+	}
+	if (c == 39) {
+		largest_left_cut();
 	}
 }

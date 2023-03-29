@@ -1,6 +1,8 @@
 #include "PrecoloredPathGraph.hh"
 #include "ReducibilityTests.hh"
 #include "debug_utility.hh"
+#include <queue>
+#include <set>
 
 using ll = long long;
 using std::string;
@@ -525,3 +527,329 @@ bool PrecoloredPathGraph::test_criticality() const {
     //if (!test_no_l3_adjacent()) return false;
     return !batch_test(compute_list_graph());
 }
+
+int PrecoloredPathGraph::fan_length_in_endpoints() const {
+    debug_assert(l >= 3);
+
+    int len1 = 0;
+    int li1 = al[1].size()-2;
+    while(li1 >= 0 && neighbors(al[1][li1], al[1][li1+1]) && list_sizes[al[1][li1]] == 3) {
+        li1--;
+        len1++;
+    }
+    if (li1 == 0 && l == 3) len1++;
+    
+
+    int len2 = 0;
+    int li2 = 0;
+    while(li2+1 < (int)al[l-2].size() && neighbors(al[l-2][li2], al[l-2][li2+1]) && list_sizes[al[l-2][li2+1]] == 3) {
+        li2++;
+        len2++;
+    }
+    if (li2+1 == (int)al[l-2].size() && l == 3) len2++;
+
+    return std::max(len1, len2);
+}
+
+int PrecoloredPathGraph::fan_length_in_path() const {
+    
+    int maxlen = 0;
+    for (int u=2; u < l-2; ++u) {
+        int prev = -1;
+        int clen = 0;
+        for (int v : al[u]) {
+            if (list_sizes[v] == 3) {
+                if (prev == -1) {
+                    clen = 0;
+                    prev = v;
+                }
+                else {
+                    if (neighbors(v, prev)) {
+                        clen++;
+                        maxlen = std::max(maxlen, clen);
+                        prev = v;
+                    }
+                    else {
+                        prev = -1;
+                    }
+                }
+                
+            }
+            else {
+                prev = -1;
+                clen = 0;
+            }
+        }
+    }
+
+
+    return std::max(maxlen, fan_length_in_endpoints());
+}
+
+bool PrecoloredPathGraph::has_bellows_in_endpoints() const {
+    debug_assert(l >= 3);
+    
+    int als1 = al[1].size();
+    int last_out = al[0].back();
+    if (list_sizes[last_out] > 1 && als1 >= 3 && list_sizes[al[1][als1-2]] == 5 && list_sizes[al[1][als1-3]] == 3 && last_out-al[1][als1-3] >= 2) {
+        int li = last_out;
+        bool good = true;
+        while (li >= al[1][als1-3]) {
+            if (!neighbors(li, al[1][als1-2])) good = false;
+            li--;
+        }
+        if (good) return true;
+    }
+
+    int als2 = al[l-2].size();
+    int first_out = al[l-1][0];
+    if (list_sizes[first_out] > 1 && als2 >= 3 && list_sizes[al[l-2][1]] == 5 && list_sizes[al[l-2][2]] == 3 && al[l-2][2]-first_out >= 2) {
+        int li = first_out;
+        bool good = true;
+        while (li <= al[l-2][2]) {
+            if (!neighbors(li, al[l-2][1])) good = false;
+            li++;
+        }
+        if (good) return true;
+    }
+
+    return false;
+}
+
+bool PrecoloredPathGraph::has_large_fans_or_bellows() const {
+    return fan_length_in_path() > 3 || has_bellows_in_endpoints();
+}
+
+PrecoloredPathGraph PrecoloredPathGraph::largest_left_endpoint_cut() const {
+    debug_assert(l >= 3);
+
+
+    int idx = -1;
+
+    for (int i=0; i < (int)al[1].size(); ++i) {
+        if (list_sizes[al[1][i]] == 3) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx == -1) return PrecoloredPathGraph();
+
+    int cn = 0;
+    std::queue<int> q;
+    std::vector<int> morph(n, -1);
+    std::vector<std::vector<int>> nal;
+    std::vector<int> nls;
+
+    auto add_vertex = [&q, &morph, &nal, &cn, &nls, this] (int u) -> void {
+        morph[u] = cn++;
+        q.push(u);
+        nal.push_back(std::vector<int>());
+        nls.push_back(list_sizes[u]);
+    };
+
+    add_vertex(0);
+    add_vertex(1);
+    add_vertex(al[1][idx]);
+    nls[2] = 1;
+    
+
+    while(!q.empty()) {
+        int u = q.front();
+        q.pop();
+        int start_idx = 0;
+        int end_idx = (int)al[u].size()-1;
+        if (u == 1) {
+           start_idx = idx;
+        }
+        else if (u == al[1][idx]) {
+            end_idx = ral[u].at(1);
+        }
+        
+        for (int i=start_idx; i <= end_idx; ++i) {
+            int v = al[u][i];
+            if (morph[v] == -1) {
+                add_vertex(v);
+            }
+            nal[morph[u]].push_back(morph[v]);
+        }
+    }
+
+    return PrecoloredPathGraph(nal, 3, nls);
+    
+}
+
+PrecoloredPathGraph PrecoloredPathGraph::largest_right_endpoint_cut() const {
+    debug_assert(l >= 3);
+
+
+    int idx = -1;
+
+    for (int i=(int)al[l-2].size()-1; i > -1; --i) {
+        if (list_sizes[al[l-2][i]] == 3) {
+            idx = i;
+            break;
+        }
+    }
+
+    if (idx == -1) return PrecoloredPathGraph();
+
+    int cn = 0;
+    std::queue<int> q;
+    std::vector<int> morph(n, -1);
+    std::vector<std::vector<int>> nal;
+    std::vector<int> nls;
+
+    auto add_vertex = [&q, &morph, &nal, &cn, &nls, this] (int u) -> void {
+        morph[u] = cn++;
+        q.push(u);
+        nal.push_back(std::vector<int>());
+        nls.push_back(list_sizes[u]);
+    };
+
+    add_vertex(al[l-2][idx]);
+    nls[0] = 1;
+    add_vertex(l-2);
+    add_vertex(l-1);
+   
+    
+
+    while(!q.empty()) {
+        int u = q.front();
+        q.pop();
+        int start_idx = 0;
+        int end_idx = (int)al[u].size()-1;
+        if (u == al[l-2][idx]) {
+           start_idx = ral[u].at(l-2);
+        }
+        else if (u == l-2) {
+            end_idx = idx;
+        }
+        
+        for (int i=start_idx; i <= end_idx; ++i) {
+            int v = al[u][i];
+            if (morph[v] == -1) {
+                add_vertex(v);
+            }
+            nal[morph[u]].push_back(morph[v]);
+        }
+    }
+
+    return PrecoloredPathGraph(nal, 3, nls);
+    
+}
+
+std::pair<PrecoloredPathGraph, PrecoloredPathGraph> PrecoloredPathGraph::largest_cuts(int u) const {
+    debug_assert(l >= 3);
+
+
+    int idx_l = -1;
+    int idx_r = -1;
+
+    std::set<int> outer_face;
+    int curr = 0;
+    int nxt = al[0][0];
+    outer_face.insert(0);
+    while (nxt != 0) {
+        outer_face.insert(nxt);
+        int als = al[nxt].size();
+        int tmp = al[nxt][(ral[nxt].at(curr)+1)%als];
+        curr = nxt;
+        nxt = tmp;
+    }
+
+    for (int i=1; i+1 < (int)al[u].size(); ++i) {
+        if (outer_face.count(al[u][i]) && list_sizes[al[u][i]] > 1) {
+            if (idx_l == -1) idx_l = i;
+            idx_r = i;
+        }
+    }
+
+    if (idx_l == -1) return std::make_pair(PrecoloredPathGraph(), PrecoloredPathGraph());
+
+    int cn_l = 0;
+    std::queue<int> q_l;
+    std::vector<int> morph_l(n, -1);
+    std::vector<std::vector<int>> nal_l;
+    std::vector<int> nls_l;
+
+    auto add_vertex_l = [&q_l, &morph_l, &nal_l, &cn_l, &nls_l, this] (int u) -> void {
+        morph_l[u] = cn_l++;
+        q_l.push(u);
+        nal_l.push_back(std::vector<int>());
+        nls_l.push_back(list_sizes[u]);
+    };
+
+    int cn_r = 0;
+    std::queue<int> q_r;
+    std::vector<int> morph_r(n, -1);
+    std::vector<std::vector<int>> nal_r;
+    std::vector<int> nls_r;
+
+    auto add_vertex_r = [&q_r, &morph_r, &nal_r, &cn_r, &nls_r, this] (int u) -> void {
+        morph_r[u] = cn_r++;
+        q_r.push(u);
+        nal_r.push_back(std::vector<int>());
+        nls_r.push_back(list_sizes[u]);
+    };
+
+    add_vertex_r(al[u][idx_r]);
+    nls_r[cn_r-1] = 1;
+
+    for (int i=0; i < l; ++i) {
+        if (i <= u) add_vertex_l(i);
+        if (i >= u) add_vertex_r(i);
+    } 
+    
+    add_vertex_l(al[u][idx_l]);
+    nls_l[cn_l-1] = 1;
+    
+    
+
+    while(!q_l.empty()) {
+        int v = q_l.front();
+        q_l.pop();
+        int start_idx = 0;
+        int end_idx = (int)al[v].size()-1;
+        if (v == u) {
+           start_idx = idx_l;
+        }
+        else if (v == al[u][idx_l]) {
+            end_idx = ral[v].at(u);
+        }
+        
+        for (int i=start_idx; i <= end_idx; ++i) {
+            int w = al[v][i];
+            if (morph_l[w] == -1) {
+                add_vertex_l(w);
+            }
+            nal_l[morph_l[v]].push_back(morph_l[w]);
+        }
+    }
+
+    while(!q_r.empty()) {
+        int v = q_r.front();
+        q_r.pop();
+        int start_idx = 0;
+        int end_idx = (int)al[v].size()-1;
+        if (v == u) {
+           end_idx = idx_r;
+        }
+        else if (v == al[u][idx_r]) {
+            start_idx = ral[v].at(u);
+        }
+        
+        for (int i=start_idx; i <= end_idx; ++i) {
+            int w = al[v][i];
+            if (morph_r[w] == -1) {
+                add_vertex_r(w);
+            }
+            nal_r[morph_r[v]].push_back(morph_r[w]);
+        }
+    }
+
+    return std::make_pair(PrecoloredPathGraph(nal_l, u+2, nls_l), PrecoloredPathGraph(nal_r, l-u+1, nls_r));
+    
+}
+
+

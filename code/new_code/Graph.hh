@@ -28,6 +28,8 @@ struct Graph {
 
     void set_outer_face(std::vector<int> of);
 
+    std::vector<int> get_face_ccw(int u, int v) const;
+
 };
 
 #endif

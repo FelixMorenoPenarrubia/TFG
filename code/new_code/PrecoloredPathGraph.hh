@@ -85,6 +85,28 @@ struct PrecoloredPathGraph : public PrecoloredGraph {
 
     bool test_criticality() const;
 
+
+    //Returns largest size of a "fan" subgraph with hinge in one of the vertices adjacent
+    //to the endpoint of the path (i.e. vertices 0 or l-2)
+    int fan_length_in_endpoints() const;
+
+    //Returns largest size of a "fan" subgraph with hinge in one of the interior vertices of the path
+    int fan_length_in_path() const;
+
+    //Returns true if there is a bellows with hinge in one of the vertices adjacent to
+    //the endpoint of the path and the corresponding endpoint precolored
+    bool has_bellows_in_endpoints() const;
+
+    //Returns true if there is a large fan or a bellows at the endpoints
+    bool has_large_fans_or_bellows() const;
+
+    //Returns the largest 2-wedge made from a chord incident with vertex 1
+    PrecoloredPathGraph largest_left_endpoint_cut() const;
+
+    //Returns the largest 2-wedge made from a chord incident with vertex l-1
+    PrecoloredPathGraph largest_right_endpoint_cut() const;
+
+    std::pair<PrecoloredPathGraph, PrecoloredPathGraph> largest_cuts(int u) const;
 };
 
 #endif

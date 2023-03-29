@@ -155,7 +155,7 @@ bool alon_tarsi_test(const ListGraph& g) {
 
     static map<ListGraphCode, bool> mem;
 
-    const int ALON_TARSI_LIMIT_M = 33;
+    const int ALON_TARSI_LIMIT_M = 100;
     if (g.m > ALON_TARSI_LIMIT_M) return false;
 
     if(GlobalSettings::ALON_TARSI_MEMOIZE) {
@@ -356,6 +356,35 @@ bool hill_climbing_two_neighbors_test(const ListGraph& g) {
     return hill_climbing_two_neighbors_test(best_graph);
 }
 
+bool postle_test(const ListGraph& g) {
+    int cnt_2 = 0;
+    int cnt_3 = 0;
+    int st = 0;
+    for (int u=0; u < g.n; ++u) {
+        if (g.list_sizes[u] < 2) return false;
+        else if (g.list_sizes[u] == 2) {
+            cnt_2++;
+            st = u;
+        }
+        else if (g.list_sizes[u] == 3) cnt_3++;
+    }
+    if (cnt_2 > 2) return false;
+    for (int v : g.al[st]) {
+        if (g.list_sizes[v] > 3) continue;
+        vector<int> f = g.get_face_ccw(st, v);
+        if (f.empty()) continue;
+        int ncnt_2 = 0;
+        int ncnt_3 = 0;
+        for (int u : f) {
+            if (g.list_sizes[u] == 2) ncnt_2++;
+            else if (g.list_sizes[u] == 3) ncnt_3++;
+        }
+        if (ncnt_2 == cnt_2 && ncnt_3 == cnt_3) return true;
+    }
+    return false;
+
+}
+
 bool batch_reducible_test(const ListGraph& g) {
     vector<std::function<bool(const ListGraph&)>> tests = {degree_test, biconnected_components_degreeassignment_test, color_and_collapse_test, reducible_gadgets_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, alon_tarsi_test};
 
@@ -370,7 +399,7 @@ bool batch_reducible_test(const ListGraph& g) {
 }
 
 bool batch_colorable_test(const ListGraph& g) {
-    vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, alon_tarsi_test};
+    vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, postle_test, alon_tarsi_test};
 
     vector<ListGraph> vcc = g.connected_components();
 

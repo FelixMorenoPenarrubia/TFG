@@ -11,6 +11,9 @@ canvas_search: main_canvas_search.cc $(SRC_FILES)
 pp_search: main_precolored_path_graph_search.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o pp_search main_precolored_path_graph_search.cc *.cpp
 
+rpp_search: main_restricted_precolored_path_graph_search.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o rpp_search main_restricted_precolored_path_graph_search.cc *.cpp
+
 separating_triangles: main_separating_triangles_checker.cc $(SRC_FILES)
 	g++ $(PERFORMFLAGS) -o separating_triangles main_separating_triangles_checker.cc *.cpp
 
@@ -89,4 +92,6 @@ debug_sanitizer: main_debug.cc $(SRC_FILES)
 debug_debugger: main_debug.cc $(SRC_FILES)
 	g++ $(DEBUGGERFLAGS) -o debug_debugger main_debug.cc *.cpp 
 
+nodebug: main_debug.cc $(SRC_FILES)
+	g++ $(PERFORMFLAGS) -o nodebug main_debug.cc *.cpp 
 

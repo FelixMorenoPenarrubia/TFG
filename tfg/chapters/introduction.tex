@@ -1,0 +1,165 @@
+\section{Introduction}
+
+In this section, we lay out the basic definitions of graph theoretical and topological concepts used in this thesis, as well as the background results which contextualize our research and an outline of the results we have obtained.
+
+
+\subsection{Graphs and Surfaces}
+
+\subsubsection{Graph Theory Terminology}
+
+A \textit{graph} is a pair $(V(G), E(G))$ consisting of a set $V(G)$ and a set $E(G)$ of two-element subsets of $V(G)$. 
+
+\todo{(connectivity, complete graphs, etc)}
+
+\subsubsection{Surfaces}
+
+A \textit{surface} is a...
+
+\todo{(surface classification theorem, orientability, etc)}
+
+\subsubsection{Embedding Graphs in Surfaces}
+
+A graph is embedded in a surface if...
+
+\todo{(non-contractible cicles, planarity, dual graph, etc)}
+
+\todo{references for all this}
+
+
+
+\subsection{Graph Coloring}
+
+Problems related to \emph{coloring} are a fundamental part of graph theory. Although there are many variants, the original one and the most important is \emph{vertex coloring}.
+
+\begin{definition}
+A \emph{vertex coloring} of a graph $G$ is a function $f : V(G) \rightarrow \mathbb{N}$. The vertex coloring is said to be \emph{proper} if $\forall uv \in E(G), f(u) \neq f(v)$. 
+\end{definition}
+
+We think of this as assigning one color to each vertex of the graph, so that adjacent vertices are assigned different colors. This interpretation comes from the origin of the problem in \textit{map coloring}, in which we have to color a political map assigning colors to countries so that neighboring countries are assigned different colors in order to distinguish them. A quantity of interest is the number of colors required for a proper coloring of the graph:
+
+\begin{definition}
+A vertex coloring $f$ is said to be a $k$\emph{-coloring} if $|\Im f| = k$. A graph $G$ is said to be $k$\emph{-colorable} if it admits a proper $k$-coloring. The \emph{chromatic number} $\chi(G)$ of a graph $G$ is the minimum $k$ such that $G$ is $k$-colorable. 
+\end{definition}
+
+In the map coloring context, we study vertex coloring for \emph{planar} graphs. The following remarkable result was the origin of this area of mathematics:
+
+\begin{theorem}[Four color theorem]
+For all planar graphs $G$, $\chi(G) \leq 4$.
+\end{theorem}
+
+This theorem, originally conjectured in TODO, was proven by Appel and Haken in TODO. Their proof achieved some notoriety due to use of computers to process a lengthy case analysis. \todo{4ct dates and references}
+
+A natural generalization of the above problem is to study the chromatic number of graphs embedded in surfaces other than the plane. The following result, due to Heawood in 1890 \cite{heawoodmapcolour}, generalizes the four color theorem to surfaces other than the plane:
+
+\begin{theorem}[Heawood]
+Let $\Sigma$ be a surface with Euler genus $g(\Sigma) \geq 1$. Any graph embedded in $\Sigma$ can be colored with
+
+$$
+H(\Sigma) = \left\lfloor \frac{7 + \sqrt{1+24g(\Sigma)}}{2} \right\rfloor
+$$
+colors.
+\end{theorem}
+
+We call $H(\Sigma)$ the \emph{Heawood number} of the surface.
+
+Interestingly, this theorem has a much simpler proof than the four color theorem. For its proof, we need the following concept:
+
+
+\begin{definition} A graph is $k$\emph{-degenerate} if every subgraph $H \subseteq G$ has $\delta(H) \leq k$.
+\end{definition}
+
+\begin{proposition}
+If a graph $G$ is $k$-degenerate, then it is $(k+1)$-colorable.
+\end{proposition}
+
+\begin{proof}
+For each fixed $k \geq 0$, we do induction on the size of $|V(G)|$. For $|V(G)| = 1$, it is clearly true. Assuming it is true for all $k$-degenerate graphs $G'$ with $|V(G')| < n$, let $G$ be a $k$-degenerate graph with $|V(G)| = n$. Let $v$ be a vertex of $G$ with degree at most $v$ and consider the graph $G \ \{v\}$. It is also a $k$-degenerate graph since it is a subgraph of $G$, so it is $(k+1)$-colorable. We can then extend the coloring to $G$ by choosing a color not in any of its at most $k$ neighbors for $v$.
+\end{proof}
+
+\todo{Proof of Heawood's theorem} 
+
+\todo{Ringel-Youngs}
+
+\todo{Critical graphs, Hájos construction}
+
+\todo{Results in graphs on surfaces, Gallai, Thomassen}
+
+\subsection{List Coloring}
+
+\todo{Definition of List Coloring}
+
+\todo{Thomassen's theorem}
+
+\cite{thomassenplanargraphchoosable}
+
+\begin{theorem}[Thomassen's theorem]
+\label{thomassentheorem}
+\end{theorem}
+
+\begin{theorem}[Thomassen's stronger theorem]
+\label{thomassenstrongertheorem}
+\end{theorem}
+
+\begin{proof}
+
+\end{proof}
+
+\todo{Criticality definition. Discuss it}
+
+In coloring problems, it is useful to consider when a precoloring of a subgraph
+does not \emph{extend} to the entire graph, that is, there is no coloring
+of the entire graph under certain constraints which agrees with the coloring 
+of the subgraph. 
+
+
+
+
+\begin{definition}[Extending]
+	Let $G$ be a graph, $T \subseteq G$ a subgraph, and $L$ a list assignment
+	for $G$. For an $L$-coloring $\phi$ of $T$, we say that $\phi$ \emph{extends}
+	to an $L$-coloring of $G$ if there exists an $L$-coloring $\psi$ of $G$
+s	such that $\phi(v) = \psi(v)$ for all $v \in V(T)$. 
+	
+\end{definition}
+
+It is also interesting to consider graphs which are critical in this setting. To do so, we use the following definition (from \cite{fivelistcoloring2}):
+
+\begin{definition}[$T$-critical]
+	Let $G$, $T$, $L$ be as above. The graph $G$ is \emph{$T$-critical with respect to $L$} if for every proper subgraph $G' \subset G$ such that $T \subseteq G'$, there exists an $L$-coloring of $T$ that extends to an $L$-coloring of $G'$, but does not extend to an $L$-coloring of $G$.
+\end{definition}
+
+\begin{definition}[$\phi$-critical]
+	Let, $G$, $T$, $L$ be as above. The graph $G$ is $\phi$-critical for a coloring $\phi$ of $T$ if $\phi$ extends to every proper subgraph of $G$ containing $T$ but not to $G$.
+\end{definition}
+
+We also have the following lemma from \cite{fivelistcoloring2}:
+
+\begin{lemma}
+\label{pregluinglemma}
+Let $T$ be a subgraph of a graph $G$ such that $G$ is $T$-critical with respect to a list assignment $L$. Let $A, B \subseteq G$ be such that $A \cup B = G$ and $T \subseteq A$. Then $G[V(B)]$ is $A[V(A) \cap V(B)]$-critical.
+\end{lemma}
+
+\begin{proof} 
+Let $G' = G[V(B)]$ and $S = A[V(A) \cap V(B)]$. If $G' = S$ there is nothing to say, suppose otherwise that $G' \neq S$ and note that therefore $G'$ contains an edge not in $S$ (in fact, all isolated vertices of $G'$ must be in $S$). Suppose for a contradiction that $G'$ is not $S$-critical. Then, by taking a maximal proper subgraph that defies the defintion, there exists an edge $e \in E(G') \setminus E(S)$ such that every $L$-coloring of $S$ that extends to $G' \setminus e$ also extends to $G'$. Since $G$ is $T$-critical and $e \not\in E(T)$, there exists a coloring $\phi\restriction_T$ of $T$ that extends to an $L$-coloring $\phi$ of $G \setminus e$, but does not extend to an $L$-coloring of $G$. However, by the choice of $e$, the restriction $\phi\restriction_S$ extends to an $L$-coloring $\phi'$ of $G'$. Let $\phi''$ be such that $\phi''(v) = \phi'(v) \, \forall v \in V(G')$ and $\phi''(v) = \phi(v) \, \forall v \in V(G) \setminus V(G')$. Now, since $A \cup B = G$, $\phi''$ is an $L$-coloring of $G$ extending $\phi\restriction_T$, a contradiction.
+\end{proof}
+
+For us, it will be more useful in this form:
+
+\begin{lemma}[Gluing Lemma]
+\label{gluinglemma}
+Let $T$ be a subgraph of a graph $G$ such that $G$ is $T$-critical with respect to a list assignment $L$. Let $A, B \subseteq G$ be such that $A \cup B = G$. Then $G[V(B)]$ is $(A[V(A) \cap V(B)] \cup T)$-critical.
+\end{lemma}
+
+\begin{proof} 
+Apply \ref{pregluinglemma} to $A' = A \cup T$ and $B' = B$. 
+\end{proof}
+
+\missingfigure{Gluing lemma illustration}
+
+The reason we decided to name it ``Gluing lemma'' in this work is that it is useful to visualize the graph $G$ as made of two separate pieces, $A$ and $B$, which are glued together along $A[V(A) \cap V(B)]$. In our approach we will frequently use the fact that all $T$-critical graphs can be ``decomposed'' in this way. 
+
+\todo{Analogous results for List coloring}
+
+\subsection{Goals and Results}
+
+\todo{Section on Goals and Results}

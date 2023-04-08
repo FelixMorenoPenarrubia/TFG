@@ -1,0 +1,146 @@
+\section{Critical graphs on the torus}
+
+\todo{Section header}
+
+\subsection{An Overview of Postle's Approach}
+
+Here we briefly explain Postle's approach in \cite{postlethesis} to obtain the result on the finiteness of 6-list-critical graphs in general surfaces, mentioning specially those intermediate results or definitions we will also use in our approach. The results obtained by Postle are very non-explicit in the sense that the (unspecified) constant in the size bounds for the graphs he obtains is extremely large and hence useless for our purpose of finding an explicit characterization. Nevertheless, given that our approach is primarily guided by this work we consider it of interest to provide a exposition of the main argument.
+
+The results developed in \cite{postlethesis} in 2012 have been published successively in journal articles afterwards, often with improvements in exposition or in the strength of the result. We refer to the corresponding published article in the discussion of each particular result.
+
+\subsubsection{Notation and Terminology}
+
+Postle works mainly in a setting similar to the hypothesis of Thomassen's stronger theorem: list assignments $L$ which have list sizes of length at least $5$ for interior vertices and at least $3$ for exterior vertices with some exceptions. This setting is encapsulated in the concept of \emph{canvas}.
+
+\begin{definition}[Canvas]
+We say that $(G, S, L)$ is a \emph{canvas} if $G$ is a connected plane graph
+ with outer walk $C$, $S$ is a subgraph of $C$, and $L$ is a list assignment
+  such that $|L(v)| \geq 5 \, \forall v \in V(G) \setminus V(C)$ and
+   $|L(v)| \geq 3 \, \forall v \in V(C) \setminus V(S)$. If $S$ is a path,
+    we say $(G, S, L)$ is a \emph{path-canvas} or a \emph{wedge}. If $S = C$,
+     then $(G, C, L)$ is a \emph{cycle-canvas}.
+\end{definition}
+
+Note: in some places like \cite{fivelistcoloring2}, the term ``canvas'' is used for what Postle calls in \cite{postlethesis} ``cycle-canvas''.
+
+We can restate Thomassen's Stronger Theorem in these terms:
+
+\begin{theorem}
+If $(G, P, L)$ is a path-canvas and $|V(P)| \leq 2$, then $G$ is $L$-colorable.
+\end{theorem}
+
+\begin{definition}[Critical canvas]
+We say that a canvas $(G, S, L)$ is \emph{critical} if it is $S$-critical with respect to $L$.
+\end{definition}
+
+
+
+
+\subsubsection{Variations on Thomassen's Condition}
+
+Much of the technical work on Postle's thesis relies in a careful study of what happens if one varies the condition on \ref{thomassenstrongertheorem}. One of the most elegant (and also useful) results is the following strengthening to Thomassen's Stronger Theorem, originally conjectured by Hutchinson in \cite{hutchinson2012outerplanar}.
+
+\begin{theorem}[Two Lists of Size Two Theorem \cite{fivelistcoloring1}]
+\label{twolistsofsizetwo}
+If $G$ is a plane graph with outer cycle $C$, $v_1, v_2 \in C$ and $L$ is a list assignment with $|L(v)| \geq 5$ for all $v \in V(G) \setminus V(C)$, $|L(v)| \geq 3$ for all $v \in V(C) \setminus \{v_1, v_2\}$, and $|L(v_1)| = |L(v_2)| = 2$, then $G$ is $L$-colorable. 
+\end{theorem}
+
+Or, in the language of canvases:
+
+\begin{theorem}
+If $(G, S, L)$ is a canvas with $|V(S)| = 2$ and $L(v) \geq 2$ for $v \in S$, then $G$ is $L$-colorable.
+\end{theorem}
+
+This theorem is not true when one of the two vertices has list of size $1$. In fact, Postle characterizes exactly when it fails:
+
+\begin{definition}[Coloring Harmonica]
+Let $G$ be a plane graph and $L$ a list assignment for $G$. Given an edge $uv$ and a vertex $w$ both from the outer face of $G$, we say that $(G, L)$ is a \emph{coloring harmonica from $uv$ to $w$} if either:
+
+	\begin{itemize}
+		\item $G$ is a triangle with vertex set $\{u, v, w\}$ and $L(u) = L(v) = L(w)$ with $|L(u)| = 2$, or
+		\item There exists a vertex $z$ incident with the outer face of $G$ such that $uvz$ is a triangle in $G$, $L(u) = L(v) \subseteq L(z)$, $|L(u)| = |L(v)| = 2$, $|L(z)| = 3$, and the pair $(G', L')$ is a coloring harmonica from $z$ to $w$, where $G'$ is obtained by deleting \textbf{one or both} of the vertices $u$, $v$ and $L'$ is obtained from $L$ by $L'(z) = L(z) \setminus L(u)$ and $L'(x) = L(x)$ for all other vertices $z \neq x \in V(G')$.
+	\end{itemize}
+
+	Given two vertices $u, w$ in the outer face of $G$, we say $(G, L)$ is a \emph{coloring harmonica from $u$ to $w$} if there exist vertices $x, y$ incident with the outer face of $G$ such that $uxy$ is a triangle in $G$, $|L(u)| = 1$, $L(x) - L(u) = L(y) - L(u)$, $|L(x)-L(u)|=2$, and $(G', L')$ is a coloring harmonica from $xy$ to $w$, where $G'$ is obtained from $G$ by removing $u$, and $L'$ is obtained from $L$ by seting $L'(x) = L'(y) = L(x)-L(u)$ and $L'(z) = L(z)$ for every $z \in V(G') \setminus \{x, y\}$.
+
+
+We say that $(G, L)$ is a coloring harmonica if it is a coloring harmonica from $uv$ to $w$ or a coloring harmonica from $u$ to $w$ for some $u, v, w$ as specified earlier.
+\end{definition}
+
+\missingfigure{harmonica}
+
+See the example in (reference to figure) (from \cite{fivelistcoloring3}) for some clarity with respect to this mutually recursive definition. Note that the definition makes it clear that graphs which contain a coloring harmonica as a subgraph are not $L$-colorable. 
+
+\begin{theorem}{One List of Size One and One List of Size Two Theorem \cite{fivelistcoloring3}}
+Let $G$ be a plane graph with outer cycle $C$, let $p_1, p_2 \in V(C)$, and let
+$L$ be a list assignment with $|L(v)| \geq 5$ for all $v \in V(G) \setminus V(C)$, $|L(v)| \geq 3$ for all
+$v \in V (C) \setminus \{p_1 , p_2\}$, $|L(p_1)| \geq 1$ and $|L(p_2)| \geq 2$. Then $G$ is $L$-colorable if and only if the pair $(G, L)$ does not contain a coloring harmonica from $p_1$ to $p_2$.
+\end{theorem}
+
+Studying conditions of the sizes of the lists in the boundary in which the graph is not $L$-colorable like this one is also useful, because such conditions arise when dealing when reductions and therefore characterizing which are the critical graphs in such settings can give fruitful results.
+
+Thomassen already studied when does the coloring of a path of length $2$ not extend:
+
+\begin{definition}[Bellows]
+	We say that a path-canvas $(G, P, L)$ with $P = p_0p_1p_2$ is a \emph{bellows} (terminology from \cite{postlethesis}) or a \emph{generalized wheel} (terminology from \cite{thomassenexponentiallymany5listcolorings}) if either:
+	\begin{itemize}
+		\item $G$ has no interior vertices and its edge set consists of the edges of the outer cycle plus all edges from $p_1$ to vertices of the outer cycle. In this case, we say that $(G, P, L)$ is a \emph{fan}.
+		\item $G$ has one interior vertex $u$ and its edge set consists of the edges of the outer cycle plus all edges from $u$ to vertices of the outer cycle. In this case, we say that $(G, P, L)$ is a \emph{turbofan}.
+		\item $G$ can be formed by gluing two smaller bellows from the edges $p_1p_2$ and $p_0p_1$ respectively. 
+	\end{itemize}
+\end{definition}
+
+\missingfigure{bellows}
+
+
+\begin{theorem}[\cite{thomassenexponentiallymany5listcolorings}, Theorem 3]
+	If $T = (G, P, L)$ is a path-canvas with path length $2$, then $G$ is $L$-colorable unless $T$ has a bellows as a subcanvas.
+\end{theorem}
+
+Postle studies when the coloring of two paths of length $1$ does not extend. He finds the following obstruction:
+
+\begin{definition}[Accordion]
+	We say that a canvas $T = (G, P_1 \cup P_2, L)$ with $P_1, P_2$ distinct paths of length $1$ is an \emph{accordion} with \emph{ends} $P_1, P_2$ if $T$ is a bellows with $P_1 \cup P_2$ path of length $2$ or $T$ is the gluing of two smaller accordions $T_1 = (G_1, P_1 \cup U, L)$ with ends $P_1, U$ and $T_2 = (G_2, P_2 \cup U, L)$ with ends $U$, $P_2$ along a chord $U = u_1u_2$ where $|L(u_1)|, |L(u_2)| \leq 3$.
+\end{definition}
+
+The main result he obtains is that if the two paths are sufficiently far apart, then the graph contains a proportionally large accordion or a coloring harmonica as a subgraph.
+
+\begin{theorem}[Bottleneck Theorem, loosely stated]
+If $T = (G, P \cup P_0 , L)$ is a canvas with $P, P_0$ distinct edges of $C$ with $d(P, P_0) \geq 14$, then either there exists an $L$-coloring of $G$, or there exists a subcanvas $(G_0 , U_1 \cup U_2 , L)$ of $T$ where $d_{G_0} (U_1, U_2) = \Omega(d_G (P, P_0))$ which is an accordion or a coloring harmonica.
+\end{theorem}
+
+This result, along with coloring and structural properties of accordions and harmonicas, is often used as a technical lemma when proving the following results.
+
+\subsubsection{Linear Bound on Critical Cycle-Canvases}
+
+\subsubsection{The Two Precolored Triangles Theorem}
+
+\subsubsection{Cylinder-Canvases}
+
+\subsubsection{Hyperbolicity}
+
+\subsection{Critical Graphs on the Torus for (usual) Vertex Coloring}
+
+\subsubsection{The Critical Graphs}
+
+\todo{Subsection introduction}
+
+\begin{theorem}[\cite{thomassentorus}]
+A graph $G$ embeddable on the torus is $5$-colorable if and only if it does not contain the following subgraphs:
+\begin{itemize}
+\item $K_6$.
+\item $C_3 + C_5$.
+\item $K_2 + H_7$, where $H_7$ is the \emph{Moser spindle}, the graph obtained by applying the Hajós construction to a pair of $K_4$.
+\item $T_{11}$, where $T_{11}$ is a triangulation of the torus with $11$ vertices.
+\end{itemize}
+Where $+$ denotes the join of two graphs: their disjoint union with all pairs of vertices from different graphs joined by edges.
+\end{theorem} 
+
+\missingfigure{critical graphs on the torus}
+
+\todo{Discuss L-critical graphs}
+
+\subsubsection{An Overview of Thomassen's Approach}
+
+
+\subsection{Our Approach}

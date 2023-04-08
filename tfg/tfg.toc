@@ -1,0 +1,71 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1}Introduction}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.1}Graphs and Surfaces}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {1.1.1}Graph Theory Terminology}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {1.1.2}Surfaces}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {1.1.3}Embedding Graphs in Surfaces}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.2}Graph Coloring}{4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.3}List Coloring}{5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.4}Goals and Results}{7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2}Critical graphs on the torus}{7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1}An Overview of Postle's Approach}{7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.1}Notation and Terminology}{7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.2}Variations on Thomassen's Condition}{8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.3}Linear Bound on Critical Cycle-Canvases}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.4}The Two Precolored Triangles Theorem}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.5}Cylinder-Canvases}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.6}Hyperbolicity}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.2}Critical Graphs on the Torus for (usual) Vertex Coloring}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.2.1}The Critical Graphs}{10}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.2.2}An Overview of Thomassen's Approach}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3}Our Approach}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3}Generation of Critical Graphs}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.1}Critical Canvases}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2}Critical Wedges}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3}Critical Biwedges with Bounded Distance}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4}Criticality Testing}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.1}Useful Theorems}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.2}Coloring Heuristics}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.3}The Alon-Tarsi Method}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.4}The Recursive Alon-Tarsi Method}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {4.5}Criticality Verification}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5}Approaches to the Two Precolored Triangles Theorem}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.1}Canvas Strangulation}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2}The Forbidden 3-3 Reduction}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.3}Criticality Strength}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6}Conclusions and Further Study}{11}%

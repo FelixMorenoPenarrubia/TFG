@@ -1,0 +1,110 @@
+\documentclass{article}
+
+\usepackage{amsthm,amsmath,amssymb,amsfonts,amscd}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage[all]{xy}
+\usepackage{booktabs}
+\usepackage{todonotes}
+
+
+
+
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{observation}[theorem]{Observation}
+\newtheorem{conjecture}[theorem]{Conjecture}
+
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+
+
+\usepackage[backend=bibtex]{biblatex}
+
+\bibliography{references.bib}
+
+\begin{document}
+
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+            
+        \Huge
+        \textbf{List-Coloring Graphs on the Torus}
+            
+        \vspace{0.5cm}
+        \Large
+        \textit{Félix Moreno Peñarrubia}
+            
+        
+            
+        \,Treball de Final de Grau
+            
+        \vspace{0.8cm}
+            
+       
+            
+        \Large
+        Grau en Matemàtiques, FME-UPC \\
+        Grau en Enginyeria Informàtica, FIB-UPC \\
+        \vspace{1.2cm}
+        
+        \includegraphics[height=0.8cm]{figures/logo_FME_cropped.png}
+        \includegraphics[height=0.8cm]{figures/logo_FIB.jpg}
+        \\
+        \includegraphics[height=2.5cm]{figures/logo_MFF.png}
+        \vfill
+        
+      
+        May 2023
+        
+		\vspace{2cm}
+		\large        
+        \textit{Director: Zdeněk Dvořák \hspace{3cm} Tutor: Oriol Serra Albó}
+        
+        
+            
+    \end{center}
+\end{titlepage}
+
+\listoftodos
+
+\newpage
+
+\todo{abstract}
+\todo{keywords and AMS code}
+
+\newpage
+
+\tableofcontents
+
+\newpage
+
+
+
+\input{chapters/introduction.tex}
+
+\input{chapters/criticalgraphsontorus.tex}
+
+\input{chapters/generation.tex}
+
+\input{chapters/criticalitytesting.tex}
+
+\section{Approaches to the Two Precolored Triangles Theorem}
+
+\subsection{Canvas Strangulation}
+
+\subsection{The Forbidden 3-3 Reduction}
+
+\subsection{Criticality Strength}
+
+
+\section{Conclusions and Further Study}
+
+\newpage
+
+\printbibliography
+\end{document}
+
+

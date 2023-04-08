@@ -1,0 +1,293 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated as
+% required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+\datalist[entry]{nty/global//global/global}
+  \entry{heawoodmapcolour}{article}{}
+    \name{author}{1}{}{%
+      {{hash=HPJ}{%
+         family={Heawood},
+         familyi={H\bibinitperiod},
+         given={P.\bibnamedelima J.},
+         giveni={P\bibinitperiod\bibinitdelim J\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HPJ1}
+    \strng{fullhash}{HPJ1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{pages}{332\bibrangedash 338}
+    \field{title}{Map colour theorem}
+    \field{volume}{24}
+    \field{journaltitle}{Quarterly Journal of Mathematics}
+    \field{year}{1890}
+  \endentry
+
+  \entry{hutchinson2012outerplanar}{article}{}
+    \name{author}{1}{}{%
+      {{hash=HJP}{%
+         family={Hutchinson},
+         familyi={H\bibinitperiod},
+         given={J.\bibnamedelima P.},
+         giveni={J\bibinitperiod\bibinitdelim P\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{HJP1}
+    \strng{fullhash}{HJP1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{H}
+    \field{sortinithash}{H}
+    \field{number}{1}
+    \field{pages}{175\bibrangedash 188}
+    \field{title}{On list-coloring extendable outerplanar graphs}
+    \field{volume}{5}
+    \field{journaltitle}{ARS MATHEMATICA CONTEMPORANEA}
+    \field{year}{2012}
+  \endentry
+
+  \entry{postlethesis}{thesis}{}
+    \name{author}{1}{}{%
+      {{hash=PL}{%
+         family={Postle},
+         familyi={P\bibinitperiod},
+         given={Luke},
+         giveni={L\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{PL1}
+    \strng{fullhash}{PL1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \field{title}{5-list-coloring graphs on surfaces}
+    \list{institution}{1}{%
+      {Georgia Institute of Technology}%
+    }
+    \field{type}{phdthesis}
+    \field{year}{2012}
+  \endentry
+
+  \entry{fivelistcoloring1}{article}{}
+    \name{author}{2}{}{%
+      {{hash=PL}{%
+         family={Postle},
+         familyi={P\bibinitperiod},
+         given={Luke},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=TR}{%
+         family={Thomas},
+         familyi={T\bibinitperiod},
+         given={Robin},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {arXiv}%
+    }
+    \keyw{Combinatorics (math.CO), Discrete Mathematics (cs.DM), FOS:
+  Mathematics, FOS: Mathematics, FOS: Computer and information sciences, FOS:
+  Computer and information sciences}
+    \strng{namehash}{PLTR1}
+    \strng{fullhash}{PLTR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \verb{doi}
+    \verb 10.48550/ARXIV.1402.1813
+    \endverb
+    \field{title}{Five-list-coloring graphs on surfaces I. Two lists of size
+  two in planar graphs}
+    \field{year}{2014}
+  \endentry
+
+  \entry{fivelistcoloring2}{article}{}
+    \name{author}{2}{}{%
+      {{hash=PL}{%
+         family={Postle},
+         familyi={P\bibinitperiod},
+         given={Luke},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=TR}{%
+         family={Thomas},
+         familyi={T\bibinitperiod},
+         given={Robin},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \list{publisher}{1}{%
+      {arXiv}%
+    }
+    \keyw{Combinatorics (math.CO), Discrete Mathematics (cs.DM), FOS:
+  Mathematics, FOS: Mathematics, FOS: Computer and information sciences, FOS:
+  Computer and information sciences}
+    \strng{namehash}{PLTR1}
+    \strng{fullhash}{PLTR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \verb{doi}
+    \verb 10.48550/ARXIV.1505.05927
+    \endverb
+    \field{title}{Five-list-coloring graphs on surfaces II. A linear bound for
+  critical graphs in a disk}
+    \verb{url}
+    \verb https://arxiv.org/abs/1505.05927
+    \endverb
+    \field{year}{2015}
+  \endentry
+
+  \entry{fivelistcoloring3}{article}{}
+    \name{author}{2}{}{%
+      {{hash=PL}{%
+         family={Postle},
+         familyi={P\bibinitperiod},
+         given={Luke},
+         giveni={L\bibinitperiod},
+      }}%
+      {{hash=TR}{%
+         family={Thomas},
+         familyi={T\bibinitperiod},
+         given={Robin},
+         giveni={R\bibinitperiod},
+      }}%
+    }
+    \keyw{Graph, List-coloring, Planar graph}
+    \strng{namehash}{PLTR1}
+    \strng{fullhash}{PLTR1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{P}
+    \field{sortinithash}{P}
+    \verb{doi}
+    \verb https://doi.org/10.1016/j.jctb.2017.06.004
+    \endverb
+    \field{issn}{0095-8956}
+    \field{pages}{1\bibrangedash 16}
+    \field{title}{Five-list-coloring graphs on surfaces III. One list of size
+  one and one list of size two}
+    \field{volume}{128}
+    \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+    \field{year}{2018}
+  \endentry
+
+  \entry{thomassenplanargraphchoosable}{article}{}
+    \name{author}{1}{}{%
+      {{hash=TC}{%
+         family={Thomassen},
+         familyi={T\bibinitperiod},
+         given={C.},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TC1}
+    \strng{fullhash}{TC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{abstract}{%
+    We prove the statement of the title, which was conjectured in 1975 by V. G.
+  Vizing and, independently, in 1979 by P. Erdös, A. L. Rubin, and H Taylor.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.1006/jctb.1994.1062
+    \endverb
+    \field{issn}{0095-8956}
+    \field{number}{1}
+    \field{pages}{180\bibrangedash 181}
+    \field{title}{Every Planar Graph Is 5-Choosable}
+    \field{volume}{62}
+    \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+    \field{year}{1994}
+  \endentry
+
+  \entry{thomassentorus}{article}{}
+    \name{author}{1}{}{%
+      {{hash=TC}{%
+         family={Thomassen},
+         familyi={T\bibinitperiod},
+         given={C.},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TC1}
+    \strng{fullhash}{TC1}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{abstract}{%
+    We prove that a graph on the torus is 5-colorable, unless it contains
+  either K6 the complete graph on six vertices, or C3 + C5, the join of two
+  cycles of lengths three and five, respectively, or K2 + H7, the join of K2
+  and the graph H7 on seven vertices obtained by applying Hajos′ construction
+  to two copies of K4, or a triangulation T11 with 11 vertices of the torus.
+  This answers questions of Albertson, Hutchinson, Stromquist, and Straight.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.1006/jctb.1994.1052
+    \endverb
+    \field{issn}{0095-8956}
+    \field{number}{1}
+    \field{pages}{11\bibrangedash 33}
+    \field{title}{Five-Coloring Graphs on the Torus}
+    \field{volume}{62}
+    \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+    \field{year}{1994}
+  \endentry
+
+  \entry{thomassenexponentiallymany5listcolorings}{article}{}
+    \name{author}{1}{}{%
+      {{hash=TC}{%
+         family={Thomassen},
+         familyi={T\bibinitperiod},
+         given={Carsten},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \keyw{List colorings}
+    \strng{namehash}{TC2}
+    \strng{fullhash}{TC2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \field{abstract}{%
+    We prove that every planar graph with n vertices has at least 2n/9 distinct
+  list-colorings provided every vertex has at least five available colors.%
+    }
+    \verb{doi}
+    \verb https://doi.org/10.1016/j.jctb.2006.09.002
+    \endverb
+    \field{issn}{0095-8956}
+    \field{number}{4}
+    \field{pages}{571\bibrangedash 583}
+    \field{title}{Exponentially many 5-list-colorings of planar graphs}
+    \field{volume}{97}
+    \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+    \field{year}{2007}
+  \endentry
+\enddatalist
+\endinput

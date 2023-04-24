@@ -6,6 +6,10 @@
 \usepackage[all]{xy}
 \usepackage{booktabs}
 \usepackage{todonotes}
+\usepackage{algorithm2e}
+\usepackage{tikz-network}
+
+\RestyleAlgo{ruled}
 
 
 
@@ -18,6 +22,14 @@
 
 \theoremstyle{definition}
 \newtheorem{definition}[theorem]{Definition}
+
+\newcommand{\gobblecode}[1]{}
+
+\newcommand{\VertexI}[2][]{\Vertex[#1, color=black, shape=circle, size=0.25]{#2}}
+\newcommand{\VertexII}[2][]{\Vertex[#1, color=white, shape=semicircle, size=0.25]{#2}}
+\newcommand{\VertexIII}[2][]{\Vertex[#1, color=white, style={regular polygon, regular polygon sides=3}]{#2}}
+\newcommand{\VertexIV}[2][]{\Vertex[#1, color=white, style={regular polygon, regular polygon sides=4}]{#2}}
+\newcommand{\VertexV}[2][]{\Vertex[#1, color=white, style={regular polygon, regular polygon sides=5}]{#2}}
 
 
 \usepackage[backend=bibtex]{biblatex}
@@ -81,7 +93,7 @@
 
 \newpage
 
-
+\todo{fix function restrictions}
 
 \input{chapters/introduction.tex}
 
@@ -103,6 +115,8 @@
 \section{Conclusions and Further Study}
 
 \newpage
+
+\todo{fix bibliography (not arxiv version, extraneous urls, etc}
 
 \printbibliography
 \end{document}

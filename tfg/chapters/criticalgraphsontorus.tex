@@ -17,9 +17,11 @@ We say that $(G, S, L)$ is a \emph{canvas} if $G$ is a connected plane graph
  with outer walk $C$, $S$ is a subgraph of $C$, and $L$ is a list assignment
   such that $|L(v)| \geq 5 \, \forall v \in V(G) \setminus V(C)$ and
    $|L(v)| \geq 3 \, \forall v \in V(C) \setminus V(S)$. If $S$ is a path,
-    we say $(G, S, L)$ is a \emph{path-canvas} or a \emph{wedge}. If $S = C$,
-     then $(G, C, L)$ is a \emph{cycle-canvas}.
-\end{definition}
+    we say $(G, S, L)$ is a \emph{path-canvas} or a \emph{wedge}. If $S = C$ and 
+    $C$ is a cycle, then $(G, C, L)$ is a \emph{cycle-canvas}.
+\end{definition} 
+
+
 
 Note: in some places like \cite{fivelistcoloring2}, the term ``canvas'' is used for what Postle calls in \cite{postlethesis} ``cycle-canvas''.
 
@@ -33,6 +35,26 @@ If $(G, P, L)$ is a path-canvas and $|V(P)| \leq 2$, then $G$ is $L$-colorable.
 We say that a canvas $(G, S, L)$ is \emph{critical} if it is $S$-critical with respect to $L$.
 \end{definition}
 
+It is interesting to study in which circumstances can a critical canvas contain chords or cutvertices.
+
+\todo{determine if I am going to use essential definition}
+
+\begin{definition}
+
+\end{definition}
+
+\begin{lemma}
+	If $T = (G, S, L)$ is a critical canvas, then:
+
+	\begin{enumerate}
+		\item Every cutvertex of $G$ is essential.
+		\item Every chord of the outer walk of $G$ is essential.
+	\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+
+\end{proof}
 
 
 
@@ -106,6 +128,7 @@ Postle studies when the coloring of two paths of length $1$ does not extend. He 
 The main result he obtains is that if the two paths are sufficiently far apart, then the graph contains a proportionally large accordion or a coloring harmonica as a subgraph.
 
 \begin{theorem}[Bottleneck Theorem, loosely stated]
+\label{bottlenecktheorem}
 If $T = (G, P \cup P_0 , L)$ is a canvas with $P, P_0$ distinct edges of $C$ with $d(P, P_0) \geq 14$, then either there exists an $L$-coloring of $G$, or there exists a subcanvas $(G_0 , U_1 \cup U_2 , L)$ of $T$ where $d_{G_0} (U_1, U_2) = \Omega(d_G (P, P_0))$ which is an accordion or a coloring harmonica.
 \end{theorem}
 
@@ -113,34 +136,283 @@ This result, along with coloring and structural properties of accordions and har
 
 \subsubsection{Linear Bound on Critical Cycle-Canvases}
 
+Postle proves the following result:
+
+\begin{theorem}[\cite{fivelistcoloring2}]
+\label{linearboundcycletheorem}
+Let $G$ be a plane graph with outer cycle $C$ and $L$ a $5$-lis-assignment for $G$. Let $H$ be a minimal subgraph of $G$ such that every $L$-coloring of $C$ that extends to an $L$-coloring of $H$ also extends to an $L$-coloring of $G$. Then $H$ has at most $19|V(C)|$ vertices.
+\end{theorem}
+
+Or, equivalently stated in the language of critical canvases:
+
+\begin{theorem}
+If $(G, C, L)$ is a critical cycle-canvas, then $|V(G)| \leq 19 |V(C)|$.
+\end{theorem}
+
+The equivalence of the two statements is given by \ref{minimalsubgraphlemma}. This result is interesting in its own right because by \ref{gluinglemma}, all faces of a $T$-critical graph which do not separate vertices from $T$ are in fact critical cycle-canvases, and therefore what the result tells us is that for such graphs there is only finitely many kinds of faces that can appear for each given cycle length. This gives us a lot of information of how critical graphs look like. 
+
+A first observation that can be made is that critical cycle-canvases (in which $C$ is indeed a simple cycle) are $2$-connected, so each face is bounded by a cycle:
+
+\begin{lemma}
+If $(G, C, L)$ is a critical cycle-canvas, then it is $2$-connected.
+\end{lemma}
+
+\begin{proof}
+If $G$ is not $2$-connected, then there exist subgraphs $A, B$ such that $A \cup B = G$ with $|V(A) \cap V(B)| \leq 1$ and $|V(B) \setminus V(A)| \geq 1$. Assume $C \subseteq A$ and apply \ref{gluinglemma} to get that $B$ is $A[V(A) \cap V(B)]$-critical, contradicting \ref{thomassenstrongertheorem}.
+\end{proof}
+
+The key result in Postle's proof of the linear bound for cycles is the following theorem about the structure of critical cycle-canvases:
+
+\begin{theorem}[Cycle Chord or Tripod Theorem]
+\label{cyclechordtripodtheorem}
+If $(G, C, L)$ is a nontrivial critical cycle-canvas, then either
+
+\begin{enumerate}
+\item $C$ has a chord in $G$, or
+\item there exists a vertex $v \in V(G) \ V(C)$ with at least three neighbors on $C$ such that at most one of the faces of $G[\{v\} \cup V(C)]$ includes a vertex or edge of $G$. 
+\end{enumerate}
+\end{theorem}
+
+\todo{think if I should include proof of CCTT}
+
+Using this result, Postle carefully examines what happens near the boundary cycle in order to define some quantities related to sums of lengths of faces and proves that certain inequalities with those quantites are mantained when adding tripods in critical canvases. 
+
+
+
 \subsubsection{The Two Precolored Triangles Theorem}
 
-\subsubsection{Cylinder-Canvases}
+Next, Postle proves the following theorem:
+
+\begin{theorem}
+	There exists $d$ such that the following holds.
+	Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $d$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
+\end{theorem}
+
+The value of $d$ that Postle obtains is not explicitly stated, but it is on the order of $100$. However, we conjecture that $4$ or $5$ suffices.
+
+\begin{conjecture}
+Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $5$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
+\end{conjecture}
+
+The argument that Postle uses to prove his result is as follows. First, he proves that one can precolor a path between the two triangles in such a way that, when deleting the path and deleting the corresponding colors from the lists of neighboring vertices, all remaining non-precolored vertices have lists of size at least $3$. The proof of this begins with the simple observation that each vertex outside a shortest path has at most $3$ neighbors inside the path. Using planarity properties, a shortest path can be found so that it can be colored in such a way that the vertices with $3$ neighbors inside the path only see two different colors from their lists.
+
+After precoloring and deleting the path between the two triangles, a canvas $(G, P_1 \cup P_2, L)$ is obtained. If there was a precoloring of the triangles that did not extend, then the canvas contains a critical canvas, and by \ref{bottlenecktheorem} it contains a proportionally long accordion or harmonica. Postle proves that this (together with some technical details related to how the path between the triangles was chosen) implies that in the original graph there must be a long chain of separating triangles so that the graph between each separating triangle pertains to one of three very specific types, which he calls tetrahedral, octahedral or hexadecahedral bands. 
+
+\todo{check if I defined separating triangle in introduction}
+
+Finally, he proves that for a sufficiently long chain of this type, any precoloring of the innermost and outermost triangles extends to the whole chain. This proves the theorem, because of the following observation:
+
+\begin{proposition}
+	Let $G$ be a plane graph with $L$ a list assignment, $T_1$, $T_2$ 
+	two facial triangles with $T_1$ bounding the infinite face of $G$, 
+	and $T'_1$, $T'_2$ two triangles such that $T'_1$ is a separating 
+	triangle between $T_1$ and $T'_2$ and $T'_2$ is a separating 
+	triangle between $T'_1$ and $T_2$. Denote by $G[T'_1, T'_2]$ the 
+	subgraph comprised between the two triangles $T'_1, T'_2$.  
+	If there exists some $L$-coloring of $T_1 \cup T_2$ that does not 
+	extend to $G$, then there exists some $L$-coloring of $T'_1 \cup T'_2$ 
+	that does not extend to $G[T'_1, T'_2]$.
+\end{proposition}
+
+\begin{proof}
+	By \ref{thomassenstrongertheorem}, the coloring on $T_1$ extends to 
+	$G[T_1, T'_1]$ and the coloring on $T_2$ extends to $G[T'_2, T_2]$. 
+	The coloring of $T'_1 \cup T'_2$ given by this extensions can not 
+	extend to $G[T'_1, T'_2]$ by the assumption that the original coloring 
+	of $T_1 \cup T_2$ did not extend to $G$.
+\end{proof}
 
 \subsubsection{Hyperbolicity}
+\todo{hyperbolicity and cylinder canvases section}
 
 \subsection{Critical Graphs on the Torus for (usual) Vertex Coloring}
 
+In this section we discuss the result from Thomassen in \cite{thomassentorus} that characterizes the critical graphs for $5$-coloring (not $5$-list-coloring) on the torus.
+
 \subsubsection{The Critical Graphs}
 
-\todo{Subsection introduction}
-
 \begin{theorem}[\cite{thomassentorus}]
-A graph $G$ embeddable on the torus is $5$-colorable if and only if it does not contain the following subgraphs:
-\begin{itemize}
-\item $K_6$.
-\item $C_3 + C_5$.
-\item $K_2 + H_7$, where $H_7$ is the \emph{Moser spindle}, the graph obtained by applying the Hajós construction to a pair of $K_4$.
-\item $T_{11}$, where $T_{11}$ is a triangulation of the torus with $11$ vertices.
-\end{itemize}
-Where $+$ denotes the join of two graphs: their disjoint union with all pairs of vertices from different graphs joined by edges.
+	\label{thomassentorustheorem}
+	A graph $G$ embeddable on the torus is $5$-colorable if and only if 
+	it does not contain the following subgraphs:
+	\begin{itemize}
+		\item $K_6$.
+		\item $C_3 + C_5$.
+		\item $K_2 + H_7$, where $H_7$ is the \emph{Moser spindle}, the graph 
+		obtained by applying the Hajós construction to a pair of $K_4$. \todo{check if I explained Hajós construction in original}
+		\item $T_{11}$, where $T_{11}$ is a triangulation of the torus with $11$ vertices.
+	\end{itemize}
+	Where $+$ denotes the join of two graphs: their disjoint union with 
+	all pairs of vertices from different graphs joined by edges.
 \end{theorem} 
 
-\missingfigure{critical graphs on the torus}
 
-\todo{Discuss L-critical graphs}
+\begin{figure}
+\centering
+\begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
+
+\begin{scope}[scale=0.3, every node/.append style={transform shape}]]
+\input{figures/k6.tex}
+\end{scope}
+
+\begin{scope}[xshift=110, scale=0.3, every node/.append style={transform shape}]]
+\input{figures/c3c5.tex}
+\end{scope}
+
+
+\begin{scope}[yshift=-115, scale=0.3, every node/.append style={transform shape}]]
+\input{figures/k2h7.tex}
+\end{scope}
+
+\begin{scope}[xshift=110, yshift=-115, scale=0.3, every node/.append style={transform shape}]]
+\input{figures/t11.tex}
+\end{scope}
+
+\node[] at (1.85, -0.25) {$K_6$};
+\node[] at (5.70, -0.25) {$C_3+C_5$};
+\node[] at (1.85, -4.32) {$K_2+H_7$};
+\node[] at (5.70, -4.32) {$T_{11}$};
+\end{tikzpicture}
+\caption{$6$-critical graphs embedded on the torus.}
+\end{figure}
+
+If a graph is not $5$-colorable, it is not $5$-list-colorable, so all graphs 
+that contain any of the above subgraphs are not $5$-list-colorable. 
+We conjecture that this characterizes the $5$-list-colorable graphs on the torus too:
+
+\begin{conjecture}
+\label{torusconjecture}
+A graph $G$ embeddable on the torus is $5$-list-colorable if and only if 
+it does not contain the following subgraphs: $K_6$, $C_3 + C_5$, $K_2 + H_7$, $T_{11}$.
+\end{conjecture}
+
+This means that those are the minimal $6$-list-critical graphs on the torus. Note 
+that there may be additional $6$-list-critical graphs embeddable on the torus, but what we are conjecturing is that they all 
+contain those subgraphs. For example:
+
+\begin{observation}
+$K_7$ is $6$-list-critical.
+\end{observation}
+
+\begin{proof}
+Consider the following $5$-list-assignment for $K_7$: $L(v_1) = L(v_2) = L(v_3) = L(v_4) = L(v_5) = \{1, 2, 3, 4, 5\}$, 
+$L(v_6) = L(v_7) = \{1, 2, 3, 4, 6\}$. $K_7$ is not $L$-colorable, since there are only $6$ available colors. 
+But any subgraph is $L$-colorable. Let's give a coloring $\phi$ for $K_7 \setminus v_iv_j$. If $i, j \leq 5$, 
+then setting $\phi(v_i) = \phi(v_j) = 5$ and $\phi(v_7) = 6$ leaves $4$ vertices to be colored with $4$ colors. 
+If $i \leq 5$ and $j \geq 6$, then setting $\phi(v_i) = \phi(v_j) = 1$, $\phi(v_{13-j}) = 6$ leaves $4$ vertices 
+to be colored with $4$ colors. If $\{i, j\} = \{6, 7\}$, then $\phi(v_i) = \phi(v_j) = 6$ leaves $5$ vertices 
+to be colored with $5$ colors.
+
+Hence, $K_7$ is $L$-critical for a $5$-list-assignment $L$, and is therefore $6$-list-critical.
+\end{proof}
 
 \subsubsection{An Overview of Thomassen's Approach}
+
+Thomassen's article where he characterizes the graphs on the torus (\cite{thomassentorus}) predates 
+his result on finitely many $6$-critical graphs for all surfaces (\cite{thomassenfixedsurface}). 
+For the characterization of $6$-critical graphs on the torus, he only uses elementary, relatively 
+straighforward arguments that work on specifically in the torus. We briefly summarize his 
+approach here in order to discuss which arguments can be reused for the list-coloring case. 
+
+First, Thomassen considers the case when the minimum degree is at least $6$. 
+He obtains this result:
+
+\begin{theorem}
+Let $G$ be a graph embedded on the torus with $\delta(G) \geq 6$. Then $G$ is $5$-colorable 
+unless $G = K_7$ or $G = T_{11}$.
+\end{theorem}
+
+We will discuss later how to arrive at this result, because this is the part of the proof that 
+can be adapted for list-coloring. But let us first describe Thomassen's argument for 
+general graphs.
+
+He assumes a minimum counterexample $G_0$ to \ref{thomassentorustheorem} (the counterexample has
+minimum number of vertices, maximum number of edges restricted to that, and some other assumptions 
+about details we will not discuss here). By the previous result, 
+there must be a vertex $v_0 \in V(G_0)$ with degree $\leq 5$, and the degree of $v_0$ is in 
+fact equal to $5$ by minimality of the counterexample. 
+
+Consider two vertices $x, y \in N(v_0)$ which are not adjacent (if all the vertices of 
+$N(v_0)$ were adjacent, then $G_0$ would contain $K_6$, a contradiction). Let $G_{xy}$ be 
+the graph obtained from $G_0 \setminus v_0$ by identifying the vertices $x$ and $y$. 
+$G_{xy}$ can be embedded in the torus by modifying the embedding of $G_0$. If $G_{xy}$ 
+were $5$-colorable, then we would have a $5$-coloring of $G_0$ by assigning the same color 
+to $x$ and $y$ and coloring $v_0$ with a color not appearing in its $5$ neighbors. 
+Hence, $G_{xy}$ is not $5$-colorable and by minimality of our counterexample it 
+contains $K_6$, $C_3 + C_5$, $K_2 + H_7$ or $T_{11}$.
+
+The above argument works for all pairs $x, y$ of non-adjacent vertices in $N(v_0)$, so potentially 
+we can have many different obstructions for each of the corresponding $G_{xy}$ subgraphs. 
+But we can prove that, by minimality, there can not be much else in $G_0$ apart from these
+obstructions arising from all the $G_{xy}$ subgraphs. More precisely:  
+
+\begin{proposition}
+	\label{g0proposition}
+	For any non-adjacent $x, y \in N(v_0)$, let $G'_{xy}$ a copy of 
+	$K_6$, $C_3 + C_5$, $K_2 + H_7$ or $T_{11}$ in $G_{xy}$, and let $G''_{xy}$ be the induced
+	subgraph of $G_{xy}$ by the vertex set of $G'_{xy}$. Then $G_0$ consists of $v_0$, $N(v_0)$, 
+	the edges between vertices of $\{v_0\} \cup N(v_0)$, and the union over all non-adjacent 
+	$x, y \in N(v_0)$ of the graph obtained from $G''_{xy}$ by splitting the contracted vertex
+	into $x$ and $y$.  
+\end{proposition}
+
+\begin{proof}
+We will prove that the graph described above, which is a subgraph of $G_0$, is not $5$-colorable. 
+This means, by the assumptions of minimality of vertices and maximality of edges, that $G_0$ is
+in fact equal to that subgraph. 
+
+If the subgraph had a $5$-coloring, then two non-adjacent vertices $x, y$ of $N(v_0)$ would 
+have the same color. But by then identifying the two vertices we can get a $5$-coloring 
+of $G''_{xy}$, which contains the non-$5$-colorable subgraph $G'_{xy}$, contradiction.
+
+\end{proof}
+
+Note that, since the maximum number of vertices in a critical graph is $11$, this means that
+$G_0$ has at most $(11 - 1) \cdot \binom{5}{2} + 6 = 106$ vertices, and hence what remains
+is a finite problem.
+
+Thomassen uses some more arguments to narrow down the remaining possibilities for $G_0$, but
+we can already see an important point of failure of this argument for list-coloring: in the 
+proof of \ref{g0proposition}, it is used that a necessary and sufficient condition for a coloring
+of $G_0 \setminus v_0$ to extend to $v_0$ is that two neighbors of $v_0$ have the same color.
+In list coloring, this condition is not necessary. So we cannot conclude that the minimum 
+counterexample is the union of the graphs induced by the obstructions in $G_{xy}$ and the 
+argument breaks down here. 
+
+
+
+\subsubsection{$6$-Regular $6$-Critical Graphs}
+
+As we said before, Thomassen's argument for graphs with minimum degree $6$ can be reused for list-coloring. This is because these graphs are very restricted, and therefore their structure can be completely characterized and a $5$-(list)-coloring can be explicitly exhibited for the ones that are colorable. The basic result is this.
+
+\begin{proposition}
+If a graph $G$ embedded on the torus has $\delta(G) \geq 6$, then:
+
+\begin{enumerate}
+	\item $G$ is $6$-regular.
+	\item $G$ is a triangulation of the torus.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+We apply Euler's formula: let $V, E, F$ be the number of vertices, edges and faces in the embedding, respectively. 
+We have that $\delta(G) \geq 6 \implies V \leq \frac{1}{3} E$ with equality iff $G$ is $6$-regular, and $F \leq \frac{2}{3}E$ 
+with equality iff $G$ is a triangulation. Then $0 = V - E + F \leq \frac{1}{3}E - E + \frac{2}{3}E = 0$, so we have equality on both inequalities.
+\end{proof}
+
+Using the proposition above, Thomassen then proves the following:
+
+\begin{proposition}[3.2 in \cite{thomassentorus}]
+Let $G$ be a $6$-regular graph on the torus. If $G$ contains a vertex $v$, such that $\{v\} \cup N(v)$ induces a nonplanar graph, then $G = K_7$ or $G$ is obtained from $K_8$ or $K_9$ by deleting the edges of a $1$-regular or $2$-regular subgraph.
+\end{proposition}
+
+The study of $6$-regular graphs on the torus without vertices whose neighborhood induces a nonplanar graph was already done by Thomassen in his previous paper \cite{thomassentilings}, in the context of finding all tilings of the torus in order to prove a conjecture by Babai about vertex-transitive graphs. 
+
+
+\todo{finish 6-regular graphs section}
+ see if it is worth it to include, maybe it is nontrivial to actually prove 5-list-colorability
+
+
 
 
 \subsection{Our Approach}

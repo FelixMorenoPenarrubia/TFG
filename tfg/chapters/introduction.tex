@@ -88,19 +88,75 @@ For each fixed $k \geq 0$, we do induction on the size of $|V(G)|$. For $|V(G)| 
 
 \todo{Definition of List Coloring}
 
-\todo{Thomassen's theorem}
+\missingfigure{figure explaining pictorial notation for list sizes}
+
+\todo{Thomassen's theorem introduction}
 
 \cite{thomassenplanargraphchoosable}
 
 \begin{theorem}[Thomassen's theorem]
 \label{thomassentheorem}
+For all planar graphs $G$, $\chi_{\ell}(G) \leq 5$.
 \end{theorem}
+
+Thomassen actually proved a stronger theorem: 
 
 \begin{theorem}[Thomassen's stronger theorem]
 \label{thomassenstrongertheorem}
+	Let $G$ be a plane (embedded) graph with outer walk $C$, and let $L$ be a list assignment satisfying:
+\begin{itemize}
+	\item $|L(v)| \geq 5$ for all internal vertices.
+	\item $|L(v)| \geq 3$ for all $v \in V(C) \setminus \{x, y\}$ where $x, y$ are a pair of adjacent vertices.
+	\item $|L(x)| = |L(y)| = 1$, $L(x) \neq L(y)$. 
+\end{itemize}	
+	Then $G$ is $L$-colorable.
 \end{theorem}
 
 \begin{proof}
+Suppose we have a counterexample with minimal $|V(G)|$. It is clear that for 
+$|V(G)| \leq 3$ the theorem is true, so we assume $|V(G)| \geq 4$.
+
+First we prove that $G$ is $2$-connected. Assume it is not. Then, we have two subgraphs $G_1, G_2 \subset G$ with $G_1 \cup G_2 = G$ 
+and $G_1 \cap G_2 = \{v\}$, with $v$ a cutvertex. Assume, without loss of generality, that $x, y \in G_1$. By minimality of $G$, 
+$G_1$ is $L\restriction_{G_1}$ colorable. Let $\phi_1$ be a coloring of $G_1$. Now, let $w$ be a neighbor of $v$ in the outer face 
+of $G_2$ and consider the list assignment $L'$ for $G_2$ for which $L'(v) = \{\phi_1(v)\}$, $L'(w) = c$ for some arbitrary 
+$c \in L(w)$, and $L'(u) = L(u)$ $\forall u \in V(G_2) \setminus \{v, w\}$. Note that $G_2$ and $L'$ satisfy the hypothesis 
+of the theorem. Therefore, by minimality of our counterexample, $G_2$ has a $L'$-coloring $\phi_2$. But now note that, since 
+$\phi_1(v) = \phi_2(v)$, the coloring $\phi(u) = \phi_i(u)$ if $u \in V(G_i)$ is well-defined and is an $L$-coloring of $G$, 
+contradiction.
+
+Hence, $G$ is $2$-connected and the outer walk $C$ is a cycle. Now we prove that there is no chord in $C$. The proof is 
+similar to the above argument. Assume there is a chord $vw$. Then, we have two subgraphs $G_1, G_2 \subset G$ with 
+$G_1 \cup G_2 = G$, $G_1 \cap G_2 = \{v, w\}$ and ${x, y} \subset G_1$. By minimality of $G$, $G_1$ has an $L$-coloring $\phi_1$. 
+If we set $L'(v) = \{\phi_1(v)\}$, $L'(w) = \{\phi_1(w)\}$, and $L'(u) = L(u)$ for all other vertices 
+$u \in V(G_2) \setminus \{v, w\}$, then $G_2$ is $L'$-colorable and a coloring of $G$ can be constructed.
+
+Now we have that $G$ has no chords or cutvertices. Let $u$ be the neighbor of $y$ in the outer face other than 
+$x$ and let $v$ be the neighbor of $u$ in the outer face other than $y$ (possibly $v = x$). Let  
+$\{c_1, c_2\} \subseteq L(u) \ L(y)$. Now, let $G'$ be the graph obtained by removing $u$ from $G$ and let $L'$ be 
+the list assignment for $G'$ in which $\{c_1, c_2\}$ are removed from the lists of the neighbors of $u$ other than 
+$v$. $G'$ satisfies the hypothesis of the theorem: every vertex in the outer face has list size at least $3$, since each of those
+vertices is
+either a vertex previously in the outer face of $G$ all of which have their previous lists (the only neighbors of $u$ in 
+the outer face are $u$ and $y$, since $G$ has no chords), or a previously interior vertex, which has had at most $2$ of its
+$\geq 5$ colors removed. So $G'$ has an $L'$-coloring, which can be extended to an $L$-coloring of $G$ by coloring $u$ with one
+of $c_1$ or $c_2$ (whichever is not in use by $v$), contradiction.
+
+
+\begin{figure}
+\centering
+\begin{tikzpicture}
+\begin{scope}[scale=0.8, every node/.append style={transform shape}]]
+\input{figures/thomassen_proof_1.tex}
+\end{scope}
+
+\begin{scope}[xshift=170, scale=0.8, every node/.append style={transform shape}]]
+\input{figures/thomassen_proof_2.tex}
+\end{scope}
+\end{tikzpicture}
+\vspace{-1cm}
+\caption{Illustration of Thomassen's reduction. At most $2$ colors are erased from the lists of $u$'s neighbors.}
+\end{figure}
 
 \end{proof}
 
@@ -125,12 +181,40 @@ s	such that $\phi(v) = \psi(v)$ for all $v \in V(T)$.
 It is also interesting to consider graphs which are critical in this setting. To do so, we use the following definition (from \cite{fivelistcoloring2}):
 
 \begin{definition}[$T$-critical]
-	Let $G$, $T$, $L$ be as above. The graph $G$ is \emph{$T$-critical with respect to $L$} if for every proper subgraph $G' \subset G$ such that $T \subseteq G'$, there exists an $L$-coloring of $T$ that extends to an $L$-coloring of $G'$, but does not extend to an $L$-coloring of $G$.
+	Let $G$, $T$, $L$ be as above. The graph $G$ is \emph{$T$-critical with respect to $L$} if for every proper subgraph $G' \subset G$ such that $T \subseteq G'$, there exists an $L$-coloring of $T$ that extends to an $L$-coloring of $G'$, but does not extend to an $L$-coloring of $G$. If the list assignment $L$ is clear from context, we just say \emph{$T$-critical}.
 \end{definition}
 
 \begin{definition}[$\phi$-critical]
 	Let, $G$, $T$, $L$ be as above. The graph $G$ is $\phi$-critical for a coloring $\phi$ of $T$ if $\phi$ extends to every proper subgraph of $G$ containing $T$ but not to $G$.
 \end{definition}
+
+In a way similar to the general notion of criticality, we have that graphs for which colorings of $T$ do not extend contain a non-trivial $T$-critical subgraph:
+
+\begin{lemma}
+Let $G$ be a graph, $T$ a subgraph, and $L$ a list assignment for $G$. If there 
+is an $L$-coloring $\phi$ of $T$ that does not extend to $G$, 
+then $G$ contains a subgraph $H$ with $T \subsetneq H$ which 
+is $\phi$-critical, and hence also $T$-critical with respect 
+to $L\restriction_H$. 
+\end{lemma}
+
+\begin{proof}
+Let $\phi$ be the coloring of $T$ that does not extend and let $H$ be a minimal subgraph 
+of $G$ for which $\phi$ does not extend. Now note that $H$ is $\phi$-critical 
+by construction.
+\end{proof}
+
+\begin{lemma}
+\label{minimalsubgraphlemma}
+Let $G$ be a graph, $T$ a subgraph, $L$ a list assignment for $G$, and $H \supseteq T$ 
+a subgraph of $G$ which is minimal with respect to the following property: 
+for every $L$-coloring $\phi$ of $T$ that extends to $H$, $\phi$ also extends to $G$. 
+Then $H$ is $T$-critical.
+\end{lemma}
+
+\begin{proof}
+Suppose not. Then, $H$ contains a proper subgraph $H'$ so that every $L$-coloring $\phi$ that extends to $H'$ also extends to $H$ and hence to $G$. But then $H'$ is a smaller subgraph with that property, contradiction. 
+\end{proof}
 
 We also have the following lemma from \cite{fivelistcoloring2}:
 
@@ -143,7 +227,7 @@ Let $T$ be a subgraph of a graph $G$ such that $G$ is $T$-critical with respect 
 Let $G' = G[V(B)]$ and $S = A[V(A) \cap V(B)]$. If $G' = S$ there is nothing to say, suppose otherwise that $G' \neq S$ and note that therefore $G'$ contains an edge not in $S$ (in fact, all isolated vertices of $G'$ must be in $S$). Suppose for a contradiction that $G'$ is not $S$-critical. Then, by taking a maximal proper subgraph that defies the defintion, there exists an edge $e \in E(G') \setminus E(S)$ such that every $L$-coloring of $S$ that extends to $G' \setminus e$ also extends to $G'$. Since $G$ is $T$-critical and $e \not\in E(T)$, there exists a coloring $\phi\restriction_T$ of $T$ that extends to an $L$-coloring $\phi$ of $G \setminus e$, but does not extend to an $L$-coloring of $G$. However, by the choice of $e$, the restriction $\phi\restriction_S$ extends to an $L$-coloring $\phi'$ of $G'$. Let $\phi''$ be such that $\phi''(v) = \phi'(v) \, \forall v \in V(G')$ and $\phi''(v) = \phi(v) \, \forall v \in V(G) \setminus V(G')$. Now, since $A \cup B = G$, $\phi''$ is an $L$-coloring of $G$ extending $\phi\restriction_T$, a contradiction.
 \end{proof}
 
-For us, it will be more useful in this form:
+For us, it will be more useful in this form: \todo{check if this is the best phrasing}
 
 \begin{lemma}[Gluing Lemma]
 \label{gluinglemma}

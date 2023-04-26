@@ -1,0 +1,20 @@
+\draw[densely dotted] (3, 1) to [out=270,in=270,looseness=1.5] (-3, 0);
+\draw[densely dotted] (-0.25, 0.5) to [out=270,in=270,looseness=1.5] (1.0, 0.5);
+
+\VertexI[label=$x$, position=left, x=-3, y=0]{X}
+\VertexI[label=$y$, position=left, x=-3, y=1]{Y}
+
+\Vertex[label=$u$, position=above, x=0, y=2, color=white, style={regular polygon, regular polygon sides=3, opacity=0.2}]{U}
+\VertexIII[label=$v$, position=right, x=3, y=1]{V}
+\VertexIII[x=-1.5, y=0.5]{u1}
+\VertexV[x=-0.25, y=0.5]{u2}
+\VertexIV[x=1.0, y=0.5]{u3}
+
+\Edge(X)(Y)
+\Edge[opacity=0.2](Y)(U)
+\Edge[opacity=0.2](U)(V)
+\Edge(Y)(u1)
+\Edge(u1)(u2)
+\Edge(u3)(V)
+\Edge[opacity=0.2](U)(u1)
+\Edge[opacity=0.2](U)(u3)

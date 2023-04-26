@@ -1,7 +1,86 @@
 \section{Criticality Testing}
 
-\subsection{Useful Theorems}
-\subsection{Coloring Heuristics}
+In this section we describe algorithms used to determine list-criticality of graphs. Recall that we are not storing the explicit list assignment $L$ for our graphs, so what we want to check is whether there exists a $L$ so that the graph is critical with respect to that $L$. However, even if $L$ was fixed, it would still be a computationally hard problem to determine criticality. What we will do instead is check for weaker properties, and therefore admit some false positives, that is, some graphs we identify as list-critical for which actually no suitable $L$ exist. Our hope is that the tests will be exhaustive enough so that finiteness results such as \ref{linearboundcycletheorem} still hold for the weaker properties we are testing, and our algorithms terminate. We will see that indeed, the algorithms described here work very well in practice at discarding non-critical graphs. 
+
+\todo{explain that we work with graphs with prescribed list sizes}
+
+\subsection{Degree properties}
+
+We can start with an easy observation:
+
+\begin{Observation}
+In a $L$-critical graph, $d(v) \geq |L(v)|$ for all vertices $v$.
+\end{Observation}
+
+So if we find a vertex with degree less than the prescribed list size, we can conclude that the graph is not list-critical. 
+However, this is a very weak test. We can incorporate another test concerning the vertices with $d(v) = |L(v)|$: there is
+the following result by Gallai showing that the subgraph induced by those vertices must have a certain structure, generalizing 
+the classical Brooks theorem for vertex coloring:
+
+\begin{theorem}[Gallai \cite{gallaikritische}]
+Let $G$ be a $L$-critical graph and let $H$ be the subgraph
+of $H$ induced by the vertices with $d(v) = |L(v)|$. 
+Then each $2$-connected component of $H$ is a complete graph or an odd cycle.
+\end{theorem}
+
+\subsection{Reducible Configurations}
+
+\begin{figure}
+\begin{tikzpicture}
+	\VertexIII[y=1]{A}
+	\VertexII[x=-2]{B}
+	\VertexII[y=-1]{C}
+	\VertexII[x=2]{D}
+	
+	\Edge(A)(B)
+	\Edge(A)(C)
+	\Edge(A)(D)
+	\Edge(B)(C)
+	\Edge(C)(D)
+\end{tikzpicture}
+\begin{tikzpicture}
+	\VertexIV[y=1]{X}
+	\VertexII[x=-3, y=-1]{A}
+	\VertexII[x=-1, y=-1]{B}
+	\VertexII[x=1, y=-1]{C}
+	\VertexII[x=3, y=-1]{D}
+	
+	\Edge(X)(A)
+	\Edge(X)(B)
+	\Edge(X)(C)
+	\Edge(X)(D)
+	\Edge(A)(B)
+	\Edge(B)(C)
+	\Edge(C)(D)
+\end{tikzpicture}
+\end{figure}
+
 \subsection{The Alon-Tarsi Method}
-\subsection{The Recursive Alon-Tarsi Method}
+\subsection{Recursive Colorability Testing}
+
+\begin{algorithm}[H]
+\caption{Recursive Colorability Testing.}
+\SetAlgoLined
+\SetKwProg{Fn}{function}{}{end}
+\Fn{containsColorableSubgraph(G)}{
+\If{$G$ is empty} {
+	return false\;
+}
+\If{alonTarsi($G$)} {
+	return true\;
+}
+$H \gets \text{minimalNonColorable}(G)$\;
+return containsColorableSubgraph($G \setminus H$)\;
+}
+\Fn{minimalNonColorable(G)}{
+	\For{$v \in V(G)$} {
+		\If{not alonTarsi(removeVertex($G$,$v$))} {
+			return minimalNonColorable(removeVertex($G$,$v$))\;
+		}
+	}
+	return $G$\;
+}
+
+
+\end{algorithm}
 \subsection{Criticality Verification}

@@ -1,0 +1,64 @@
+\draw[draw=black, fill=green, opacity=0.5] (0, 0) rectangle (12, 12);
+
+
+
+
+\node[main] (A1) at (0, 8) {};
+\node[main] (A2) at (0, 10) {};
+\node[main] (A3) at (0, 2) {};
+\node[main] (A4) at (0, 4) {};
+\node[main] (A5) at (0, 6) {};
+
+\coordinate[] (A1c) at (12, 8) {};
+\coordinate[] (A2c) at (12, 10) {};
+\coordinate[] (A3c) at (12, 2) {};
+\coordinate[] (A4c) at (12, 4) {};
+\coordinate[] (A5c) at (12, 6) {};
+
+\node[main] (H1) at (3, 8) {};
+\node[main] (H2) at (9, 4) {};
+
+\node[main] (K1) at (6, 9) {};
+\node[main] (K2) at (6, 3) {};
+
+
+
+
+\draw (A1) -- (A2);
+\draw (A2) -- (0, 12);
+\draw (0, 0) -- (A3);
+\draw (A3) -- (A4);
+\draw (A4) -- (A5);
+\draw (A5) -- (A1);
+
+\draw (H1) -- (A1);
+\draw (H1) -- (A2);
+\draw (H1) -- (A5);
+
+\draw (H2) -- (A3c);
+\draw (H2) -- (A4c);
+\draw (H2) -- (A5c);
+
+\draw (K1) -- (A2);
+\draw (K1) -- (A1c);
+\draw (K1) -- (A5c);
+\draw (K1) -- (H1);
+\draw (K1) -- (H2);
+\draw (K1) -- (3.42, 12);
+\draw (3.42, 0) -- (A4);
+\draw (K1) -- (2.4, 12);
+\draw (2.4, 0) -- (A3);
+
+\draw (K2) -- (A5);
+\draw (K2) -- (A4);
+\draw (K2) -- (A3c);
+\draw (K2) -- (H1);
+\draw (K2) -- (H2);
+\draw (K2) -- (12-3.42, 0);
+\draw (12-3.42, 12) -- (A1c);
+\draw (K2) -- (12-2.4, 0);
+\draw (12-2.4, 12) -- (A2c);
+
+
+\draw (K1) -- (6, 12);
+\draw (6, 0) -- (K2);

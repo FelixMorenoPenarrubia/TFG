@@ -3,6 +3,8 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {todo}{keywords and AMS code}{2}%
 \defcounter {refsection}{0}\relax 
+\contentsline {todo}{fix function restrictions}{4}%
+\defcounter {refsection}{0}\relax 
 \contentsline {todo}{(connectivity, complete graphs, etc)}{4}%
 \defcounter {refsection}{0}\relax 
 \contentsline {todo}{(surface classification theorem, orientability, etc)}{4}%
@@ -11,7 +13,7 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {todo}{references for all this}{4}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{4ct dates and references}{4}%
+\contentsline {todo}{4ct dates and references}{5}%
 \defcounter {refsection}{0}\relax 
 \contentsline {todo}{Proof of Heawood's theorem}{5}%
 \defcounter {refsection}{0}\relax 
@@ -23,24 +25,50 @@
 \defcounter {refsection}{0}\relax 
 \contentsline {todo}{Definition of List Coloring}{5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Thomassen's theorem}{5}%
+\contentsline {todo}{Figure: figure explaining pictorial notation for list sizes}{5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Criticality definition. Discuss it}{5}%
+\contentsline {todo}{Thomassen's theorem introduction}{5}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Figure: Gluing lemma illustration}{6}%
+\contentsline {todo}{Criticality definition. Discuss it}{6}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Analogous results for List coloring}{7}%
+\contentsline {todo}{check if this is the best phrasing}{8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Section on Goals and Results}{7}%
+\contentsline {todo}{Figure: Gluing lemma illustration}{8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Section header}{7}%
+\contentsline {todo}{Analogous results for List coloring}{8}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Figure: harmonica}{8}%
+\contentsline {todo}{Section on Goals and Results}{9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Figure: bellows}{9}%
+\contentsline {todo}{Section header}{9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Subsection introduction}{10}%
+\contentsline {todo}{determine if I am going to use essential definition}{9}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Figure: critical graphs on the torus}{10}%
+\contentsline {todo}{Figure: harmonica}{11}%
 \defcounter {refsection}{0}\relax 
-\contentsline {todo}{Discuss L-critical graphs}{11}%
+\contentsline {todo}{Figure: bellows}{11}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{think if I should include proof of CCTT}{13}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{check if I defined separating triangle in introduction}{14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{hyperbolicity and cylinder canvases section}{14}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{check if I explained Hajós construction in original}{15}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{finish 6-regular graphs section}{18}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Plane graph canonization}{19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{check that all definitions of critical canvases are consistent with this}{19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{references for sections}{19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Figure: The three cases for generation of critical cycle-canvases}{19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{figure for generation of critical cycle-canvases and references to figure}{19}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{fix algorithm size}{20}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{Generation of critical wedges: chord or tripod theorem, etc}{21}%
+\defcounter {refsection}{0}\relax 
+\contentsline {todo}{fix bibliography (not arxiv version, extraneous urls, etc}{23}%

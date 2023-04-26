@@ -152,9 +152,6 @@
     \endverb
     \field{title}{Five-list-coloring graphs on surfaces II. A linear bound for
   critical graphs in a disk}
-    \verb{url}
-    \verb https://arxiv.org/abs/1505.05927
-    \endverb
     \field{year}{2015}
   \endentry
 
@@ -256,6 +253,33 @@
     \field{volume}{62}
     \field{journaltitle}{Journal of Combinatorial Theory, Series B}
     \field{year}{1994}
+  \endentry
+
+  \entry{thomassenfixedsurface}{article}{}
+    \name{author}{1}{}{%
+      {{hash=TC}{%
+         family={Thomassen},
+         familyi={T\bibinitperiod},
+         given={Carsten},
+         giveni={C\bibinitperiod},
+      }}%
+    }
+    \strng{namehash}{TC2}
+    \strng{fullhash}{TC2}
+    \field{labelnamesource}{author}
+    \field{labeltitlesource}{title}
+    \field{sortinit}{T}
+    \field{sortinithash}{T}
+    \verb{doi}
+    \verb https://doi.org/10.1006/jctb.1996.1722
+    \endverb
+    \field{issn}{0095-8956}
+    \field{number}{1}
+    \field{pages}{67\bibrangedash 100}
+    \field{title}{Color-Critical Graphs on a Fixed Surface}
+    \field{volume}{70}
+    \field{journaltitle}{Journal of Combinatorial Theory, Series B}
+    \field{year}{1997}
   \endentry
 
   \entry{thomassenexponentiallymany5listcolorings}{article}{}

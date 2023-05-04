@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass{report}
 
 \usepackage{amsthm,amsmath,amssymb,amsfonts,amscd}
 \usepackage{graphicx}
@@ -8,6 +8,8 @@
 \usepackage{todonotes}
 \usepackage{algorithm2e}
 \usepackage{tikz-network}
+\usepackage{caption}
+\usepackage{subcaption}
 
 \RestyleAlgo{ruled}
 
@@ -43,7 +45,7 @@
         \vspace*{1cm}
             
         \Huge
-        \textbf{List-Coloring Graphs on the Torus}
+        \textbf{A Computational Approach for Finding 6-List-Critical Graphs on the Torus}
             
         \vspace{0.5cm}
         \Large
@@ -62,6 +64,8 @@
         Grau en Enginyeria Informàtica, FIB-UPC \\
         \vspace{1.2cm}
         
+        \includegraphics[height=1.1cm]{figures/logo_CFIS.jpg}
+          \\
         \includegraphics[height=0.8cm]{figures/logo_FME_cropped.png}
         \includegraphics[height=0.8cm]{figures/logo_FIB.jpg}
         \\
@@ -84,8 +88,30 @@
 
 \newpage
 
-\todo{abstract}
-\todo{keywords and AMS code}
+\section*{Abstract}
+
+Coloring graphs embedded on surfaces is an old and well-studied area of graph theory. Thomassen proved that there are finitely many $6$-critical graphs on any fixed surface and provided the explicit set of $6$-critical graphs on the torus. Later, Postle proved that there are finitely many $6$-list-critical graphs on any fixed surface. With the goal of finding the set of $6$-list-critical graphs on the torus, we develop and implement algorithmic techniques for computer search of critical graphs in different list-coloring settings. 
+
+\textbf{Keywords:} graphs on surfaces, list coloring, graph algorithms.
+
+\textbf{MSC2020 codes:} 05C10, 05C15, 68R10.
+
+\section*{Resum}
+
+La coloració de grafs dibuixats a superfícies és un àrea antiga i molt estudiada de la teoria de grafs. Thomassen va demostrar que hi ha un nombre finit de grafs $6$-crítics a qualsevol superfície fixa i va proporcionar el conjunt explícit dels grafs $6$-crítics al torus. Després, Postle va demostrar que hi ha un nombre finit de grafs $6$-llista-crítics a qualsevol superfície fixa. Amb l'objectiu de trobar el conjunt de grafs $6$-llista-crítics al torus, desenvolupem i implementem tècniques algorítmiques per la cerca per ordinador de grafs crítics en diferents situacions de coloració per llistes.  
+
+\textbf{Paraules clau:} grafs en superfícies, coloració amb llistes, algorismes sobre grafs.
+
+\textbf{Codis MSC2020:} 05C10, 05C15, 68R10.
+
+
+\section*{Resumen}
+
+La coloración de grafos dibujados en superficies es un área antigua y muy estudiada de la teoría de grafos. Thomassen demostró que hay un número finito de grafos $6$-críticos en cualquier superficie fija y proporcionó el conjunto explícit de los grafos $6$-críticos en el toro. Después, Postle demostró que hay un número finito de grafos 6-lista-críticos en cualquier superficie fija. Con el objetivo de encontrar el conjunto de grafos $6$-lista-críticos en el toro, desarrollamos e implementamos técnicas algorítmicas para la búsqueda por ordenador de grafos críticos en diferentes situaciones de coloración por listas.
+
+\textbf{Palabras clave:} grafos en superficies, coloración con listas, algoritmos sobre grafos.
+
+\textbf{Códigos MSC2020:} 05C10, 05C15, 68R10.
 
 \newpage
 
@@ -103,16 +129,9 @@
 
 \input{chapters/criticalitytesting.tex}
 
-\section{Approaches to the Two Precolored Triangles Theorem}
+\input{chapters/approachestotwoprecoloredtriangles.tex}
 
-\subsection{Canvas Strangulation}
-
-\subsection{The Forbidden 3-3 Reduction}
-
-\subsection{Criticality Strength}
-
-
-\section{Conclusions and Further Study}
+\input{chapters/resultsandfurtherstudy.tex}
 
 \newpage
 

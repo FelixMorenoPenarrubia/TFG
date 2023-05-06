@@ -167,9 +167,10 @@ $p(a_1, \ldots, a_n) \neq 0$.
 
 \begin{definition}
 For a directed graph $G$ with $n$ vertices $v_1, \ldots, v_n$, we define its \emph{graph polynomial} $p_G(x_1, \ldots, x_n)$ as:
-\[
+\begin{equation}
+\label{eq:graphpolynomialproduct}
 p_G(x_1, \ldots, x_n) = \prod_{\overrightarrow{v_iv_j}\in E(G)} (x_j-x_i).
-\]
+\end{equation}
 \end{definition}
 
 
@@ -192,7 +193,7 @@ one can find $\phi(v_1) \in L(v_1), \ldots, \phi(v_n) \in L(v_n)$ so that $p_G(\
 Let $G$ be a directed graph, and denote by $x_G = \prod_{\overrightarrow{v_iv_j} \in E(G)} x_j$. Let $D_1$ and $D_2$ be two orientations of a graph, denote by
 $|D_1 \Delta D_2|$ the number of edges with different direction in the two orientations. We have:
 \begin{equation}
-\label{eq:alontarsi}
+\label{eq:graphpolynomialsum}
 p_G(x_1, \ldots, x_n) = \sum_{D \text{ orientation of } G} (-1)^{|D\Delta G|} x_D
 \end{equation}
 \end{observation}
@@ -207,7 +208,7 @@ Consider the set $\mathcal{S} = \{D \text{ orientation of } G : x_D = \prod_{i=1
 the set of orientations which have the same indegrees as $G$. We claim that this set is in bijection 
 with the set of eulerian spanning subgraphs of $G$, with a bijection maps orientations with even 
 $|D\Delta G|$ to even spanning subgraphs and orientations with odd $|D\Delta G|$ to odd spanning
-subgraphs. This implies the result by \eqref{eq:alontarsi}.
+subgraphs. This implies the result by \eqref{eq:graphpolynomialsum}.
 
 The bijection is as follows: for each $D \in \mathcal{S}$ map it to the subgraph with edges given by 
 the edges in $G$ which have opposite orientation as edges in $D$. Since the indegrees of $D$ and $G$ are 
@@ -225,10 +226,10 @@ and we could apply the theorem to each of those. So instead of using the combina
 do is directly compute the polynomial $p_G$ with respect to an arbitrary orientation of the graph, and if any monomial $\prod x_i^{e_i}$ with 
 $e_i < f(i)$ has a nonzero coefficient we will conclude $f$-colorability. 
 
-It will be convenient to think of the computation of the polynomial $p_G$ using the expression \eqref{eq:alontarsi}. This way, we can compute the 
+It will be convenient to think of the computation of the polynomial $p_G$ using the expression \eqref{eq:graphpolynomialsum}. This way, we can compute the 
 coefficients by enumerating all orientations of the graph and summing the signs.  The implementation is as follows:
 
-\begin{algorithm}[H]
+\begin{algorithm}
 \caption{Naive Alon-Tarsi.}
 \SetAlgoLined
 \SetKwComment{Comment}{/* }{ */}
@@ -273,56 +274,194 @@ However, there are multiple improvements that can be made over this naive implem
 
 The most immediate one is that we only care about the coefficients of the monomials
 corresponding to orientations with indegrees less than $f(v)$ in each vertex $f$ 
-(we call such orientations $f$-orientations).
-Therefore we can store only coefficients of the polynomial corresponding to $f$-orientations.
-We would also like to generate only $f$-orientations, so that we do not have to iterate over all 
+(we call such orientations \emph{$f$-bounded orientations}, and the coefficients of the 
+corresponding terms of the polynomial
+\emph{$f$-bounded coefficients}).
+Therefore we can store only coefficients of the polynomial corresponding to $f$-bounded orientations.
+We would also like to generate only $f$-bounded orientations, so that we do not have to iterate over all 
 $2^|E(G)|$ orientations of the graphs. 
 
 If we generate orientations by a orienting each edge one by
 one in a recursive backtracking fashion, we want to know when to cut a branch that is not going to lead
-to an $f$-orientation. The easiest way is to cut a branch when the branch trivially does not correspond
-anymore to an $f$-orientation, that is, when the indegree of some of the vertices already reaches $f(v)$. 
+to an $f$-bounded orientation. The easiest way is to cut a branch when the 
+branch trivially does not correspond
+anymore to an $f$-bounded orientation, that is, 
+when the indegree of some of the vertices already reaches $f(v)$. 
 It can be done in a more sophisticated way by reducing the problem of checking whether a partial 
-orientation can be extended to an $f$-orientation to a problem of maximum bipartite matching. This way,
-all the branches that do not lead to an $f$-orientation can be immediately discarded by this test, and 
-we can obtain an enumeration of all $f$-orientations in polynomial time for each $f$-orientation.
+orientation can be extended to an $f$-bounded 
+orientation to a problem of maximum bipartite matching. This way,
+all the branches that do not lead to an $f$-bounded 
+orientation can be immediately discarded by this test, and 
+we can obtain an enumeration of all $f$-bounded orientations in polynomial time for each 
+$f$-bounded orientation.
 
 However, it turns out it is more efficient to just do it in the trivial way since the overhead of solving
 the bipartite matching subproblems is not worth the more eager cutting of branches. The trivial branch cutting
 can be improved by selecting the next edge that is going to be oriented following some heuristic
-that makes it more likely for branches to be cut off earlier. For example, we can orient first the edges that whose orientation is forced (because one of the endpoints has already indegree $f(v)-1$) and then prioritize the ones whose both endpoints have indegrees close to $f(v)$.
+that makes it more likely for branches to be cut off earlier. 
+For example, we can orient first the edges that whose orientation is forced 
+(because one of the endpoints has already indegree $f(v)-1$) 
+and then prioritize the ones whose both endpoints have indegrees close to $f(v)$.
 
 Implementing the above improvements already makes a very substantial impact in the execution time
-of the algorithm...
+of the algorithm, but it is still slow when the number of $f$-bounded orientations is very large
+and storing all the $f$-bounded coefficients of the polynomial can also incur in a large memory usage.
 
-\todo{finish Alon-Tarsi}
+There is a different approach which can work a bit better in practice, based not on enumerating
+all orientations but on computing the contribution of each edge to the polynomial separately. 
+We can think of it as using \eqref{eq:graphpolynomialproduct} instead of \eqref{eq:graphpolynomialsum} and
+computing the product $\prod_{\overrightarrow{v_iv_j} \in E(G)} (x_i - x_j)$ term by term.
+The important ideas in making this be actually faster than the enumerating orientations approach are:
 
-\begin{algorithm}[H]
-\caption{Optimized Alon-Tarsi.}
+\begin{itemize}
+	\item We \emph{truncate} the partial results so that we don't store non-$f$-bounded coefficients:
+	we only care about $f$-bounded coefficients, so we can just avoid storing the other coefficients of the 
+	polynomial, not only in the final result but also in the intermediate results we get after multiplying each
+	$(x_i-x_j)$ term. 
+	
+	In a similar fashion to the previous discussion in which we were enumerating $f$-bounded orientations, given 
+	the intermediate polynomial after multiplying some of the terms we can check whether each monomial will have
+	some contribution to a $f$-bounded coefficient in the final result - i.e., whether the partial orientations
+	corresponding to the indegree sequence corresponding to the monomial can be extended to a $f$-bounded orientations
+	- by solving a bipartite matching problem. But, just as before, we find that the overhead of performing this
+	extendability test is not worth the additional pruning and that it is more efficient in practice to just discard
+	non-$f$-bounded monomials. 
+	
+	
+	\item We also discard monomials whose coefficients are $0$ in the intermediate results and don't store them in
+	memory. This is the most important optimization and it is what makes this approach better in practice than the
+	one about enumerating orientations, since in ``hard-to-color'' graphs we expect that we will already start seeing
+	many zeroes in intermediate results and this can contribute to an important reduction in time and memory usage.
+	
+	\item As before, the order in which we process edges matters. We want to have many truncations and 
+	zero coefficents early, so that we store data for our partial results. This can be done heuristically 
+	by prioritizing edges with small values of $f$ at their endpoints. 
+
+\end{itemize}
+
+
+\begin{algorithm}
+\caption{Optimized Alon-Tarsi with truncated multiplication.}
 \SetAlgoLined
+\SetKwComment{Comment}{/* }{ */}
 \SetKwProg{Fn}{function}{}{end}
-
+\Comment*[r]{Returns true if the Alon-Tarsi method determines that $G$ is $f$-colorable.}
+\Fn{alonTarsi($G$, $f$)}{
+	
+	$p_G \gets \text{emptyAssociativeArray()}$\; 
+	$E \gets \text{sortEdges}(E(G), f)$\;
+	\Comment*[r]{sortEdges sorts the edges according to some heuristic, e.g. increasing by sum of values of $f$ at endpoints}
+	\For{$\{u, v\} \in E$}{
+		$q \gets \text{emptyAssociativeArray()}$\; 
+		\Comment*[r]{$q = p_G (x_u - x_v)$}
+		
+		\For{$(e, c_e) \in p_G$} {
+			\If{$e_u+1 < f(u)$} {
+				$r \gets e$\;
+				$r_u \gets r_u+1$\;
+				$q[r] \gets q[r] + c_e$\;
+			}
+			\If{$e_v+1 < f(v)$} {
+				$r \gets e$\;
+				$r_v \gets r_v+1$\;
+				$q[r] \gets q[r] - c_e$\;
+			}
+		}
+		$p_G \gets \text{emptyAssociativeArray()}$\; 
+		\Comment*[r]{Update $p_G$ with the nonzero coefficients of $q$}.
+		\For{$(e, c_e) \in q_G$} {
+			\If{$c_e \neq 0$} {
+				$p_G[e] \gets c_e$\;
+			}
+		}
+	
+	}
+	\For{$(e, c_e) \in p_G$} {
+		\If{$c_e \neq 0$} {
+			return true\;
+		}
+		
+	}
+	return false\; 
+	
+}
 
 
 \end{algorithm}
 
 Further improvements are possible, but we do not describe them here since this is already the implementation we have actually used for this project. 
-For a more detailed analysis of techniques for the efficient implementation of the Alon-Tarsi method, see \cite{dvorakefficientalontarsi}.
+For a more detailed analysis and comparison of techniques for the efficient implementation 
+of the Alon-Tarsi method, see \cite{dvorakefficientalontarsi}.
 
 
 Remember that the Alon-Tarsi method does not always detect colorable graphs successfully. 
 For example, the graph in \ref{fig:reducible2} is not recognized by Alon-Tarsi as a colorable graph. \todo{fix reference to reducible configuration figure}
-In addition, for bigger graphs Alon-Tarsi is significantly slower than the search for fixed small induced subgraphs. So it is still advisable to first check for the small 
+In addition, for bigger graphs Alon-Tarsi is significantly slower than the search for fixed small induced subgraphs.
+So it is still advisable to first check for the small 
 reducible configurations we found above before running Alon-Tarsi. 
 
 \section{Recursive Colorability Testing}
 
-\todo{Recursive Colorability Testing}
+We know that if our graph has a reducible configuration as an induced subgraph, then it can not
+be $f$-critical. And we can determine whether a induced subgraph is an always-colorable reducible 
+configuration using the Alon-Tarsi method. So one possible idea would be to apply Alon-Tarsi on 
+every induced subgraph to check if our graph has any reducible configuration. We can easily see 
+that this is not very efficient - we run the already slow Alon-Tarsi method on an exponential 
+number of graphs. On the other extreme, we can run the Alon-Tarsi method only on the entire 
+graph, falsifying $f$-criticality only if it is $f$-colorable. This is not good, either - we can 
+easily imagine graphs which are not $f$-colorable but are not $f$-critical either, 
+because they contain some reducible configuration as an induced subgraph. 
+
+
+\begin{figure}
+\label{fig:recursivereducibility}
+\centering
+\begin{subfigure}{0.4\textwidth}
+\begin{tikzpicture}[scale=0.6]
+\input{figures/recursive_reducibility_1.tex}
+\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}{0.1\textwidth}
+\begin{tikzpicture}
+\node[] at (0, 0) {$\implies$};
+%\node[] at (0, 0) {};
+\end{tikzpicture}
+\end{subfigure}
+\begin{subfigure}{0.4\textwidth}
+\begin{tikzpicture}[scale=0.6, yshift=5cm]
+\input{figures/recursive_reducibility_2.tex}
+\end{tikzpicture}
+\end{subfigure}
+\caption{An example of a non-$f$-colorable graph with a reducible configuration obtained from a cycle-canvas.}
+\end{figure}
+
+In fact, as \ref{fig:recursivereducibility} shows, this scenario can happen very easily when, 
+for example, generating critical cycle-canvases, because it suffices to have a triangle with list 
+sizes $2$ to make the graph non-$f$-colorable. The specific reducible configuration that appears 
+in \ref{fig:recursivereducibility} is one of the small ones that we can check specifically before 
+running Alon-Tarsi, but the more general scenario of having a reducible configuration plus a 
+non-colorable subgraph does also often happen with larger reducible configurations and it is 
+important that we deal with it automatically, using Alon-Tarsi to detect the reducible 
+configuration.
+
+What we do is the following: if Alon-Tarsi returns a negative answer to being applied to the 
+entire graph, we try to find a \emph{minimal} non-colorable subgraph which is causing this 
+negative answer (such 
+as the triangle in \ref{fig:recursivereducibility}). We do that by arbitrarily removing vertices
+and checking whether the graph is still non-$f$-colorable, and doing so until we have a graph
+which becomes $f$-colorable when any vertex is removed. Then we remove subgraph $H$ (and reduce
+the list sizes of vertices neighboring $H$ correspondingly, like when considering reducible 
+configurations) and recursively apply the test to the remaining graph. We see that this works for
+the graph in \ref{fig:recursivereducibility}: first, the triangle is removed and then the 
+reducible configuration is identified. This recursive approach also handles more general cases
+when there are multiple non-colorable subgraphs obstructing the colorability of the entire graphs.
+Overall, the results of using this heuristic are very satisfactory. 
 
 \begin{algorithm}[H]
 \caption{Recursive Colorability Testing.}
 \SetAlgoLined
 \SetKwProg{Fn}{function}{}{end}
+\SetKwComment{Comment}{/* }{ */}
 \Fn{containsColorableSubgraph(G)}{
 \If{$G$ is empty} {
 	return false\;
@@ -331,7 +470,8 @@ reducible configurations we found above before running Alon-Tarsi.
 	return true\;
 }
 $H \gets \text{minimalNonColorable}(G)$\;
-return containsColorableSubgraph($G \setminus H$)\;
+return containsColorableSubgraph($\text{precolorSubgraph}(G,H)$)\;
+\Comment*[r]{$\text{precolorSubgraph}(G,H)$ returns the graph $G$ removing the subgraph $H$ and decrementing the list sizes of the neighbors of vertices of $H$ appropiately.}
 }
 \Fn{minimalNonColorable(G)}{
 	\For{$v \in V(G)$} {

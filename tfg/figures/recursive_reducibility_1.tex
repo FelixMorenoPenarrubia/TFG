@@ -1,0 +1,68 @@
+\VertexV[y=-1]{A}
+	\VertexV[x=-2]{B}
+	\VertexV[y=1]{C}
+	\VertexV[x=2]{D}
+	
+	\VertexV[x=-2,y=-2]{E}
+	\VertexV[x=2,y=-2]{F}
+	\VertexV[y=-3.5]{G}
+	
+	\VertexI[x=-1.5,y=2]{V1}
+	\VertexI[x=0,y=2]{V2}
+	\VertexI[x=1.5,y=2]{V3}
+	
+	\VertexI[x=3.75,y=-1.5]{V4}
+	\VertexI[x=3.5,y=-2.25]{V5}
+	
+	\VertexI[x=-1,y=-5]{V8}
+	\VertexI[x=0,y=-5]{V7}
+	\VertexI[x=1,y=-5]{V6}
+	
+	\VertexI[x=-3.75,y=-1.5]{V10}
+	\VertexI[x=-3.5,y=-2.25]{V9}
+	
+	
+	\Edge(A)(B)
+	\Edge(A)(C)
+	\Edge(A)(D)
+	\Edge(B)(C)
+	\Edge(C)(D)
+	
+	\Edge(E)(F)
+	\Edge(F)(G)
+	\Edge(G)(E)
+	
+	\Edge(E)(A)
+	\Edge(F)(A)	
+	\Edge(E)(B)
+	\Edge(F)(D)
+	
+	
+	\Edge(V1)(V2)
+	\Edge(V2)(V3)
+	\Edge(V3)(V4)
+	\Edge(V4)(V5)
+	\Edge(V5)(V6)
+	\Edge(V6)(V7)
+	\Edge(V7)(V8)
+	\Edge(V8)(V9)
+	\Edge(V9)(V10)
+	\Edge(V10)(V1)
+	
+	\Edge(V1)(C)
+	\Edge(V1)(B)
+	\Edge(V2)(C)
+	\Edge(V3)(C)
+	\Edge(V3)(D)
+	\Edge(V4)(D)
+	\Edge(V4)(F)
+	\Edge(V5)(F)
+	\Edge(V6)(F)
+	\Edge(V6)(G)
+	\Edge(V7)(G)
+	\Edge(V7)(G)
+	\Edge(V8)(G)
+	\Edge(V8)(E)
+	\Edge(V9)(E)
+	\Edge(V10)(E)
+	\Edge(V10)(B)

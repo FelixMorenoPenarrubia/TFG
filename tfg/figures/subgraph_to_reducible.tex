@@ -1,0 +1,40 @@
+\VertexV[y=1]{A}
+	\VertexV[x=-2]{B}
+	\VertexV[y=-1]{C}
+	\VertexV[x=2]{D}
+	
+	\node[above right = 2.5mm and 0.5mm of A] (A1){};
+	\node[above left  = 2.5mm and 0.5mm of A] (A3){};
+	
+	\node[above left = 2mm and 2.5mm of B] (B1){};
+	\node[left = 2.5mm of B] (B2){};
+	\node[below left = 2mm and 2.5mm of B] (B3){};
+	
+	\node[above right = 2mm and 2.5mm of D] (D1){};
+	\node[right = 2.5mm of D] (D2){};
+	\node[below right = 2mm and 2.5mm of D] (D3){};
+	
+	\node[below right = 2mm and 2.5mm of C] (C1){};
+	\node[below = 2.5mm of C] (C2){};
+	\node[below left = 2mm and 2.5mm of C] (C3){};
+	
+	\Edge(A)(A1)
+	\Edge(A)(A3)
+	
+	\Edge(B)(B1)
+	\Edge(B)(B2)
+	\Edge(B)(B3)
+	
+	\Edge(C)(C1)
+	\Edge(C)(C2)
+	\Edge(C)(C3)
+	
+	\Edge(D)(D1)
+	\Edge(D)(D2)
+	\Edge(D)(D3)
+		
+	\Edge(A)(B)
+	\Edge(A)(C)
+	\Edge(A)(D)
+	\Edge(B)(C)
+	\Edge(C)(D)

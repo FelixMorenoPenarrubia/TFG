@@ -188,9 +188,13 @@ Next, Postle proves the following theorem:
 	Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $d$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
 \end{theorem}
 
+(Postle refers to the graphs with two precolored triangles and all other vertices with list sizes
+at least $5$ as \emph{prism-canvases}, even though they are not a type of canvas).
+
 The value of $d$ that Postle obtains is not explicitly stated, but it is on the order of $100$. However, we conjecture that $4$ or $5$ suffices.
 
 \begin{conjecture}
+\label{twotriangleconjecture}
 Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $5$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
 \end{conjecture}
 
@@ -238,8 +242,7 @@ In this section we discuss the result from Thomassen in \cite{thomassentorus} th
 	\begin{itemize}
 		\item $K_6$.
 		\item $C_3 + C_5$.
-		\item $K_2 + H_7$, where $H_7$ is the \emph{Moser spindle}, the graph 
-		obtained by applying the Hajós construction to a pair of $K_4$. \todo{check if I explained Hajós construction in original}
+		\item $K_2 + H_7$, where $H_7$ is a $7$-vertex graph known as the \emph{Moser spindle}.
 		\item $T_{11}$, where $T_{11}$ is a triangulation of the torus with $11$ vertices.
 	\end{itemize}
 	Where $+$ denotes the join of two graphs: their disjoint union with 
@@ -416,3 +419,215 @@ The study of $6$-regular graphs on the torus without vertices whose neighborhood
 
 
 \section{Our Approach}
+
+The bounds on the size of $6$-list-critical graphs on the torus given by Postle's approach are 
+way too large to be of any use to us in our search of the explicit list for the torus. However, 
+we can take inspiration in his approach and in particular in how it was useful to carefully study
+critical canvases. The key modification is that, instead of proving abstract bounds for sizes
+of critical canvases as in Theorem \ref{linearboundcycletheorem}, we will be working with the 
+explicit, full list of critical canvases of a certain type and size. 
+
+In order to obtain those canvases, we will be using computer search, so this will be a 
+computer-aided proof, like the Four Color Theorem's (but using very different techniques). The 
+reason we consider it feasible to perform this search is that results like 
+Theorem \ref{cyclechordortripodtheorem} give very structured descriptions of 
+critical canvases - so we don't face enormously huge space of searching among
+all the planar graphs with a given size bound, but instead have a much more restricted
+search space. 
+
+Once we have generated some critical canvases, our idea is to take advantage of them in a way 
+similar to Postle's approach - but this time, 
+since we will work with the explicit canvases instead of loose bounds, the hope is that we
+can use them to obtain also the explicit list of $6$-list-critical graphs. 
+
+Since the torus is not a complicated surface, there are simple manipulations 
+that relate $6$-list-critical graphs on the torus with critical prism-canvases
+ and cycle-canvases, as we will see now. 
+
+\subsection{Cutting Through a Non-Contractible Cycle}
+
+Consider the torus $S_1$. If one cuts through non-contractible curve
+\todo{check if this is the appropiate term} 
+one obtains a cylinder,
+which can then be projected to the plane. 
+
+We can do this to get planar graphs from graphs $2$-cell-embedded on the torus: we can cut 
+through a non-contractible cycle, duplicate the vertices on the cycle so they appear on both
+sides of the resulting cylinder, and then project this cylinder into the plane. See Figure \ref{fig:k6criticalprismcanvas} for an example with $K_6$, one of the $6$-critical graphs
+embedded on the torus. 
+
+\begin{figure}
+\label{fig:k6criticalprismcanvas}
+\centering
+\begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
+
+\begin{scope}[scale=0.3, every node/.append style={transform shape}]]
+\input{figures/k6_cuttingthroughcycle.tex}
+\end{scope}
+
+\node () at (4.5, 1.75) {$\implies$};
+
+\begin{scope}[xshift=210,yshift=35, scale=0.45, every node/.append style={transform shape}]
+\input{figures/k6_prismcanvas.tex}
+\end{scope}
+\end{tikzpicture}
+\caption{Cutting $K_6$ into a critical prism-canvas.}
+\end{figure}
+
+The reason why this is useful to us is the following observation:
+
+\begin{observation}
+Let $G$ be a graph embedded on the torus, let $G'$ be a graph obtained by 
+this procedure from $G$, let $C_1, C_2$ be the two cycles of $G;$ corresponding to the
+non-contractible cycle $C$ of $G$ we cut through, let $L$ be a list assignment for $G$ and let
+$L'$ be the corresponding list assignment for $G'$ (with the same lists for all vertices,
+duplicated for $C_1$ and $C_2$).
+
+If $G$ is $L$-critical, then $G'$ is $(C_1 \cup C_2)$-critical with respect to the
+list assignment $L'$.
+\end{observation}
+
+\begin{proof}
+Consider a subgraph $(C_1 \cup C_2) \subseteq H' \subset G'$ and
+the corresponding subgraph $C \subseteq H \subset G$. 
+By $L$-criticality of $G$, $H$ is $L$-colorable with a coloring $\phi$.
+Consider the corresponding coloring $\phi'$ of $H'$.
+ Then, $\phi'\restriction_{C_1 \cup C_2}$
+is a coloring of $(C_1 \cup C_2)$ which extends to $H'$ but not to $G'$, since if it extended
+to $G'$ we would have a $L'$-coloring of $G'$ in which the corresponding vertices of $C_1$ and
+$C_2$ have the same colors and therefore we would be able to retrieve an $L$-coloring of $G$.
+\end{proof}
+
+This, together with Theorem \ref{twotriangletheorem}, already places a restriction on how the
+$6$-list-critical graphs on the torus can be: if the graph has a non-contractible triangle, then
+it must also have a not too large non-contractible cycle not homotopically equivalent to 
+the non-contractible triangle, since if the two precolored triangles are at distance $d$ in the
+resulting planar graph, then there is such a non-contractible cycle of length $\leq d+1$ in the
+original graph. 
+
+An interesting implication is also that we can do the process backwards: if we have a critical 
+prism-canvas, we can ``fuse the two triangles'' to get a graph on the torus which is 
+\emph{possibly} $6$-list-critical.   
+
+\subsection{Cutting Across Two Non-Contractible Cycles}
+
+Instead of just cutting through one non-contractible cycle to get a cylinder and project it to the
+plane, we can cut through two non-homotopically-equivalent non-contractible cycles to get the 
+plane, as in Figure \ref{fig:twocycles_illustration}. This can be thought also as first cutting 
+through a cycle to get a cylinder, and then cutting through the cylinder to get the plane. 
+
+\begin{figure}
+\label{fig:twocycles_illustration}
+\centering
+\begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
+
+\begin{scope}[scale=0.3, every node/.append style={transform shape}]
+\input{figures/twocycles_illustration_torus.tex}
+\end{scope}
+
+\node () at (4.5, 1.75) {$\implies$};
+
+\begin{scope}[xshift=200,yshift=50, scale=0.45, every node/.append style={transform shape}]
+\input{figures/twocycles_illustration_canvas.tex}
+\end{scope}
+
+
+
+
+\end{tikzpicture}
+\caption{Cutting the torus into the plane.}
+\end{figure}
+
+The idea here is again that we can use this to get critical planar graphs from critical graphs
+on the torus, but now we get a cycle-canvas instead of a prism-canvas. See Figure \ref{fig:k6_cyclecanvas} for an example again with $K_6$.
+
+\begin{figure}
+\label{fig:k6_cyclecanvas}
+\centering
+\begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
+
+\begin{scope}[scale=0.3, every node/.append style={transform shape}]
+\input{figures/k6_cuttingthroughtwocycles.tex}
+\end{scope}
+
+\node () at (4.5, 1.75) {$\implies$};
+
+\begin{scope}[xshift=200,yshift=50, scale=0.45, every node/.append style={transform shape}]
+\input{figures/k6_cyclecanvas.tex}
+\end{scope}
+\end{tikzpicture}
+\caption{Cutting $K_6$ into a critical cycle-canvas.}
+\end{figure}
+
+\begin{observation}
+Let $G$ be a $L$-critical graph embedded on the torus with $L$ a $5$-list-assignment,
+and let $G'$ be the corresponding planar graph resulting from this procedure with outer face $C$
+corresponding to the two cycles we cut through. Then $(G', C, L)$ is a critical cycle-canvas.
+\end{observation}
+
+\begin{proof}
+Similar argument to the previous observation.
+\end{proof}
+
+If the cycles we cut through have lengths $a$ and $b$, the resulting cycle-canvas has cycle length
+$2(a+b)$. This gives a bound for the sizes of $6$-list-critical graphs in terms of the sizes of 
+their non-contractible cycles via Theorem \ref{linearboundcycletheorem}. However, here the more
+interesting idea is the possibility of running the process backwards: that is, of generating
+candidates for $6$-list-critical graphs from critical cycle-canvases. 
+That is because, as we will see, we have a procedure for the generation of all critical
+cycle-canvases by computer. 
+
+
+\subsection{Our Plan for Graphs With a Non-Contractible Triangle}
+
+
+
+Using the above two constructions, we can already devise a plan for finding all $6$-list-critical 
+graphs on the torus which have at least one non-contractible triangle.
+
+\begin{enumerate}
+	\item Generate all critical cycle-canvases with small cycle sizes (ideally at least up to 
+	size $14$ or, better yet, $16$). Also, depending on the approach followed in the next step, it will also be 
+	necessary to generate small critical path-canvases or other kinds of critical graphs. 
+	\item Prove Conjecture \ref{twotriangleconjecture}. Here, we will try to take advantage
+	of the computer-generated graphs in order to obtain the tightest possible bound instead of
+	Postle's loose bound.
+	\item By cutting through the non-contractible triangle of any $6$-list-critical graph, we
+	obtain a critical prism-canvas, and therefore we can reconstruct all possible candidates
+	from either the list of all critical prism-canvases (if we obtained such a list from the
+	previous step) or a list of all critical cycle-canvases of size $\leq 16$ (by cutting 
+	across the non-contractible triangle and the other non-contractible cycle of length 
+	$\leq 5$ corresponding to the shortest path between the two precolored triangles in the
+	prism-canvas).
+\end{enumerate}
+
+This plan only works for $6$-list-critical graphs with edge-width $3$, which is the case for 
+the $6$-critical graphs for the previous section. We don't expect to have additional $6$-list-
+critical graphs with larger edge-width, especially given (REF POSTLE RESULT EDGEWIDTH), so our
+hope would be to find an argument independent of this plan to prove that any $6$-list-critical
+graph on the torus must have a non-contractible triangle. 
+
+\todo{check that I defined edge-width and given the result of Postle for ew}
+
+\todo{references for chapters}
+
+The rest of this thesis will be dedicated to describe how to carry out this plan. 
+For the first step, we will explain how to perform the computer generation of such critical graphs
+in Chapters 3 and 4. Chapter 3 will be about the computer representation of the canvases 	
+and the algorithms used for the generation of candidates to be critical canvases, while 
+Chapter 4 will be on how to test that such candidates are indeed critical. The techniques 
+explained in Chapters 3 and 4 will be applicable not only to cycle-canvases but also to other
+types of canvases or graphs with prescribed list sizes more generally. 
+
+For the second step, in Chapter 5 we will explain different approaches to proving Conjecture 
+\ref{twotriangleconjecture} using the computer-generated graphs. As of the writing of this thesis,
+we have not been able find a proof of this results, because there have been computational and
+conceptual obstacles in the approaches we have tried. We will also discuss those setbacks.
+
+Finally, in Chapter 6 we will summarize the computational results obtained by the implementation
+of the ideas discussed in the previous chapters and we will expose the partial results we 
+have been able to obtain with respect to the third step of the plan. 
+
+
+
+ 

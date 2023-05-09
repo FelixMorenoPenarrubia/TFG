@@ -1,29 +1,163 @@
 \chapter{Introduction}
 
-In this chapter, we lay out the basic definitions of graph theoretical and topological concepts used in this thesis, as well as the background results which contextualize our research and an outline of the results we have obtained.
+In this chapter, we lay out the basic definitions of graph theoretical and topological concepts used in this thesis, as well as the background results which contextualize our research.
 
+We follow the exposition of Diestel \cite{diestel}, of Mohar and Thomassen \cite{graphsonsurfaces}
+and of Postle \cite{postlethesis}. 
 
 \section{Graphs and Surfaces}
 
+
 \subsection{Graph Theory Terminology}
 
-A \textit{graph} is a pair $(V(G), E(G))$ consisting of a set $V(G)$ and a set $E(G)$ of two-element subsets of $V(G)$. 
+\begin{definition}
+A \emph{graph} $G$ is a pair $(V(G), E(G))$ consisting of a set $V(G)$ and a set $E(G)$ of two-
+element subsets of $V(G)$. We call the elements of $V(G)$ vertices and
+the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
+\end{definition}
+
+
 
 \todo{(connectivity, complete graphs, etc)}
 
 \subsection{Surfaces}
 
-A \textit{surface} is a...
+\begin{definition}
+A \emph{surface} is a connected compact $2$-dimensional manifold without boundary. 
+\end{definition}
 
-\todo{(surface classification theorem, orientability, etc)}
+\begin{example}
+The \emph{sphere} $S_0$ is the surface defined by the set $\{(x, y, z) \in \mathbb{R}^3 : x^2+y^2
++z^2 = 1\}$ with the euclidean metric inherited from $\mathbb{R}^3$. 
+
+The \emph{torus} $S_1$ is the surface defined by the set $\{(x, y, z) \in \mathbb{R}^3 :  (\sqrt{x^2 + y^2} - 2)^2 + z^2 = 1\}$ with the euclidean metric inherited from $\mathbb{R}^3$.
+\end{example}
+
+Note that, even though we have defined the above example surfaces as geometric objects in
+$\mathbb{R}^3$, we think of surfaces as \emph{topological} objects, and therefore consider two
+surfaces equivalent if they are \emph{homeomorphic}. 
+
+An important result in topology is that all surfaces defined in this way can be classified:
+
+\begin{theorem}[Classification Theorem of Surfaces]
+\label{classificationsurfacestheorem}
+Every surface is homeomorphic to one of the following surfaces:
+
+\begin{itemize}
+	\item $S_0$, the sphere.
+	\item $S_k$, the surface obtained from the sphere by performing the operation
+	of \emph{adding a handle}  $k \geq 1$ times.
+	\item $N_k$, the surface obtained from the sphere by performing the operation
+	of \emph{adding a crosscap} $k \geq 1$ times.
+\end{itemize}
+\end{theorem}
+
+The operation of \emph{adding a handle} in a surface $\Sigma$ can be thought of as deleting the 
+interiors of two small  disks $T_1$ and $T_2$ from the surface $\Sigma$ and identifying
+the boundaries of $T_1$ and $T_2$.
+The operation of \emph{adding a crosscap} in a surface $\Sigma$ can be thought of as deleting the 
+interior of a small disk $T$ of $\Sigma$ and identifying the diametrically opposite points of $T$.
+In this thesis, we will be mainly concerned only with the two surfaces $S_0$ and $S_1$, so we 
+do not delve into the topological details of this construction.
+
+We often represent surfaces via their \emph{fundamental polygon}. A fundamental polygon is a 
+polygon with a labelling and an orientation of its edges so that the corresponding surface is
+obtained by identifying the edges with the same labels
+along the specified orientations. Theorem \ref{classificationsurfacestheorem} can be restated
+as that every surface is homeomorphic to a surface obtained from some type of fundamental
+polygon. See Figure \ref{fig:spheretorusrepresentation} for representations of $S_0$ and $S_1$ as
+fundamental polygons. 
+
+\begin{figure}
+\label{fig:spheretorusrepresentation}
+\missingfigure{Sphere and torus representations}
+\caption{Representation of $S_0$ and $S_1$ as embedded manifolds in $\mathbb{R}^3$ and as fundamental polygons.}
+\end{figure}
+
+Finally, we define the following topological invariant for surfaces:
+
+\begin{definition}
+The \emph{Euler characteristic} of a surface $\Sigma$ is $\chi(\Sigma) = 2 - 2k$ if $\Sigma = S_k$
+and $\chi(\Sigma) = 2 - k$ if $\Sigma = N_k$. The \emph{Euler genus} of a surface $\Sigma$ is
+$g(\Sigma) = 2 - \chi(\Sigma)$. 
+\end{definition}
+
+ 
 
 \subsection{Embedding Graphs in Surfaces}
 
-A graph is embedded in a surface if...
+Let $X$ be a topological space. 
 
-\todo{(non-contractible cicles, planarity, dual graph, etc)}
+\begin{definition}
+An \emph{arc} in $X$ is the image of a continuous injective 
+function $f : [0, 1] \rightarrow X$. A \emph{closed curve} in $X$ is the image
+of a continuous injective function $f : S^1 \rightarrow X$, where $S^1$ is the circle.
+\end{definition}
 
-\todo{references for all this}
+\begin{definition}
+A \emph{graph embedded in $X$} is a graph $G$ in which each element
+of $V(G)$ is a point in $X$ together with an associated arc $A_{uv}$ in $X$  each edge $uv \in E(G)$ whose 
+interior is disjoint from any vertices of $G$ and whose endpoints are $u, v$. 
+\end{definition}
+
+The existence of an arc between two points of $X$ determines an equivalency relation which 
+partitions $X$ into equivalence classes known as \emph{arcwise connected components}.
+
+\begin{definition}
+A \emph{face} of a graph $G$ embedded in $X$ is an arcwise connected component of
+$X \setminus \bigcup_{uv \in E(G)} A_{uv}$. 
+
+The graph $G$ is \emph{$2$-cell-embedded} if every face is homeomorphic to an open disk.
+\end{definition}
+
+\begin{definition}
+A \emph{plane graph} is a graph $G$ embedded in the plane. A \emph{planar graph} is a graph $G$ for which there exists an embedding of $G$ into the plane. 
+
+If $G$ is a plane graph, then there exists an unbounded face of $G$. We say 
+that the boundary walk of the infinite face of $G$ is the \emph{outer walk} of $G$. We say
+than an edge $e$ of $G$ is a chord of the outer walk of $G$ if the edge does not lie on the
+boundary of the infinite face but both its ends do. 
+\end{definition}
+
+We have the following result for plane graphs:
+
+\begin{theorem}
+In a $2$-connected plane graph, each face is bounded by a cycle.
+\end{theorem}
+
+Therefore, when talking about $2$-connected graphs, we may refer to the outer walk as the 
+\emph{outer cycle}.
+
+Note also that technically plane graphs are not graphs embedded in surfaces, since the plane is
+not a surface according to our definition (it is not compact). But by compactifying the plane
+we see that embedding a connected graph in the plane is in some sense ``equivalent'' to embedding 
+the graph in $S_0$, and we will interchangeably refer to plane graphs and graphs embedded in the 
+sphere when convenient. 
+
+\begin{theorem}[Euler's formula]
+Let $G$ be a $2$-cell-embedded graph in a surface $\Sigma$. If $G$ has $V$ vertices, $E$ edges and 
+$F$ faces, then
+
+\[
+V - E + F = \chi(\Sigma)
+\]
+\end{theorem}
+
+\begin{definition}
+A \emph{homotopy} between two functions $f$ and $g$ from a space $X$ to a space $Y$ is a continuous
+map $G : X \times [0, 1] \rightarrow Y$ such that $G(x, 0) = f(x)$ and $G(x, 1) = g(x)$. 
+Two functions are \emph{homotopic} or \emph{homotopically equivalent} if there is an homotopy
+between them. 
+\end{definition}
+
+\begin{definition}
+A \emph{contractible cycle} of a graph $G$ embedded in a surface is a cycle in the graph whose 
+embedding is the image of a closed curve homotopic to a constant map.
+The \emph{edge-width} $ew(G)$ of an embedded graph $G$ 
+is the length of the smallest non-contractible cycle in $G$. 
+\end{definition}
+
+
 
 
 
@@ -32,13 +166,13 @@ A graph is embedded in a surface if...
 Problems related to \emph{coloring} are a fundamental part of graph theory. Although there are many variants, the original one and the most important is \emph{vertex coloring}.
 
 \begin{definition}
-A \emph{vertex coloring} of a graph $G$ is a function $f : V(G) \rightarrow \mathbb{N}$. The vertex coloring is said to be \emph{proper} if $\forall uv \in E(G), f(u) \neq f(v)$. 
+A \emph{vertex coloring} of a graph $G$ is a function $\phi : V(G) \rightarrow \mathbb{N}$. The vertex coloring is said to be \emph{proper} if $\forall uv \in E(G), \phi(u) \neq \phi(v)$. 
 \end{definition}
 
 We think of this as assigning one color to each vertex of the graph, so that adjacent vertices are assigned different colors. This interpretation comes from the origin of the problem in \textit{map coloring}, in which we have to color a political map assigning colors to countries so that neighboring countries are assigned different colors in order to distinguish them. A quantity of interest is the number of colors required for a proper coloring of the graph:
 
 \begin{definition}
-A vertex coloring $f$ is said to be a $k$\emph{-coloring} if $|\Im f| = k$. A graph $G$ is said to be $k$\emph{-colorable} if it admits a proper $k$-coloring. The \emph{chromatic number} $\chi(G)$ of a graph $G$ is the minimum $k$ such that $G$ is $k$-colorable. 
+A vertex coloring $\phi$ is said to be a $k$\emph{-coloring} if $|\Im \phi| = k$. A graph $G$ is said to be $k$\emph{-colorable} if it admits a proper $k$-coloring. The \emph{chromatic number} $\chi(G)$ of a graph $G$ is the minimum $k$ such that $G$ is $k$-colorable. 
 \end{definition}
 
 In the map coloring context, we study vertex coloring for \emph{planar} graphs. The following remarkable result was the origin of this area of mathematics:
@@ -47,7 +181,7 @@ In the map coloring context, we study vertex coloring for \emph{planar} graphs. 
 For all planar graphs $G$, $\chi(G) \leq 4$.
 \end{theorem}
 
-This theorem, originally conjectured in TODO, was proven by Appel and Haken in TODO. Their proof achieved some notoriety due to use of computers to process a lengthy case analysis. \todo{4ct dates and references}
+This theorem, originally conjectured in 1852, was proven by Appel and Haken in 1976 \cite{4ct1, 4ct2}. Their proof achieved some notoriety due to use of computers to process a lengthy case analysis. 
 
 A natural generalization of the above problem is to study the chromatic number of graphs embedded in surfaces other than the plane. The following result, due to Heawood in 1890 \cite{heawoodmapcolour}, generalizes the four color theorem to surfaces other than the plane:
 
@@ -62,27 +196,64 @@ colors.
 
 We call $H(\Sigma)$ the \emph{Heawood number} of the surface.
 
-Interestingly, this theorem has a much simpler proof than the four color theorem. For its proof, we need the following concept:
+The very interesting result is that this bound is tight for all surfaces with $g(\Sigma) \geq 1$
+except for $N_2$, the Klein bottle. (It is also tight for the sphere $S_0$, but Heawood's proof
+does not work for this case). This was finally proved after much work by Ringel and Youngs:
 
+\begin{theorem}[Ringel-Youngs \cite{ringelyoungs}]
+For every surface $\Sigma \neq N_2$, $K_{H(\Sigma)}$ embeds into $\Sigma$.
+\end{theorem}
 
-\begin{definition} A graph is $k$\emph{-degenerate} if every subgraph $H \subseteq G$ has $\delta(H) \leq k$.
+A more recent approach to problems of coloring graphs on surfaces is to ask how the graphs
+that are not colorable with a certain number of colors look like, and see if there is any 
+algorithmic insight to obtain from that.
+For example, is $K_{H(\Sigma)}$ the only graph which is not $H(\Sigma)-1$ colorable?
+Any other graph which contains $K_{H(\Sigma)}$ will also chromatic number at least $H(\Sigma)$,
+so in order to properly ask this question we need the concept of \emph{critical graphs}.
+
+\begin{definition}
+A graph $G$ is \emph{$k$-critical} if $\chi(G) = k$ but $\chi(G') < k$ for any proper subgraph
+$G' \subset G$. 
 \end{definition}
 
-\begin{proposition}
-If a graph $G$ is $k$-degenerate, then it is $(k+1)$-colorable.
-\end{proposition}
+$k$-critical graphs are the minimal obstructions for $k$-colorability:
 
-\begin{proof}
-For each fixed $k \geq 0$, we do induction on the size of $|V(G)|$. For $|V(G)| = 1$, it is clearly true. Assuming it is true for all $k$-degenerate graphs $G'$ with $|V(G')| < n$, let $G$ be a $k$-degenerate graph with $|V(G)| = n$. Let $v$ be a vertex of $G$ with degree at most $v$ and consider the graph $G \ \{v\}$. It is also a $k$-degenerate graph since it is a subgraph of $G$, so it is $(k+1)$-colorable. We can then extend the coloring to $G$ by choosing a color not in any of its at most $k$ neighbors for $v$.
-\end{proof}
+\begin{observation}
+$\chi(G) \geq k \iff$ $G$ contains a $k$-critical graph as a subgraph.
+\end{observation}
 
-\todo{Proof of Heawood's theorem} 
+\begin{theorem}[Dirac; Albertson, Hutchinson \cite{diracalbertsonhutchinson}]
+For $\Sigma \neq N_2, g(\Sigma) \geq 1$, $K_{H(\Sigma)}$ is the only $H(\Sigma)$-critical graph
+embeddable in $\Sigma$.
+\end{theorem}
 
-\todo{Ringel-Youngs}
+This means that determining $H(\Sigma)$-colorability for graphs embedded in $H(\Sigma)$ is 
+equivalent to finding an $H(\Sigma)$-clique. 
 
-\todo{Critical graphs, Hájos construction}
+Is it possible that other simple characterizations exist for graphs on surfaces which are 
+not $k$-colorable for $k < H(\Sigma)$? The answer is affirmative:
 
-\todo{Results in graphs on surfaces, Gallai, Thomassen}
+\begin{theorem}[\cite{thomassenfixedsurface}]
+For any surface $\Sigma$ and $k \geq 6$, there exist only finitely many $k$-critical graphs 
+embeddable in $\Sigma$.
+\end{theorem}
+
+This was proved by Thomassen after previous results by Dirac and Gallai for $k \geq 8$
+and $k \geq 7$, $k \geq 8$. It is the best possible bound for $k$ since Fisk \cite{fisk} proved
+the existence of infinitely many $5$-critical graphs on the torus.
+
+Let us briefly discuss the algorithmic implications of this result. For a fixed graph $H$, it 
+is possible to check whether $H$ is a subgraph of $G$ in time polynomial in the size of $G$.
+In fact, by a result of Eppstein \cite{eppstein}, for graphs $G$ in a fixed surface
+it is possible to test subgraph isomorphism in linear time. Therefore, for $k \geq 6$ there exists an algorithm for determining $k$-colorability in linear time for graphs on a fixed surface,
+by testing subgraph isomorphism with each of the $k$-critical graphs in the finite list. 
+
+We can ask what is the complexity of testing $k$-colorability with $k < 6$ for graphs in fixed 
+surfaces.
+$1$-colorability and $2$-colorability can be determined in linear time. $3$-colorability is NP-
+complete even for planar graphs \cite{3colorabilitynpcomplete}. The complexity of $4$-colorability 
+in surfaces other than the
+sphere remains an open problem. 
 
 \section{List Coloring}
 
@@ -94,7 +265,7 @@ For each fixed $k \geq 0$, we do induction on the size of $|V(G)|$. For $|V(G)| 
 
 \cite{thomassenplanargraphchoosable}
 
-\begin{theorem}[Thomassen's theorem]
+\begin{theorem}[Thomassen's theorem \cite{thomassenplanargraphchoosable}]
 \label{thomassentheorem}
 For all planar graphs $G$, $\chi_{\ell}(G) \leq 5$.
 \end{theorem}

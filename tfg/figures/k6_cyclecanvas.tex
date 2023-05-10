@@ -1,0 +1,37 @@
+\VertexI[x=0, y=4]{A1}
+\VertexI[x=2, y=3]{B1}
+\VertexI[x=3, y=2]{C1}
+\VertexI[x=4, y=0]{A2}
+\VertexI[x=3, y=-2]{E1}
+\VertexI[x=2, y=-3]{D1}
+\VertexI[x=0, y=-4]{A3}
+\VertexI[x=-2, y=-3]{C2}
+\VertexI[x=-3, y=-2]{B2}
+\VertexI[x=-4, y=0]{A4}
+\VertexI[x=-3, y=2]{D2}
+\VertexI[x=-2, y=3]{E2}
+
+\VertexV[x=-2, y=0]{F}
+
+\Edge(A1)(B1)
+\Edge(B1)(C1)
+\Edge(C1)(A2)
+\Edge(A2)(E1)
+\Edge(E1)(D1)
+\Edge(D1)(A3)
+\Edge(A3)(C2)
+\Edge(C2)(B2)
+\Edge(B2)(A4)
+\Edge(A4)(D2)
+\Edge(D2)(E2)
+\Edge(E2)(A1)
+
+\Edge(E2)(B1)
+\Edge(B1)(D1)
+\Edge(C1)(E1)
+\Edge(D1)(C2)
+\Edge(F)(C2)
+\Edge(F)(B2)
+\Edge(F)(A4)
+\Edge(F)(D2)
+\Edge(F)(E2)

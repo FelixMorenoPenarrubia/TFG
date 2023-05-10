@@ -1,8 +1,5 @@
 \draw[draw=black] (0, 0) rectangle (12, 12);
 
-
-
-
 \node[main] (A1) at (6, 10) {};
 \node[main] (A2) at (3, 4) {};
 \node[main] (A3) at (9, 4) {};
@@ -14,13 +11,13 @@
 
 \draw (A1) -- (B2);
 \draw (B2) -- (A3);
-\draw (A3) -- (B1);
-\draw (B1) -- (A2);
+\draw [red,thick] (A3) -- (B1);
+\draw [red,thick] (B1) -- (A2);
 \draw (A2) -- (B3);
-\draw (B3) -- (A1);
+\draw [blue,thick](B3) -- (A1);
 
-\draw (A1) -- (6, 12);
-\draw (6, 0) -- (B1);
+\draw [blue,thick](A1) -- (6, 12);
+\draw [blue,thick](6, 0) -- (B1);
 %\draw (A2) -- (0, 0);
 %\draw (12, 12) -- (B2);
 \draw (A3) -- (12, 0);
@@ -31,10 +28,10 @@
 
 \draw (B1) -- (B2);
 \draw (B2) -- (B3);
-\draw (B3) -- (B1);
+\draw [blue,thick](B3) -- (B1);
 
-\draw (A2) -- (0, 4);
-\draw (12, 4) -- (A3);
+\draw [red,thick] (A2) -- (0, 4);
+\draw [red,thick](12, 4) -- (A3);
 \draw (A2) -- (5, 0);
 \draw (5, 12) -- (A1);
 \draw (A3) -- (7, 0);

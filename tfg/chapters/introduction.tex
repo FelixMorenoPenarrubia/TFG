@@ -110,6 +110,18 @@ $X \setminus \bigcup_{uv \in E(G)} A_{uv}$.
 The graph $G$ is \emph{$2$-cell-embedded} if every face is homeomorphic to an open disk.
 \end{definition}
 
+\begin{figure}
+\ref{fig:embeddingk7torus}
+\centering
+\missingfigure{embedding of k7 in the torus}
+\caption{Embedding of $K_7$ in the torus, drawn on the fundamental polygon.}
+\end{figure}
+
+As an example of how we will represent a graph embedded in a surface, see the embedding of $K_7$
+in the torus in Figure \ref{fig:embeddingk7torus}. We will usually omit marking the orientations
+and labellings of the edges of the fundamental polygon of the torus when drawing graphs, since
+we will not consider any other surface (other than the plane or sphere). 
+
 \begin{definition}
 A \emph{plane graph} is a graph $G$ embedded in the plane. A \emph{planar graph} is a graph $G$ for which there exists an embedding of $G$ into the plane. 
 
@@ -212,8 +224,8 @@ Any other graph which contains $K_{H(\Sigma)}$ will also chromatic number at lea
 so in order to properly ask this question we need the concept of \emph{critical graphs}.
 
 \begin{definition}
-A graph $G$ is \emph{$k$-critical} if $\chi(G) = k$ but $\chi(G') < k$ for any proper subgraph
-$G' \subset G$. 
+A graph $G$ is \emph{$k$-critical} if $\chi(G) = k$ but $\chi(H) < k$ for any proper subgraph
+$H \subset G$. 
 \end{definition}
 
 $k$-critical graphs are the minimal obstructions for $k$-colorability:
@@ -257,13 +269,77 @@ sphere remains an open problem.
 
 \section{List Coloring}
 
-\todo{Definition of List Coloring}
+A variant of graph coloring called \emph{list coloring} was introduced
+by Vizing \cite{vizinglistcoloring} and Erdős, Rubin and Taylor \cite{erdoschoosability}.
 
-\missingfigure{figure explaining pictorial notation for list sizes}
+\begin{definition}
+	Let $G$ be a graph. A \emph{list assignment} for $G$ is a function 
+	$L : V \rightarrow 2^{\mathbb{N}}$. An \emph{$L$-coloring} of $G$ for a list assignment
+	$L$ is a (proper) coloring $\phi$ such that $\phi(v) \in L(v) \, \forall v \in V(G)$. 
+\end{definition}
 
-\todo{Thomassen's theorem introduction}
+\begin{definition}
+A \emph{$k$-list-assignment} is a list assignment $L$ with $|L(v)| \geq k \, \forall v \in V(G)$. 
+A graph $G$ is \emph{$k$-list-colorable} or \emph{$k$-choosable} if there exists an $L$-coloring
+of the graph \textbf{for all} $k$-list-assignments $L$. 
+The \emph{list chromatic number} or \emph{choosability} $\chi_{\ell}(G)$ is the least integer
+so that $G$ is $\chi_{\ell}(G)$-list-colorable.
+\end{definition}
 
-\cite{thomassenplanargraphchoosable}
+Note the following:
+
+\begin{observation}
+$G$ is $k$-list-colorable $\implies$ $G$ $k$-colorable, so $\chi_{\ell}(G) \geq \chi(G)$.
+\end{observation}
+
+The reason for this is that by setting $L(v) = \{1, 2, \ldots k\}$ one retrieves the usual coloring.
+
+\begin{figure}
+\label{fig:k33not2lcolorable}
+\centering
+\begin{center}
+\begin{tikzpicture}[main/.style = {draw, circle}] 
+\node[main] (1)  {$\{1,2\}$};
+\node[main] (2) [below=7mm of 1] {$\{1,3\}$};
+\node[main] (3) [below=7mm of 2] {$\{2,3\}$};
+\node[main] (4) [right=15mm of 1] {$\{1,2\}$};
+\node[main] (5) [below=7mm of 4] {$\{1,3\}$};
+\node[main] (6) [below=7mm of 5] {$\{2,3\}$};
+
+\draw (1) -- (4);
+\draw (1) -- (5);
+\draw (1) -- (6);
+\draw (2) -- (4);
+\draw (2) -- (5);
+\draw (2) -- (6);
+\draw (3) -- (4);
+\draw (3) -- (5);
+\draw (3) -- (6);
+\end{tikzpicture}
+\end{center}
+\caption{An example of a bipartite graph which is not $L$-colorable for a $2$-list-assignment $L$.}
+\end{figure}
+
+But there exist graphs with $\chi_{\ell}(G) > \chi(G)$: consider $K_{3, 3}$ with the list
+assignment given as in Figure \ref{fig:k33not2lcolorable}.
+
+A motivation for this variant of coloring is to consider coloring problems in the usual graph vertex
+coloring setting in which some of the vertices have already been colored. In this case, the 
+remaining vertices do not have all colors available but only a subset of them (the ones not already
+picked by colored neighbors) and the subsets for each of the vertices can be different. 
+
+We can ask if there is an analogue of the four color theorem for list coloring.
+In their paper from 1993, Erdős, Rubin and Taylor conjectured the following:
+
+\begin{conjecture}[\cite{erdoschoosability}]
+\begin{enumerate}
+	\item There exists a planar graph $G$ with $\chi_{\ell}(G) \geq 5$. 
+	\item For all planar graphs $G$, $\chi_{\ell}(G) \leq 5$.
+\end{enumerate}
+\end{conjecture}
+
+The first part of the conjecture was proved by Voigt \cite{voigt1993} in 1993 providing an 
+example with $238$ vertices. One year later, Thomassen proved the second part of the conjecture:
 
 \begin{theorem}[Thomassen's theorem \cite{thomassenplanargraphchoosable}]
 \label{thomassentheorem}
@@ -331,15 +407,32 @@ of $c_1$ or $c_2$ (whichever is not in use by $v$), contradiction.
 
 \end{proof}
 
-\todo{Criticality definition. Discuss it}
+We can also extend the notion of critical graphs to list coloring:
 
+\begin{definition}
+A graph is $G$ is \emph{$L$-critical} for some list assignment $L$ if $G$ has no $L$-coloring
+but every proper subgraph $H \subset G$ has an $L$-coloring.
+A graph is \emph{$k$-list-critical} if there exists a $(k-1)$-list assignment $L$ such that
+$G$ is $L$-critical.
+A graph is \emph{minimal $k$-list-critical} if $\chi_{\ell}(G) = k$ but $\chi_{\ell}(H) < k$ for
+every proper subgraph $H \subset G$. 
+\end{definition}
+
+Notice that here the analogous definition to $k$-critical graphs for the usual coloring is the
+definition of \textbf{minimal} $k$-list-critical (terminology from \cite{onlistcritical}, 
+here it is shown that such graphs are in fact the minimal $k$-list-critical ones with respect
+to subgraph containment), 
+and the actual definition of $k$-list-critical is a little different than what one would 
+immediately expect. The reason for this is that in theoretical arguments
+ it is usually more convenient to work with a
+pair $(G, L)$ of a graph with a fixed $k$-list-assignment, and therefore the concept of $L$-critical
+graph is more useful.
+
+There are also other criticality notions we will use. 
 In coloring problems, it is useful to consider when a precoloring of a subgraph
 does not \emph{extend} to the entire graph, that is, there is no coloring
 of the entire graph under certain constraints which agrees with the coloring 
 of the subgraph. 
-
-
-
 
 \begin{definition}[Extending]
 	Let $G$ be a graph, $T \subseteq G$ a subgraph, and $L$ a list assignment
@@ -413,6 +506,50 @@ Apply \ref{pregluinglemma} to $A' = A \cup T$ and $B' = B$.
 
 The reason we decided to name it ``Gluing lemma'' in this work is that it is useful to visualize the graph $G$ as made of two separate pieces, $A$ and $B$, which are glued together along $A[V(A) \cap V(B)]$. In our approach we will frequently use the fact that all $T$-critical graphs can be ``decomposed'' in this way. 
 
-\todo{Analogous results for List coloring}
+Often, in list coloring we want to impose some restriction on the sizes of the lists, but 
+we don't want the same sizes for all the vertices as in $k$-list-colorability. We will
+use the following terminology:
+
+\begin{definition}
+	Let $G$ be a graph and $f : V(G) \rightarrow \mathbb{N}$ a function. We say a list 
+	assignment $L$ is a \emph{$f$-list-assignment} if $|L(v)| \geq f(v)$ for all $v \in V(G)$. 
+	We say $G$ is \emph{$f$-list-colorable} if $G$ is $L$-colorable for every 
+	$f$-list-assignment $L$.
+	We say $G$ is \emph{$f$-list-critical} if $G$ is $L$-critical for some $f$-list-assignment
+	$L$.
+\end{definition}
+
+And when drawing graphs whose vertices have prescribed list sizes by such an $f$, we
+will use the pictorial notation of Figure \ref{fig:listsizenotation} to denote the list sizes
+of the vertices.
+\begin{figure}
+\label{fig:listsizenotation}
+\centering
+\missingfigure{figure explaining pictorial notation for list sizes}
+\caption{Shapes used for the vertices of the graphs according to their list sizes}
+\end{figure}
+
+Finally, we can ask if there are results for list coloring of graphs on surfaces as there were
+for the usual coloring. The argument of Heawood also works for list coloring, so for every
+surface $\Sigma$ the graphs embedded in $\Sigma$ are all $H(\Sigma)$-list-colorable.
+
+We have the analogous result that $K_{H(\Sigma)}$ is the only obstruction for
+$H(\Sigma)-1$-list-colorability:
+
+\begin{theorem}[\cite{kralclique}]
+For a surface $\Sigma$ with $g(\Sigma) \geq 1$, $\Sigma \neq N_2$, $K_{H(\Sigma)}$ is the only
+minimal $H(\Sigma)$-list-critical graph embeddable in $\Sigma$.
+\end{theorem}
+
+And Postle proved in his PhD thesis in 2012 the result analogous to Thomassen's:
+
+\begin{theorem}[\cite{postlethesis}]
+For $k \geq 6$ there exist only finitely many $k$-list-critical graphs embeddable in a given
+surface $\Sigma$.
+\end{theorem}
+
+The goal we set out for this thesis is to find the explicit list of $6$-list-critical graphs 
+for the torus. 
+
 
 

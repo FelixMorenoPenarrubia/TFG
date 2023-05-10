@@ -1,0 +1,25 @@
+\draw[draw=black] (0, 0) rectangle (12, 12);
+
+\draw[fill=blue, opacity=0.3] (6, 6) rectangle (12, 12);
+\draw[fill=yellow, opacity=0.3] (6, 0) rectangle (12, 6);
+\draw[fill=green, opacity=0.3] (0, 0) rectangle (6, 6);
+\draw[fill=red, opacity=0.3] (0, 6) rectangle (6, 12);
+
+\node[] (A1) at (3, 6) {};
+\node[] (A2) at (6, 6) {};
+\node[] (A3) at (9, 6) {};
+
+\node[] (B1) at (6, 9){};
+\node[] (B3) at (6, 3) {};
+
+\draw[densely dashed, thick] (A1) -- (A2);
+\draw[densely dotted, thick] (A2) -- (A3);
+\draw[ultra thick] (B1) -- (A2);
+\draw[loosely dotted, thick] (A2) -- (B3);
+\draw[dashdotdotted, ultra thick] (A1) -- (0, 6);
+\draw[dashdotdotted, ultra thick] (12, 6) -- (A3);
+\draw[loosely dashed, thick] (B1) -- (6, 12);
+\draw[loosely dashed, thick] (6, 0) -- (B3);
+
+
+

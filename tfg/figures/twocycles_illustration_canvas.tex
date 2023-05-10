@@ -1,0 +1,52 @@
+\VertexInv[x=0, y=4]{A1}
+\VertexInv[x=2, y=3]{B1}
+\VertexInv[x=3, y=2]{C1}
+\VertexInv[x=4, y=0]{A2}
+\VertexInv[x=3, y=-2]{E1}
+\VertexInv[x=2, y=-3]{D1}
+\VertexInv[x=0, y=-4]{A3}
+\VertexInv[x=-2, y=-3]{C2}
+\VertexInv[x=-3, y=-2]{B2}
+\VertexInv[x=-4, y=0]{A4}
+\VertexInv[x=-3, y=2]{D2}
+\VertexInv[x=-2, y=3]{E2}
+
+\VertexInv[x=2.5, y=2.5]{X1}
+\VertexInv[x=2.5, y=-2.5]{X2}
+\VertexInv[x=-2.5, y=-2.5]{X3}
+\VertexInv[x=-2.5, y=2.5]{X4}
+
+
+\draw [dotted, thick] (A1) -- (B1);
+\draw [dashdotdotted, ultra thick] (B1) -- (C1);
+\draw [densely dashed, thick] (C1) -- (A2);
+\draw [loosely dotted, thick] (A2) -- (E1);
+\draw [loosely dashed, thick] (E1) -- (D1);
+\draw [ultra thick] (D1) -- (A3);
+\draw [densely dashed, thick] (A3) -- (C2);
+\draw [dashdotted, ultra thick] (C2) -- (B2);
+\draw [densely dotted, thick] (B2) -- (A4);
+\draw [ultra thick] (A4) -- (D2);
+\draw [loosely dashed, thick] (D2) -- (E2);
+\draw [loosely dotted, thick] (E2) -- (A1);
+
+\fill[yellow, opacity=0.3] (-2.5, 2.5) -- (2.5,2.5) -- (0,0) -- (-2.5,2.5);
+\fill[yellow, opacity=0.3] (X4) -- (E2) -- (0,4) -- (X4);
+\fill[yellow, opacity=0.3] (X1) -- (B1) -- (0,4) -- (X1);
+\fill[yellow, opacity=0.3] (-2.5,2.5) -- (2.5,2.5) -- (0,4) -- (-2.5,2.5);
+
+\fill[green, opacity=0.3] (2.5, 2.5) -- (2.5,-2.5) -- (0,0) -- (2.5,2.5);
+\fill[green, opacity=0.3] (X1) -- (C1) -- (4,0) -- (X1);
+\fill[green, opacity=0.3] (X2) -- (E1) -- (4,0) -- (X2);
+\fill[green, opacity=0.3] (2.5,2.5) -- (2.5,-2.5) -- (4,0) -- (2.5,2.5);
+
+\fill[red, opacity=0.3] (-2.5, -2.5) -- (2.5,-2.5) -- (0,0) -- (-2.5,-2.5);
+\fill[red, opacity=0.3] (X2) -- (D1) -- (0,-4) -- (X2);
+\fill[red, opacity=0.3] (X3) -- (C2) -- (0,-4) -- (X3);
+\fill[red, opacity=0.3] (-2.5,-2.5) -- (2.5,-2.5) -- (0,-4) -- (-2.5,-2.5);
+
+\fill[blue, opacity=0.3] (-2.5, -2.5) -- (-2.5,2.5) -- (0,0) -- (-2.5,-2.5);
+\fill[blue, opacity=0.3] (X3) -- (B2) -- (-4,0) -- (X3);
+\fill[blue, opacity=0.3] (X4) -- (D2) -- (-4,0) -- (X4);
+\fill[blue, opacity=0.3] (-2.5,-2.5) -- (-2.5,2.5) -- (-4,0) -- (-2.5,-2.5);
+

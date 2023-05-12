@@ -445,7 +445,7 @@ s	such that $\phi(v) = \psi(v)$ for all $v \in V(T)$.
 It is also interesting to consider graphs which are critical in this setting. To do so, we use the following definition (from \cite{fivelistcoloring2}):
 
 \begin{definition}[$T$-critical]
-	Let $G$, $T$, $L$ be as above. The graph $G$ is \emph{$T$-critical with respect to $L$} if for every proper subgraph $G' \subset G$ such that $T \subseteq G'$, there exists an $L$-coloring of $T$ that extends to an $L$-coloring of $G'$, but does not extend to an $L$-coloring of $G$. If the list assignment $L$ is clear from context, we just say \emph{$T$-critical}.
+	Let $G$, $T$, $L$ be as above. The graph $G$ is \emph{$T$-critical with respect to $L$} if $G \neq T$ and for every proper subgraph $G' \subset G$ such that $T \subseteq G'$, there exists an $L$-coloring of $T$ that extends to an $L$-coloring of $G'$, but does not extend to an $L$-coloring of $G$. If the list assignment $L$ is clear from context, we just say \emph{$T$-critical}.
 \end{definition}
 
 \begin{definition}[$\phi$-critical]
@@ -502,9 +502,47 @@ Let $T$ be a subgraph of a graph $G$ such that $G$ is $T$-critical with respect 
 Apply \ref{pregluinglemma} to $A' = A \cup T$ and $B' = B$. 
 \end{proof}
 
-\missingfigure{Gluing lemma illustration}
-
 The reason we decided to name it ``Gluing lemma'' in this work is that it is useful to visualize the graph $G$ as made of two separate pieces, $A$ and $B$, which are glued together along $A[V(A) \cap V(B)]$. In our approach we will frequently use the fact that all $T$-critical graphs can be ``decomposed'' in this way. 
+
+We will also use the following simple lemmas:
+
+\begin{lemma}[Extension Lemma]
+\label{extensionlemma}
+Let $G$ be a $T$-critical graph. If $T'$ is a subgraph with 
+$T \subseteq T' \subset G$, then $G$ is $T'$-critical.
+\end{lemma}
+\begin{proof}
+For any subgraph $H$ with $T \subseteq T' \subseteq H \subset G$, there exists a coloring
+$\phi\restriction_T$ of $T$ that extends to a coloring $\phi$ $H$ but not to $G$ by $T$-criticality. Then, $\phi\restriction_T'$ is a coloring of $T'$ that extends to $H$ but not to $G$.
+\end{proof}
+
+\begin{lemma}[Duplication Lemma]
+\label{duplicationlemma}
+Let $G$ be a $T$-critical graph with respect to a list assignment $L$ and let $G'$ be a graph
+, $T' \subset G'$ be a subgraph, $L'$ be a list assignment for $G'$ and $f : V(G') \rightarrow V(G)$ be a function such that:
+
+\begin{enumerate}
+	\item	$f_{\restriction_{V(G') \setminus V(T')}}$ is an isomorphism between 
+	$G'[V(G') \setminus V(T')]$ and $G[V(G) \setminus V(T)]$.
+	\item For all $v \in V(T')$, $f(v) \in V(T)$ and $f$ is surjective.  
+	\item $L'(v) = L(f(v))$ for all $v \in V(G')$. 
+	\item For every $v \in V(G)$, the image of the set $N(v) \cap V(T')$ under $f$
+	is equal to $N(f(v)) \cap V(T)$.  
+\end{enumerate}
+
+Then, $G'$ is $T'$-critical with respect to $L'$.
+ 
+\end{lemma}
+\begin{proof}
+Let $H'$ be any subgraph with $T' \subseteq H' \subset G'$ and let $H$ be the image of $H'$ under 
+$f$. $H$ can be seen to satisfy $T \subseteq H \subset G$, and by $T$-criticality there is a 
+coloring $\phi\restriction_T$ that extends to a coloring $\phi$ of $H$ but does not extend to $G$.
+Consider the $L'$-coloring $\psi$ of $H'$ defined by $\psi(v) = \phi(f(v))$. 
+Then, $\psi\restriction_{T'}$ is a coloring that extends to $H'$ but does not extend to $G'$,
+because if it did extend to a coloring $\psi'$ of $G'$ 
+then $\phi\restriction_T$ would extend to $G$ by setting the
+color $\psi'(f^{-1}(v))$ to each vertex $v \in V(G) \setminus V(T)$. 
+\end{proof}
 
 Often, in list coloring we want to impose some restriction on the sizes of the lists, but 
 we don't want the same sizes for all the vertices as in $k$-list-colorability. We will

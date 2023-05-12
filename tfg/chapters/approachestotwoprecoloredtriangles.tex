@@ -1,7 +1,63 @@
 \chapter{Approaches to the Two Precolored Triangles Theorem}
 
-\section{Canvas Strangulation}
+In this chapter we explain different approaches to proving Conjecture \ref{twotriangleconjecture}.
 
-\section{The Forbidden 3-3 Reduction}
+\section{Cycle-Canvas Strangulation}
+
+We can generate all critical prism-canvases whose two triangles are at distance $d$ from critical
+cycle-canvases with cycle size $2d+6$. Here is how:
+
+
+\begin{proposition}
+Let $G$ be a plane graph $(T_1 \cup T_2)$-critical with respect to some list assignment $L$, 
+where $T_1$ and $T_2$ are two triangles 
+and $P$ is a shortest path between them of length $d$. Let $G'$ be the graph
+obtained by ``duplicating'' the $d+1$ vertices of path $P$, so that the edges of the path $P$ are
+duplicated and the other neighbors of the duplicated vertices are now neighbors of the vertex
+corresponding to the side of the path in which the neighbors were in (see Figure 
+\ref{fig:strangulation}). Let $C$ be the corresponding cycle of length $2d+6$ that is newly formed
+with the duplicated vertices and the vertices of the triangles. Then $G'$ is $C$-critical (with 
+respect to the naturally corresponding list assignment $L'$).
+\end{proposition}
+\begin{proof}
+By the Extension Lemma (\ref{extensionlemma}), $G$ is $(T_1 \cup T_2 \cup P)$-critical.
+Now, the result follows by the Duplication Lemma (\ref{duplicationlemma}).
+\end{proof}
+
+\begin{figure}
+\label{fig:strangulation}
+\missingfigure{canvas strangulation}
+\caption{Illustration of Canvas Strangulation}
+\end{figure}
+
+Now, we use this result in the backwards direction (as in Figure \ref{fig:strangulation}):
+from critical cycle-canvases of cycle size $2d+6$, we generate candidates for critical 
+prism-canvases by identifying $d+1$ consecutive vertices in the precolored cycle with the opposite
+segment of $d+1$ consecutive vertices in the precolored cycle (it is useful to visualize 
+the``inverted'' canvas, so that the precolored cycle is no longer the outer face but a cycle
+bounding an interior face). Note that from each cycle-canvas there are $d+3$ ways to identify
+the vertices. After criticality testing all candidates from all cycle-canvases of size $2d+6$, we
+obtain all critical prism-canvases of distance $d$.
+
+This can serve to get the list of
+all critical prism-canvases with the triangles at a certain distance, which is useful
+for a part of our plan and to experimentally determine the value of the right distance constant
+in Conjecture \ref{twotriangleconjecture}.
+However it is not useful, just by itself, to prove that there are no such critical prism-canvases
+for large enough distances. 
+
+\section{The Forbidden 3-3 Setting}
+
+\subsection{The Forbidden 3-3 Reduction}
+
+\subsection{Plan for Critical Biwedges}
+
+\subsection{Approaches for Critical Triangle-Wedges} 
 
 \section{Criticality Strength}
+
+\subsection{The One Precolored Triangle Setting}
+
+\subsection{Definition of Criticality Strength}
+
+\subsection{Strong Critical Wedges}

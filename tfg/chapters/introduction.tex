@@ -10,15 +10,90 @@ and of Postle \cite{postlethesis}.
 
 \subsection{Graph Theory Terminology}
 
+Here we lay out the basic definitions of graph theory that we will be using in this thesis. We expect
+the reader to already have some familiarity with the concepts, and therefore we will not delve into
+explainations and will just state the definitions for the purpose of completeness and 
+disambiguation.                                                                                                                                                                                              
+
 \begin{definition}
-A \emph{graph} $G$ is a pair $(V(G), E(G))$ consisting of a set $V(G)$ and a set $E(G)$ of two-
+A \emph{graph} $G$ is a pair $(V(G), E(G))$ consisting of a finite set $V(G)$ and a set $E(G)$ of two-
 element subsets of $V(G)$. We call the elements of $V(G)$ vertices and
 the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
 \end{definition}
 
+\begin{definition}
+	Two vertices $u, v$ are \emph{adjacent} if $uv \in E(G)$. 
+	
+	For an edge $e = \{u,v\} \in E(G)$, 
+	we say $e$ is \emph{incident} with $u$ and $v$. 
+	
+	The \emph{neighborhood} of $v \in V(G)$, denoted by $N(v)$, is the set of all vertices
+	in $G$ adjacent to $v$. The \emph{degree} of a vertex $v$ is $d(v) = |N(v)|$.
+\end{definition}
+
+\begin{definition}
+	Two graphs $G$ and $H$ are \emph{isomorphic} if there exists a bijection $f$
+	between $V(G)$ and $V(H)$ any two vertices $u$ and $v$ in $G$ are adjacent if and only
+	if $f(u)$ and $f(v)$ are adjacent in $H$.
+\end{definition}
+
+\begin{definition}
+	For a graph $G = (V, E)$, we say a graph $G' = (V', E')$ is a \emph{subgraph of $G$}
+	 if $V' \subset V$, $E' \subset E$ and for all  $uv \in E'$ we have $u, v \in V'$. 
+	 We denote $G'$ being a subgraph of $G$ by $G' \subseteq G$, and denote a \emph{proper}
+	 subgraph (a subgraph in which $E' \subsetneq E$) by $G' \subset G$. 
+	 We say that a subgraph $G' = (V', E')$ is \emph{induced} if $E'$ contains all the edges
+	 in $E$ whose endpoints are in $V'$. If $X \subset V$, we denote by $G[X]$ the induced
+	 subgraph with the vertex set $X$. If $G' = (V', E) \subset G = (V, E)$, we denote by
+	 $G \setminus G'$ the graph $G[V \setminus V']$, and if $X \subset V$ we denote by
+	  $G \setminus X$
+	 the graph $G[V \setminus X]$.
+\end{definition}
+
+\begin{definition}
+	A \emph{connected component} of a graph is the induced graph by the vertices of an equivalence
+	class over the transitive closure of the adjacency relation on the vertices. 
+	
+	A graph is \emph{connected} if it has only one connected component.
+	
+	A vertex $v \in V(G)$ is a \emph{cutvertex} if $G \setminus \{v\}$ is not connected.
+	A graph $G$ is \emph{2-connected} if it has no cutvertices. 
+\end{definition}
+
+\begin{definition}
+	The \emph{complete graph in $n$ vertices}, denoted by $K_n$, is the graph with a vertex set
+	of size $n$ and edges between any pair of vertices. 
+	A \emph{path} is a connected graph with two vertices, the \emph{endpoints}, with degree
+	$1$ and all the other vertices with degree $2$. The path is said to be of \emph{length} $\ell$
+	if it has $\ell$ edges. 
+	A \emph{cycle} is a connected graph with all vertices of degree $2$. The cycles is said
+	to be of length $\ell$ if it has $\ell$ edges and vertices. The cycle of length $\ell$ is
+	denoted by $C_\ell$. 
+\end{definition}
+
+\begin{definition}
+	The \emph{distance} $d(u, v)$ between two vertices $u$ and $v$ in $G$ is the length of the
+	shortest path between them.
+\end{definition}
+
+In one section of this thesis, we will also need the variant of \emph{directed graphs}.
 
 
-\todo{(connectivity, complete graphs, etc)}
+\begin{definition}
+A \emph{directed graph} $G$ is a pair $(V(G), E(G))$ consisting of a finite set $V(G)$ and a set 
+$E(G)$ of ordered pairs of elements
+ of $V(G)$. We call the elements of $V(G)$ vertices and
+the elements $(u, v)$ of $E(G)$ edges, which we often denote as $\overrightarrow{uv}$.
+\end{definition}
+
+\begin{definition}
+	The \emph{indegree} $d^+(v)$ of a vertex $v \in V(G)$ of a directed graph $G$ is the number
+	of edges of the form $\overrightarrow{uv}$ in $G$. The \emph{outdegree} $d^-(v)$ is the number
+	of edges of the form $\overrightarrow{vu}$ in $G$. A directed graph is said to be 
+	\emph{eulerian} if for all vertices $v$, $d^+(v) = d^-(v)$. 
+\end{definition}
+
+
 
 \subsection{Surfaces}
 

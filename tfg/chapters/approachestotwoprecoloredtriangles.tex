@@ -48,11 +48,243 @@ for large enough distances.
 
 \section{The Forbidden 3-3 Setting}
 
+Recall Postle's approach: Postle, like Thomassen, works in a setting where the vertices of the 
+outer face of the graphs are allowed to have lists of size $3$. 
+For proving the Two Precolored Triangles Theorem, this is useful because a shortest path
+between the triangles can be precolored to obtain a graph with two precolored paths
+of length $1$ and vertices with list size at least $3$ in the outer face. The problem
+is that there are infinitely many critical graphs in such a setting. The question is: can
+we find some restriction on the list sizes so that:
+
+\begin{enumerate}
+	\item It is restrictive enough so that there are only finitely many $(P_1 \cup P_2)$-critical
+	graphs, where $P_1, P_2$ are paths of length $1$ in the outer face, but
+	\item It is not too restrictive, so it is useful and allows reductions like in the proof of
+	Thomassen's Theorem.
+\end{enumerate}
+
+The setting we propose is: require vertices in the outer face to have list size at least $3$, and
+also additionally require that no two adjacent non-precolored vertices have list size less than $4$. 
+Note that in this setting, we cannot have the infinte amount of bellows that prevented
+path-canvases with path length $2$ from being colorable, or the coloring harmonicas that prevented
+canvases with a path of length $1$ and a path of length $0$ from being colorable.
+
+In fact, this setting was first introduced in \cite{crossingsfarapart} to prove that there
+are only finitely many $P$-critical graphs in this setting,
+where $P$ is a path of length $2$, and as we will
+see there are also only finitely many critical graphs for longer path lengths and for two 
+paths of length $1$.
+
+\begin{definition}
+	We say that $(G, S, L)$ is a \emph{3-3-forbidden canvas} if $G$ is a connected plane graph
+ with outer walk $C$, $S$ is a subgraph of $C$, and $L$ is a list assignment
+  such that $|L(v)| \geq 5 \, \forall v \in V(G) \setminus V(C)$,
+   $|L(v)| \geq 3 \, \forall v \in V(C) \setminus V(S)$ and for all $uv \in E(G)$ with 
+   $u, v \not\in V(S)$ we have that $\max\{|L(u)|, |L(v)|\} \geq 4$. If $S$ is a path,
+    we say $(G, S, L)$ is a \emph{3-3-forbidden wedge} (or just \emph{wedge} in this section). 
+    If $S = P_1 \cup P_2$ with $P_1$, $P_2$ paths of length at most $1$, we say that $(G, S, L)$ is a
+    \emph{3-3-forbidden biwedge}. We say that $(G, S, L)$ is critical if $G$ is $S$-critical
+    with respect to $L$.
+\end{definition}
+
+Since in our program we do not store the list assignments for the graphs but we do store the 
+prescribed list sizes for each vertex (that is, whether a vertex can have a list size of $3$ or
+is forced to have $\geq 4$ colors), we will sometimes abuse terminology
+ use the terms critical wedge and critical biwedge
+to refer to those graphs with prescribed list sizes but not with a fixed list assignment.
+
 \subsection{The Forbidden 3-3 Reduction}
+
+Before we state the reduction that we can use in this setting, we need the following result:
+
+\begin{proposition}
+\ref{twocriticalwedgesprop}
+There are only two critical 3-3-forbidden wedges with path length $2$:
+
+\begin{enumerate}
+	\item The three-vertex graph consisting of $P = p_0p_1p_2$ with an additional edge joining
+	$p_0$ and $p_2$.
+	\item The four vertex graph consisting of $P$ plus one vertex with list of size three joined
+	to all three vertices of $P$.
+\end{enumerate}
+
+\end{proposition}
+
+This is proven in \cite{crossingsfarapart} using the reduction we are about to describe,
+but note that we can also prove it by generating critical wedges using the algorithm in 
+Section \ref{sec:generationwedges} and seeing that it halts after generating only these two graphs.
+
+\begin{definition}
+We say that a 3-3-forbidden canvas $(G, S, L)$ is \emph{reducible} if the following holds:
+\begin{enumerate}
+	\item It is $2$-connected.
+	\item The outer cycle has no chords.
+	\item There is a precolored vertex $p_0 \in S$ so that the next four vertices 
+	$v_1$, $v_2$, $v_3$, $v_4$ in clockwise order in the outer cycle are not in $S$. 
+\end{enumerate}
+\end{definition}
+
+Let $(G, S, L)$ be a critical reducible 3-3-forbidden canvas, and consider the list sizes of
+the vertices $v_1$, $v_2$, $v_3$, $v_4$ as in the definition of reducible. We are going to consider
+different cases according to those list sizes, and in each case we will select a subset $X$ of those
+vertices and a $L$-coloring on some of the vertices in $X$. 
+
+\begin{figure}
+\label{fig:reductioncases}
+\centering
+\missingfigure{reduction cases}
+\caption{Illustration for the cases in the reduction}
+\end{figure}
+
+\begin{itemize}
+	\item [X1] If $|L(v_2)| \geq 4$ and $|L(v_3)| \geq 4$, then $X = \{v_1\}$ and 
+	$\phi(v_1) \in L(v_1) \setminus L(p_0)$ is chosen arbitrarily.
+	\item [X2] If $|L(v_2)| \geq 4$ and $|L(v_3)| = 3$, then $X = \{v_1, v_2\}$ and $\phi$ is 
+	chosen so that $\phi(v_2) \in L(v_2) \setminus L(v_3)$ and 
+	$\phi(v_1) \in L(v_1) \setminus (L(p_0) \cup \{\phi(v_2)\})$.
+	\item [X3] If $|L(v_2)| = 3$, and either $|L(v_4)| \neq 3$ or $|L(v_3)| \geq 5$, then 
+	$X = \{v_2\}$ and $\phi(v_2) \in L(v_2)$ is chosen arbitrarily. 
+	\item [X4] If $|L(v_2)| = 3$, $|L(v_3)| = 4$ and $|L(v_4)| = 3$, then:
+	\begin{itemize}
+		\item [X4a] If $v_1$, $v_2$ and $v_3$ do not have a common neighbor or 
+		$|L(v_1)| \geq 5$, then $X = \{v_2, v_3\}$ and $\phi$ is chosen so that
+		$\phi(v_3) \in L(v_3) \setminus L(v_4)$ and 
+		$\phi(v_2) \in L(v_2) \setminus \{\phi(v_3)\}$.
+		\item [X4b] If $v_1$, $v_2$ and $v_3$ have a common neighbor and $|L(v_1)|$ = 4, then
+		$X = \{v_1, v_2, v_3\}$ and $\phi$ is chosen so that 
+		$\phi(v_3) \in L(v_3) \setminus L(v_4)$, 
+		$\phi(v_1) \in L(v_1) \setminus L(p_0)$ 
+		and either at least one of $\phi(v_1)$ and $\phi(v_3)$
+		does not belong to $L(v_2)$ or $\phi(v_1) = \phi(v_3)$. 
+		The vertex $v_2$ is left uncolored.
+	\end{itemize}
+\end{itemize}
+
+Let $G' = G \setminus X$ and let $L'$ be the list assignment obtained from $L$ by removing the colors 
+of the vertices of $X$ according to $\phi$ from the lists of their neighbors (if a vertex of $X$ is not
+colored according to $\phi$, we do not remove any colors for it). By the choice of $X$ and $\phi$,
+any $L'$-coloring of $G'$ can be extended to an $L$-coloring of $G$, thus $G'$ is not $L'$-colorable.
+
+This can imply one of these two options:
+
+\begin{enumerate}
+	
+	\item $(G', S, L')$ contains a critical 3-3-forbidden canvas as a subgraph (and one which is 
+	smaller than $(G, S, L)$.
+	\item $(G', S, L')$ is not a 3-3-forbidden canvas.
+\end{enumerate}
+
+The second option can only happen if $G'$ contains two adjacent vertices with list size $3$. 
+Let us call those vertices $u, v$. Because $G$ had no chords and because Lemma \ref{gluinglemma} and
+Proposition \ref{twocriticalwedgesprop} applied to vertices of $G$ 
+with two neighbors in $X$, we can conclude that $u$ and $v$ form a chord of the outer walk of $G'$.
+
 
 \subsection{Plan for Critical Biwedges}
 
-\subsection{Approaches for Critical Triangle-Wedges} 
+We will apply the above reduction to prove the following:
+
+\begin{conjecture}
+\label{biwedgeconjecture}
+Let $(G, P_1 \cup P_2, f)$ be a tuple such that $G$ is a plane graph, $P_1$, $P_2$ are two length one 
+paths in the outer walk of $G$, and $f$ is a list size assignment as in the definition of 3-3-forbidden
+canvases. If there exists an $f$-list-assignment $L$ such that $(G, P_1 \cup P_2, L)$ is a critical
+3-3-forbidden biwedge, then $(G, P_1 \cup P_2, f) \in \mathcal{S}$, where $\mathcal{S}$ is an explicit
+finite set (to be determined computationally) such that all the members of $\mathcal{S}$ satisfy
+$d(P_1, P_2) \leq 4$.
+\end{conjecture}
+
+In order to prove this, we do the following:
+
+We can generate all critical biwedges with distance between paths $d$ by fusing all pairs of critical
+wedges with path lengths $d+1$ or path lengths $d$ and $d+2$ as in figure \ref{fig:fusingwedges}
+and testing criticality. 
+By Lemma \ref{extensionlemma} applied to the shortest path between the two paths and Lemma 
+\ref{gluinglemma}, all critical biwedges can be decomposed in this way. 
+
+\begin{figure}
+\label{fig:fusingwedges}
+\missingfigure{fusing wedges}
+\caption{Fusing wedges along the shortest path of the biwedge.}
+\end{figure}
+
+We let $\mathcal{S}$ be the set of critical biwedges with distance between paths
+up to $4$ obtained by that procedure.
+
+To prove the conjecture, assume for a contradiction that there is a critical biwedge $(G, P_1 \cup P_2,
+f) \not\in \mathcal{S}$, and choose such a counterexample with the smallest $V(G)$. 
+
+Assume $G$ has a chord or cutvertex. Then, by Lemma \ref{gluinglemma}, $G$ can be decomposed into
+two smaller biwedges fused along the chord or cutvertex. We should verify computationally the following
+statement:
+
+\begin{proposition}
+If any $B_1, B_2 \in \mathcal{S}$ are fused along one of their precolored paths to create a biwedge
+$(G, P_1 \cup P_2, f)$ with $d(P_1, P_2) \geq 5$, then $(G, P_1 \cup P_2, f)$ is not critical.
+\end{proposition}
+
+So we conclude that $G$ can not have a chord or cutvertex. 
+
+We must have $d(P_1, P_2) \geq 5$, since all critical biwedges with distance up to $4$ are in $S$.
+Now, note that our biwedge is reducible. We apply the reduction. If $G$ contains as a 
+subgraph a smaller critical biwedge, then that critical biwedge is in $\mathcal{S}$ 
+and therefore has distance
+at most $4$ between precolored paths, so $G$ shoud have distance at most $4$ between paths, 
+contradiction.
+
+Therefore we have that the resulting graph $G'$ after performing the reduction has a chord $uv$ with
+two vertices of list size $3$. And $G'$ is not $L'$-colorable, so there exists a coloring of 
+$P_1 \cup P_2$ that does not extend to $G'$, so $G'$ contains a subgraph $G''$ which is 
+$(P_1 \cup P_2)$-critical with respect to $L'$. Now, $G''$ is not a critical biwedge
+because of the $uv$ chord, but it by Lemma \ref{gluinglemma} it can be decomposed into two
+critical smaller critical biwedges along the chord. Therefore, we must verify computationally
+the following statement:
+
+\begin{proposition}
+If any $B_1, B_2 \in \mathcal{S}$ are fused along one of their precolored paths to create a 
+triple $(G, P_1 \cup P_2, f)$
+with \textbf{one chord between vertices with prescribed list sizes $3$ but no other adjacencies
+between vertices with prescribed list size $3$}, then either $(G, P_1 \cup P_2, f)$ is not critical
+\textbf{or} $d(P_1, P_2) \leq 4$. 
+\end{proposition}
+  
+In order to reach a contradiction and conclude that such a counterexample must not exist. 
+
+\subsection{Approach for Critical Triangle-Wedges} 
+
+We can not use Postle's technique of precoloring a shortest path between the two
+triangles to conclude the result for two triangles from the result for biwedges, because the
+requirement that no two vertices adjacent vertices have list of size $3$ is too strong for
+that.
+
+Instead, what we can try is to use the reduction again. We generalize the two precolored triangles
+setting as follows:
+
+\begin{definition}
+We say that $(G, S = P \cup T, L)$ is a \emph{3-3-forbidden triangle-wedge} if $G$ is a connected plane 
+graph
+ with outer walk $C$, $P$ is a  path of length $1$ of $C$, $T$ is a triangle bounding a face
+ of $G$ (not necessarily incident with $C$)
+ , and $L$ is a list assignment
+  such that $|L(v)| \geq 5 \, \forall v \in V(G) \setminus (V(C) \cup V(T))$,
+   $|L(v)| \geq 3 \, \forall v \in V(C) \setminus V(S)$ and for all $uv \in E(G)$ with 
+   $u, v \not\in V(S)$ we have that $\max\{|L(u)|, |L(v)|\} \geq 4$. 
+\end{definition}
+
+Note that the critical prism-canvases can be retrieved from the critical 3-3-forbidden 
+triangle-wedges by selecting those whose outer face is a triangle with list size $3$ in the outer
+face. 
+
+We can try a similar strategy as with the biwedges in order to prove that all the critical 
+triangle-wedges belong to a critical set: construct all candidates in which the triangle is at a 
+small distance from the outer face, and then apply the reduction to show that there are no critical
+graphs with a larger distance.
+
+But the problem is, here constructing all the graphs for which the triangle is at a small distance
+from the outer face is much more complicated than for the biwedges.
+It also requires larger critical wedges as building blocks, which we are less likely to be able to
+be computed in reasonable time. In theory, this approach could be carried out with access to large
+computational resources, but it seems like something smarter is needed. 
 
 \section{Criticality Strength}
 

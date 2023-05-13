@@ -202,6 +202,7 @@ The modified algorithm for chordless critical cycle-canvases is the following:
 
 
 \section{Generation of Critical Wedges}
+\label{sec:generationwedges}
 
 We are will be not only interested in generating critical cycle-canvases, but also critical path-canvases or wedges. 
 There are infinitely many of those for path length greater than $1$, but as we will see in coming sections, 
@@ -214,7 +215,7 @@ If $(G, P, L)$ is a $2$-connected critical wedge, then either
 
 \begin{enumerate}
 \item The outer walk $C$ has a chord in $G$, or
-\item there exists a vertex $v \in V(G) \ V(P)$ with at least three neighbors on $P$ such that at most one of the faces of 
+\item there exists a vertex $v \in V(G) \setminus V(P)$ with at least three neighbors on $P$ such that at most one of the faces of 
 $G[\{v\} \cup V(P)]$ includes a vertex or edge of $G$. 
 \end{enumerate}
 \end{theorem}

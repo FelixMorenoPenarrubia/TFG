@@ -94,7 +94,7 @@ However, there are also reducible configurations which are not $f$-colorable.
 
 \begin{definition}
 A graph $G$ is said to be \emph{$f$-reducible} if there is a proper subgraph $H \subsetneq G$ so that
-for all $f$-list-assignments $L$ of $G$, if $H$ is $L\restriction_H$-colorable then $G$ is $L$-colorable. 
+for all $f$-list-assignments $L$ of $G$, if $H$ is $L_{\restriction_H}$-colorable then $G$ is $L$-colorable. 
 \end{definition}
 
 \begin{proposition}
@@ -105,7 +105,7 @@ where $d_{G \setminus H}(v)$ is the number of neighbors of $v$ which are not in 
 \begin{proof}
 Assume not, and let $H'$ be the corresponding subgraph of $H$ for which all $g$-colorings extend. Let $G$ be $L$-critical. 
 There exists an $L$-coloring $\phi$ of $G \setminus (H \setminus H')$. Let $L'$ be the $g$-list-assignment of $H$ given by 
-$L'(v) = L(v) \setminus \{\phi(u) : u \in N_G(v), u \not\in H\}$. Note that $\phi\restriction_{H'}$ is an $L'$-coloring of $H'$, so there must
+$L'(v) = L(v) \setminus \{\phi(u) : u \in N_G(v), u \not\in H\}$. Note that $\phi_{\restriction_{H'}}$ is an $L'$-coloring of $H'$, so there must
 be an $L'$-coloring $\psi$ of $H$. But then the coloring $\Phi$ given by $\Phi(v) = \psi(v)$ for $v \in H$, $\Phi(v) = \phi(v)$ for $v \in G \setminus H$ is 
 a $L$-coloring of $G$, contradiction. 
 \end{proof}
@@ -484,6 +484,4 @@ return containsColorableSubgraph($\text{precolorSubgraph}(G,H)$)\;
 
 
 \end{algorithm}
-\section{Criticality Verification}
 
-\todo{Determine whether Criticality Verification section should be written and do so if necessary}

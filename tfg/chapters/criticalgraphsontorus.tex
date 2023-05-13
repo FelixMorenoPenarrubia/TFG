@@ -1,6 +1,10 @@
 \chapter{Critical Graphs on the Torus}
 
-\todo{Section header}
+In this chapter we delve into the details of critical and list-critical graphs on the torus,
+including Postle's approach for list-critical graphs on surfaces and Thomassen's approach
+for $6$-critical graphs on the torus. 
+From studying these, we develop our own, computer-aided approach
+for $6$-list-critical graphs on the torus.
 
 \section{An Overview of Postle's Approach}
 
@@ -35,26 +39,8 @@ If $(G, P, L)$ is a path-canvas and $|V(P)| \leq 2$, then $G$ is $L$-colorable.
 We say that a canvas $(G, S, L)$ is \emph{critical} if it is $S$-critical with respect to $L$.
 \end{definition}
 
-It is interesting to study in which circumstances can a critical canvas contain chords or cutvertices.
-
-\todo{determine if I am going to use essential definition}
-
-\begin{definition}
-
-\end{definition}
-
-\begin{lemma}
-	If $T = (G, S, L)$ is a critical canvas, then:
-
-	\begin{enumerate}
-		\item Every cutvertex of $G$ is essential.
-		\item Every chord of the outer walk of $G$ is essential.
-	\end{enumerate}
-\end{lemma}
-
-\begin{proof}
-
-\end{proof}
+In the context of canvases, we usually talk of \emph{separating vertices} or \emph{separating
+subgraphs} as graphs which, when removed, disconnect vertices of $S$ from other vertices in $S$.
 
 
 
@@ -173,8 +159,6 @@ If $(G, C, L)$ is a critical cycle-canvas, then either
 \end{enumerate}
 \end{theorem}
 
-\todo{think if I should include proof of CCTT}
-
 Using this result, Postle carefully examines what happens near the boundary cycle in order to define some quantities related to sums of lengths of faces and proves that certain inequalities with those quantites are mantained when adding tripods in critical canvases. 
 
 
@@ -226,8 +210,41 @@ Finally, he proves that for a sufficiently long chain of this type, any precolor
 	of $T_1 \cup T_2$ did not extend to $G$.
 \end{proof}
 
-\subsection{Hyperbolicity}
-\todo{hyperbolicity and cylinder canvases section}
+\subsection{Cylinder-Canvases and Hyperbolic Families}
+
+Finally, Postle generalizes the previous setting of critical prism-canvases to \emph{critical cylinder-
+canvases}, where a cylinder-canvas is like a prism-canvas but the precolored cycles can have length
+greater than $3$. It generalizes Theorem \ref{twoprecoloredtrianglestheorem} by showing that for
+every pair of cycle lengths, there exists a distance $d$ (depending logarithmically on the cycle sizes)
+so that all critical cylinder-canvases have the cycles at distance at most $d$. It also generalizes
+Theorem \ref{linearboundcycletheorem} by showing that critical cylinder-canvases have a bound
+on their size linear in the sum of the cycle lengths.
+
+Then, he defines \emph{hyperbolic families}: families of graphs embedded in surfaces which have
+certain properties related to having planar graphs resulting from performing \emph{excisions} in
+the surface always having bounded size. We do not delve into the details because the topological
+arguments for the general case are not of interest for us, but we will explain some similar
+operations on the torus in the section explaining our approach. 
+
+The idea here is that the linear bounds on the cycle-canvases and the cylinder-canvases make the 
+$6$-list-critical graphs on the torus be an hyperbolic family. Then, the result we want about
+the finiteness of $6$-list-critical graphs is proven for the more general setting of hyperbolic
+families. In fact, it is proven that the number of vertices of such is bounded linearly by the genus 
+of the surface.
+
+The general setting of hyperbolic surfaces allows Postle to prove more properties and bounds of
+$6$-list-critical graphs on the torus, such as:
+
+\begin{theorem}
+\label{edgewidththeorem}
+Let $G$ be a graph 2-cell-embedded in a surface $\Sigma$ and let $L$ be a $5$-list-assignment.
+If $ew(G) \geq O(\log g(\Sigma))$, then $G$ is $L$-colorable. 
+
+\end{theorem}
+
+
+
+
 
 \section{Critical Graphs on the Torus for (usual) Vertex Coloring}
 
@@ -318,15 +335,41 @@ straighforward arguments that work on specifically in the torus. We briefly summ
 approach here in order to discuss which arguments can be reused for the list-coloring case. 
 
 First, Thomassen considers the case when the minimum degree is at least $6$. 
-He obtains this result:
+
+\begin{proposition}
+If a graph $G$ embedded on the torus has $\delta(G) \geq 6$, then:
+
+\begin{enumerate}
+	\item $G$ is $6$-regular.
+	\item $G$ is a triangulation of the torus.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+We apply Euler's formula: let $V, E, F$ be the number of vertices, edges and faces in the embedding, respectively. 
+We have that $\delta(G) \geq 6 \implies V \leq \frac{1}{3} E$ with equality iff $G$ is $6$-regular, and $F \leq \frac{2}{3}E$ 
+with equality iff $G$ is a triangulation. Then $0 = V - E + F \leq \frac{1}{3}E - E + \frac{2}{3}E = 0$, so we have equality on both inequalities.
+\end{proof}
+
+Using the proposition above, Thomassen then proves the following:
+
+\begin{proposition}[3.2 in \cite{thomassentorus}]
+Let $G$ be a $6$-regular graph on the torus. If $G$ contains a vertex $v$, such that $\{v\} \cup N(v)$ induces a nonplanar graph, then $G = K_7$ or $G$ is obtained from $K_8$ or $K_9$ by deleting the edges of a $1$-regular or $2$-regular subgraph.
+\end{proposition}
+
+The study of $6$-regular graphs on the torus without vertices whose neighborhood induces a nonplanar graph was already done by Thomassen in his previous paper \cite{thomassentilings}, in the context of finding all tilings of the torus in order to prove a conjecture by Babai about vertex-transitive graphs. 
+
+He obtains the following result:
 
 \begin{theorem}
 Let $G$ be a graph embedded on the torus with $\delta(G) \geq 6$. Then $G$ is $5$-colorable 
 unless $G = K_7$ or $G = T_{11}$.
 \end{theorem}
 
-We will discuss later how to arrive at this result, because this is the part of the proof that 
-can be adapted for list-coloring. But let us first describe Thomassen's argument for 
+This part of the argument is the one that can be generalized to list coloring, but it is not
+useful to our approach, so we don't delve into the details. 
+
+Let us now describe Thomassen's argument for 
 general graphs.
 
 He assumes a minimum counterexample $G_0$ to \ref{thomassentorustheorem} (the counterexample has
@@ -384,36 +427,10 @@ argument breaks down here.
 
 
 
-\subsection{$6$-Regular $6$-Critical Graphs}
-
-As we said before, Thomassen's argument for graphs with minimum degree $6$ can be reused for list-coloring. This is because these graphs are very restricted, and therefore their structure can be completely characterized and a $5$-(list)-coloring can be explicitly exhibited for the ones that are colorable. The basic result is this.
-
-\begin{proposition}
-If a graph $G$ embedded on the torus has $\delta(G) \geq 6$, then:
-
-\begin{enumerate}
-	\item $G$ is $6$-regular.
-	\item $G$ is a triangulation of the torus.
-\end{enumerate}
-\end{proposition}
-
-\begin{proof}
-We apply Euler's formula: let $V, E, F$ be the number of vertices, edges and faces in the embedding, respectively. 
-We have that $\delta(G) \geq 6 \implies V \leq \frac{1}{3} E$ with equality iff $G$ is $6$-regular, and $F \leq \frac{2}{3}E$ 
-with equality iff $G$ is a triangulation. Then $0 = V - E + F \leq \frac{1}{3}E - E + \frac{2}{3}E = 0$, so we have equality on both inequalities.
-\end{proof}
-
-Using the proposition above, Thomassen then proves the following:
-
-\begin{proposition}[3.2 in \cite{thomassentorus}]
-Let $G$ be a $6$-regular graph on the torus. If $G$ contains a vertex $v$, such that $\{v\} \cup N(v)$ induces a nonplanar graph, then $G = K_7$ or $G$ is obtained from $K_8$ or $K_9$ by deleting the edges of a $1$-regular or $2$-regular subgraph.
-\end{proposition}
-
-The study of $6$-regular graphs on the torus without vertices whose neighborhood induces a nonplanar graph was already done by Thomassen in his previous paper \cite{thomassentilings}, in the context of finding all tilings of the torus in order to prove a conjecture by Babai about vertex-transitive graphs. 
 
 
-\todo{finish 6-regular graphs section}
- see if it is worth it to include, maybe it is nontrivial to actually prove 5-list-colorability
+
+
 
 
 
@@ -492,7 +509,7 @@ Consider a subgraph $(C_1 \cup C_2) \subseteq H' \subset G'$ and
 the corresponding subgraph $C \subseteq H \subset G$. 
 By $L$-criticality of $G$, $H$ is $L$-colorable with a coloring $\phi$.
 Consider the corresponding coloring $\phi'$ of $H'$.
- Then, $\phi'\restriction_{C_1 \cup C_2}$
+ Then, $\phi'_{\restriction_{C_1 \cup C_2}}$
 is a coloring of $(C_1 \cup C_2)$ which extends to $H'$ but not to $G'$, since if it extended
 to $G'$ we would have a $L'$-coloring of $G'$ in which the corresponding vertices of $C_1$ and
 $C_2$ have the same colors and therefore we would be able to retrieve an $L$-coloring of $G$.

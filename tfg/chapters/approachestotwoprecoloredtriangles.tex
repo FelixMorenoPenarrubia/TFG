@@ -25,12 +25,15 @@ Now, the result follows by the Duplication Lemma (\ref{duplicationlemma}).
 \end{proof}
 
 \begin{figure}
+\centering
+\begin{tikzpicture}[scale=0.5, every node/.append style={transform shape}]
+\input{figures/strangulation.tex}
+\end{tikzpicture}
+\caption{Critical cycle-canvas from critical prism-canvas.}
 \label{fig:strangulation}
-\missingfigure{canvas strangulation}
-\caption{Illustration of Canvas Strangulation}
 \end{figure}
 
-Now, we use this result in the backwards direction (as in Figure \ref{fig:strangulation}):
+Now, we use this result in the backwards direction:
 from critical cycle-canvases of cycle size $2d+6$, we generate candidates for critical 
 prism-canvases by identifying $d+1$ consecutive vertices in the precolored cycle with the opposite
 segment of $d+1$ consecutive vertices in the precolored cycle (it is useful to visualize 
@@ -98,7 +101,7 @@ to refer to those graphs with prescribed list sizes but not with a fixed list as
 Before we state the reduction that we can use in this setting, we need the following result:
 
 \begin{proposition}
-\ref{twocriticalwedgesprop}
+\label{twocriticalwedgesprop}
 There are only two critical 3-3-forbidden wedges with path length $2$:
 
 \begin{enumerate}
@@ -130,10 +133,11 @@ different cases according to those list sizes, and in each case we will select a
 vertices and a $L$-coloring on some of the vertices in $X$. 
 
 \begin{figure}
-\label{fig:reductioncases}
+
 \centering
-\missingfigure{reduction cases}
-\caption{Illustration for the cases in the reduction}
+\includegraphics[width=0.8\textwidth]{figures/reduction_cases.png}
+\caption{Illustration for the cases in the reduction (from \cite{crossingsfarapart})}
+\label{fig:reductioncases}
 \end{figure}
 
 \begin{itemize}
@@ -170,7 +174,7 @@ This can imply one of these two options:
 \begin{enumerate}
 	
 	\item $(G', S, L')$ contains a critical 3-3-forbidden canvas as a subgraph (and one which is 
-	smaller than $(G, S, L)$.
+	smaller than $(G, S, L)$).
 	\item $(G', S, L')$ is not a 3-3-forbidden canvas.
 \end{enumerate}
 
@@ -181,6 +185,7 @@ with two neighbors in $X$, we can conclude that $u$ and $v$ form a chord of the 
 
 
 \subsection{Plan for Critical Biwedges}
+\label{sec:biwedges}
 
 We will apply the above reduction to prove the following:
 
@@ -197,22 +202,26 @@ $d(P_1, P_2) \leq 4$.
 In order to prove this, we do the following:
 
 We can generate all critical biwedges with distance between paths $d$ by fusing all pairs of critical
-wedges with path lengths $d+1$ or path lengths $d$ and $d+2$ as in figure \ref{fig:fusingwedges}
+wedges with path lengths $d+1$ or path lengths $d$ and $d+2$ as in Figure \ref{fig:fusingwedges}
 and testing criticality. 
 By Lemma \ref{extensionlemma} applied to the shortest path between the two paths and Lemma 
 \ref{gluinglemma}, all critical biwedges can be decomposed in this way. 
 
 \begin{figure}
-\label{fig:fusingwedges}
-\missingfigure{fusing wedges}
+\centering
+\begin{tikzpicture}
+\input{figures/fusingwedges.tex}
+\end{tikzpicture}
 \caption{Fusing wedges along the shortest path of the biwedge.}
+\label{fig:fusingwedges}
 \end{figure}
 
 We let $\mathcal{S}$ be the set of critical biwedges with distance between paths
 up to $4$ obtained by that procedure.
 
-To prove the conjecture, assume for a contradiction that there is a critical biwedge $(G, P_1 \cup P_2,
-f) \not\in \mathcal{S}$, and choose such a counterexample with the smallest $V(G)$. 
+To prove the conjecture, assume for a contradiction that there is a critical biwedge 
+$(G, P_1 \cup P_2, f) \not\in \mathcal{S}$, and choose such a counterexample with 
+the smallest $|V(G)|$. 
 
 Assume $G$ has a chord or cutvertex. Then, by Lemma \ref{gluinglemma}, $G$ can be decomposed into
 two smaller biwedges fused along the chord or cutvertex. We should verify computationally the following
@@ -225,7 +234,7 @@ $(G, P_1 \cup P_2, f)$ with $d(P_1, P_2) \geq 5$, then $(G, P_1 \cup P_2, f)$ is
 
 So we conclude that $G$ can not have a chord or cutvertex. 
 
-We must have $d(P_1, P_2) \geq 5$, since all critical biwedges with distance up to $4$ are in $S$.
+We must have $d(P_1, P_2) \geq 5$, since all critical biwedges with distance up to $4$ are in $\mathcal{S}$.
 Now, note that our biwedge is reducible. We apply the reduction. If $G$ contains as a 
 subgraph a smaller critical biwedge, then that critical biwedge is in $\mathcal{S}$ 
 and therefore has distance

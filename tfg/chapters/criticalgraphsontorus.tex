@@ -46,7 +46,7 @@ subgraphs} as graphs which, when removed, disconnect vertices of $S$ from other 
 
 \subsection{Variations on Thomassen's Condition}
 
-Much of the technical work on Postle's thesis relies in a careful study of what happens if one varies the condition on \ref{thomassenstrongertheorem}. One of the most elegant (and also useful) results is the following strengthening to Thomassen's Stronger Theorem, originally conjectured by Hutchinson in \cite{hutchinson2012outerplanar}.
+Much of the technical work on Postle's thesis relies in a careful study of what happens if one varies the condition on Theorem \ref{thomassenstrongertheorem}. One of the most elegant (and also useful) results is the following strengthening to Thomassen's Stronger Theorem, originally conjectured by Hutchinson in \cite{hutchinson2012outerplanar}.
 
 \begin{theorem}[Two Lists of Size Two Theorem \cite{fivelistcoloring1}]
 \label{twolistsofsizetwo}
@@ -56,7 +56,7 @@ If $G$ is a plane graph with outer cycle $C$, $v_1, v_2 \in C$ and $L$ is a list
 Or, in the language of canvases:
 
 \begin{theorem}
-If $(G, S, L)$ is a canvas with $|V(S)| = 2$ and $L(v) \geq 2$ for $v \in S$, then $G$ is $L$-colorable.
+If $(G, S, L)$ is a canvas with $|V(S)| = 2$ and $|L(v)| \geq 2$ for $v \in S$, then $G$ is $L$-colorable.
 \end{theorem}
 
 This theorem is not true when one of the two vertices has list of size $1$. In fact, Postle characterizes exactly when it fails:
@@ -69,17 +69,22 @@ Let $G$ be a plane graph and $L$ a list assignment for $G$. Given an edge $uv$ a
 		\item There exists a vertex $z$ incident with the outer face of $G$ such that $uvz$ is a triangle in $G$, $L(u) = L(v) \subseteq L(z)$, $|L(u)| = |L(v)| = 2$, $|L(z)| = 3$, and the pair $(G', L')$ is a coloring harmonica from $z$ to $w$, where $G'$ is obtained by deleting \textbf{one or both} of the vertices $u$, $v$ and $L'$ is obtained from $L$ by $L'(z) = L(z) \setminus L(u)$ and $L'(x) = L(x)$ for all other vertices $z \neq x \in V(G')$.
 	\end{itemize}
 
-	Given two vertices $u, w$ in the outer face of $G$, we say $(G, L)$ is a \emph{coloring harmonica from $u$ to $w$} if there exist vertices $x, y$ incident with the outer face of $G$ such that $uxy$ is a triangle in $G$, $|L(u)| = 1$, $L(x) - L(u) = L(y) - L(u)$, $|L(x)-L(u)|=2$, and $(G', L')$ is a coloring harmonica from $xy$ to $w$, where $G'$ is obtained from $G$ by removing $u$, and $L'$ is obtained from $L$ by seting $L'(x) = L'(y) = L(x)-L(u)$ and $L'(z) = L(z)$ for every $z \in V(G') \setminus \{x, y\}$.
+	Given two vertices $u, w$ in the outer face of $G$, we say $(G, L)$ is a \emph{coloring harmonica from $u$ to $w$} if there exist vertices $x, y$ incident with the outer face of $G$ such that $uxy$ is a triangle in $G$, $|L(u)| = 1$, $L(x) \setminus L(u) = L(y) \setminus L(u)$, $|L(x) \setminus L(u)|=2$, and $(G', L')$ is a coloring harmonica from $xy$ to $w$, where $G'$ is obtained from $G$ by removing $u$, and $L'$ is obtained from $L$ by seting $L'(x) = L'(y) = L(x) \setminus L(u)$ and $L'(z) = L(z)$ for every $z \in V(G') \setminus \{x, y\}$.
 
 
 We say that $(G, L)$ is a coloring harmonica if it is a coloring harmonica from $uv$ to $w$ or a coloring harmonica from $u$ to $w$ for some $u, v, w$ as specified earlier.
 \end{definition}
 
-\missingfigure{harmonica}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.5\textwidth]{figures/coloringharmonica.png}
+\caption{Example of coloring harmonica from $u$ to $w$ (taken from \cite{fivelistcoloring3})}
+\label{fig:harmonica}
+\end{figure}
 
-See the example in (reference to figure) (from \cite{fivelistcoloring3}) for some clarity with respect to this mutually recursive definition. Note that the definition makes it clear that graphs which contain a coloring harmonica as a subgraph are not $L$-colorable. 
+See the example in Figure \ref{fig:harmonica} (from \cite{fivelistcoloring3}) for some clarity with respect to this mutually recursive definition. Note that the definition makes it clear that graphs which contain a coloring harmonica as a subgraph are not $L$-colorable. 
 
-\begin{theorem}{One List of Size One and One List of Size Two Theorem \cite{fivelistcoloring3}}
+\begin{theorem}[One List of Size One and One List of Size Two Theorem \cite{fivelistcoloring3}]
 Let $G$ be a plane graph with outer cycle $C$, let $p_1, p_2 \in V(C)$, and let
 $L$ be a list assignment with $|L(v)| \geq 5$ for all $v \in V(G) \setminus V(C)$, $|L(v)| \geq 3$ for all
 $v \in V (C) \setminus \{p_1 , p_2\}$, $|L(p_1)| \geq 1$ and $|L(p_2)| \geq 2$. Then $G$ is $L$-colorable if and only if the pair $(G, L)$ does not contain a coloring harmonica from $p_1$ to $p_2$.
@@ -98,7 +103,6 @@ Thomassen already studied when does the coloring of a path of length $2$ not ext
 	\end{itemize}
 \end{definition}
 
-\missingfigure{bellows}
 
 
 \begin{theorem}[\cite{thomassenexponentiallymany5listcolorings}, Theorem 3]
@@ -126,7 +130,7 @@ Postle proves the following result:
 
 \begin{theorem}[\cite{fivelistcoloring2}]
 \label{linearboundcycletheorem}
-Let $G$ be a plane graph with outer cycle $C$ and $L$ a $5$-lis-assignment for $G$. Let $H$ be a minimal subgraph of $G$ such that every $L$-coloring of $C$ that extends to an $L$-coloring of $H$ also extends to an $L$-coloring of $G$. Then $H$ has at most $19|V(C)|$ vertices.
+Let $G$ be a plane graph with outer cycle $C$ and $L$ a $5$-list-assignment for $G$. Let $H$ be a minimal subgraph of $G$ such that every $L$-coloring of $C$ that extends to an $L$-coloring of $H$ also extends to an $L$-coloring of $G$. Then $H$ has at most $19|V(C)|$ vertices.
 \end{theorem}
 
 Or, equivalently stated in the language of critical canvases:
@@ -135,7 +139,7 @@ Or, equivalently stated in the language of critical canvases:
 If $(G, C, L)$ is a critical cycle-canvas, then $|V(G)| \leq 19 |V(C)|$.
 \end{theorem}
 
-The equivalence of the two statements is given by \ref{minimalsubgraphlemma}. This result is interesting in its own right because by \ref{gluinglemma}, all faces of a $T$-critical graph which do not separate vertices from $T$ are in fact critical cycle-canvases, and therefore what the result tells us is that for such graphs there is only finitely many kinds of faces that can appear for each given cycle length. This gives us a lot of information of how critical graphs look like. 
+The equivalence of the two statements is given by Lemma \ref{minimalsubgraphlemma}. This result is interesting in its own right because by Lemma \ref{gluinglemma}, all faces of a $T$-critical graph which do not separate vertices from $T$ are in fact critical cycle-canvases, and therefore what the result tells us is that for such graphs there is only finitely many kinds of faces that can appear for each given cycle length. This gives us a lot of information of how critical graphs look like. 
 
 A first observation that can be made is that critical cycle-canvases (in which $C$ is indeed a simple cycle) are $2$-connected, so each face is bounded by a cycle:
 
@@ -144,7 +148,7 @@ If $(G, C, L)$ is a critical cycle-canvas, then it is $2$-connected.
 \end{lemma}
 
 \begin{proof}
-If $G$ is not $2$-connected, then there exist subgraphs $A, B$ such that $A \cup B = G$ with $|V(A) \cap V(B)| \leq 1$ and $|V(B) \setminus V(A)| \geq 1$. Assume $C \subseteq A$ and apply \ref{gluinglemma} to get that $B$ is $A[V(A) \cap V(B)]$-critical, contradicting \ref{thomassenstrongertheorem}.
+If $G$ is not $2$-connected, then there exist subgraphs $A, B$ such that $A \cup B = G$ with $|V(A) \cap V(B)| \leq 1$ and $|V(B) \setminus V(A)| \geq 1$. Assume $C \subseteq A$ and apply Lemma \ref{gluinglemma} to get that $B$ is $A[V(A) \cap V(B)]$-critical, contradicting Theorem \ref{thomassenstrongertheorem}.
 \end{proof}
 
 The key result in Postle's proof of the linear bound for cycles is the following theorem about the structure of critical cycle-canvases:
@@ -155,7 +159,7 @@ If $(G, C, L)$ is a critical cycle-canvas, then either
 
 \begin{enumerate}
 \item $C$ has a chord in $G$, or
-\item there exists a vertex $v \in V(G) \ V(C)$ with at least three neighbors on $C$ such that at most one of the faces of $G[\{v\} \cup V(C)]$ includes a vertex or edge of $G$. 
+\item there exists a vertex $v \in V(G) \setminus V(C)$ with at least three neighbors on $C$ such that at most one of the faces of $G[\{v\} \cup V(C)]$ includes a vertex or edge of $G$. 
 \end{enumerate}
 \end{theorem}
 
@@ -168,6 +172,7 @@ Using this result, Postle carefully examines what happens near the boundary cycl
 Next, Postle proves the following theorem:
 
 \begin{theorem}
+	\label{twoprecoloredtrianglestheorem}
 	There exists $d$ such that the following holds.
 	Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $d$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
 \end{theorem}
@@ -179,14 +184,13 @@ The value of $d$ that Postle obtains is not explicitly stated, but it is on the 
 
 \begin{conjecture}
 \label{twotriangleconjecture}
-Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ at distance at least $5$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
+Let $G$ be a planar graph and $T_1, T_2$ triangles in $G$ with distance 
+between them at least $5$. Let $L$ be a $5$-list-assignment of $G$. Then, every $L$-coloring of $T_1 \cup T_2$ extends to an $L$-coloring of $G$.
 \end{conjecture}
 
 The argument that Postle uses to prove his result is as follows. First, he proves that one can precolor a path between the two triangles in such a way that, when deleting the path and deleting the corresponding colors from the lists of neighboring vertices, all remaining non-precolored vertices have lists of size at least $3$. The proof of this begins with the simple observation that each vertex outside a shortest path has at most $3$ neighbors inside the path. Using planarity properties, a shortest path can be found so that it can be colored in such a way that the vertices with $3$ neighbors inside the path only see two different colors from their lists.
 
-After precoloring and deleting the path between the two triangles, a canvas $(G, P_1 \cup P_2, L)$ is obtained. If there was a precoloring of the triangles that did not extend, then the canvas contains a critical canvas, and by \ref{bottlenecktheorem} it contains a proportionally long accordion or harmonica. Postle proves that this (together with some technical details related to how the path between the triangles was chosen) implies that in the original graph there must be a long chain of separating triangles so that the graph between each separating triangle pertains to one of three very specific types, which he calls tetrahedral, octahedral or hexadecahedral bands. 
-
-\todo{check if I defined separating triangle in introduction}
+After precoloring and deleting the path between the two triangles, a canvas $(G, P_1 \cup P_2, L)$ is obtained. If there was a precoloring of the triangles that did not extend, then the canvas contains a critical canvas, and by Theorem \ref{bottlenecktheorem} it contains a proportionally long accordion or harmonica. Postle proves that this (together with some technical details related to how the path between the triangles was chosen) implies that in the original graph there must be a long chain of separating triangles so that the graph between each separating triangle pertains to one of three very specific types, which he calls tetrahedral, octahedral or hexadecahedral bands. 
 
 Finally, he proves that for a sufficiently long chain of this type, any precoloring of the innermost and outermost triangles extends to the whole chain. This proves the theorem, because of the following observation:
 
@@ -203,7 +207,7 @@ Finally, he proves that for a sufficiently long chain of this type, any precolor
 \end{proposition}
 
 \begin{proof}
-	By \ref{thomassenstrongertheorem}, the coloring on $T_1$ extends to 
+	By Theorem \ref{thomassenstrongertheorem}, the coloring on $T_1$ extends to 
 	$G[T_1, T'_1]$ and the coloring on $T_2$ extends to $G[T'_2, T_2]$. 
 	The coloring of $T'_1 \cup T'_2$ given by this extensions can not 
 	extend to $G[T'_1, T'_2]$ by the assumption that the original coloring 
@@ -212,8 +216,7 @@ Finally, he proves that for a sufficiently long chain of this type, any precolor
 
 \subsection{Cylinder-Canvases and Hyperbolic Families}
 
-Finally, Postle generalizes the previous setting of critical prism-canvases to \emph{critical cylinder-
-canvases}, where a cylinder-canvas is like a prism-canvas but the precolored cycles can have length
+Finally, Postle generalizes the previous setting of critical prism-canvases to \emph{critical cylinder-canvases}, where a cylinder-canvas is like a prism-canvas but the precolored cycles can have length
 greater than $3$. It generalizes Theorem \ref{twoprecoloredtrianglestheorem} by showing that for
 every pair of cycle lengths, there exists a distance $d$ (depending logarithmically on the cycle sizes)
 so that all critical cylinder-canvases have the cycles at distance at most $d$. It also generalizes
@@ -229,11 +232,12 @@ operations on the torus in the section explaining our approach.
 The idea here is that the linear bounds on the cycle-canvases and the cylinder-canvases make the 
 $6$-list-critical graphs on the torus be an hyperbolic family. Then, the result we want about
 the finiteness of $6$-list-critical graphs is proven for the more general setting of hyperbolic
-families. In fact, it is proven that the number of vertices of such is bounded linearly by the genus 
+families. In fact, it is proven that the number of vertices of
+graphs in such a family embeddable in a surface is bounded linearly by the genus 
 of the surface.
 
-The general setting of hyperbolic surfaces allows Postle to prove more properties and bounds of
-$6$-list-critical graphs on the torus, such as:
+The general setting of hyperbolic surfaces allows Postle to prove more properties and bounds for
+$6$-list-critical graphs on surfaces, such as:
 
 \begin{theorem}
 \label{edgewidththeorem}
@@ -372,7 +376,7 @@ useful to our approach, so we don't delve into the details.
 Let us now describe Thomassen's argument for 
 general graphs.
 
-He assumes a minimum counterexample $G_0$ to \ref{thomassentorustheorem} (the counterexample has
+He assumes a minimum counterexample $G_0$ to Theorem \ref{thomassentorustheorem} (the counterexample has
 minimum number of vertices, maximum number of edges restricted to that, and some other assumptions 
 about details we will not discuss here). By the previous result, 
 there must be a vertex $v_0 \in V(G_0)$ with degree $\leq 5$, and the degree of $v_0$ is in 
@@ -380,7 +384,7 @@ fact equal to $5$ by minimality of the counterexample.
 
 Consider two vertices $x, y \in N(v_0)$ which are not adjacent (if all the vertices of 
 $N(v_0)$ were adjacent, then $G_0$ would contain $K_6$, a contradiction). Let $G_{xy}$ be 
-the graph obtained from $G_0 \setminus v_0$ by identifying the vertices $x$ and $y$. 
+the graph obtained from $G_0 \setminus \{v_0\}$ by identifying the vertices $x$ and $y$. 
 $G_{xy}$ can be embedded in the torus by modifying the embedding of $G_0$. If $G_{xy}$ 
 were $5$-colorable, then we would have a $5$-coloring of $G_0$ by assigning the same color 
 to $x$ and $y$ and coloring $v_0$ with a color not appearing in its $5$ neighbors. 
@@ -419,8 +423,8 @@ is a finite problem.
 
 Thomassen uses some more arguments to narrow down the remaining possibilities for $G_0$, but
 we can already see an important point of failure of this argument for list-coloring: in the 
-proof of \ref{g0proposition}, it is used that a necessary and sufficient condition for a coloring
-of $G_0 \setminus v_0$ to extend to $v_0$ is that two neighbors of $v_0$ have the same color.
+proof of Proposition \ref{g0proposition}, it is used that a necessary and sufficient condition for a coloring
+of $G_0 \setminus \{v_0\}$ to extend to $v_0$ is that two neighbors of $v_0$ have the same color.
 In list coloring, this condition is not necessary. So we cannot conclude that the minimum 
 counterexample is the union of the graphs induced by the obstructions in $G_{xy}$ and the 
 argument breaks down here. 
@@ -447,7 +451,7 @@ explicit, full list of critical canvases of a certain type and size.
 In order to obtain those canvases, we will be using computer search, so this will be a 
 computer-aided proof, like the Four Color Theorem's (but using very different techniques). The 
 reason we consider it feasible to perform this search is that results like 
-Theorem \ref{cyclechordortripodtheorem} give very structured descriptions of 
+Theorem \ref{cyclechordtripodtheorem} give very structured descriptions of 
 critical canvases - so we don't face enormously huge space of searching among
 all the planar graphs with a given size bound, but instead have a much more restricted
 search space. 
@@ -464,7 +468,6 @@ that relate $6$-list-critical graphs on the torus with critical prism-canvases
 \subsection{Cutting Through a Non-Contractible Cycle}
 
 Consider the torus $S_1$. If one cuts through non-contractible curve
-\todo{check if this is the appropiate term} 
 one obtains a cylinder,
 which can then be projected to the plane. 
 
@@ -474,7 +477,7 @@ sides of the resulting cylinder, and then project this cylinder into the plane. 
 embedded on the torus. 
 
 \begin{figure}
-\label{fig:k6criticalprismcanvas}
+
 \centering
 \begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
 
@@ -489,6 +492,7 @@ embedded on the torus.
 \end{scope}
 \end{tikzpicture}
 \caption{Cutting $K_6$ into a critical prism-canvas.}
+\label{fig:k6criticalprismcanvas}
 \end{figure}
 
 The reason why this is useful to us is the following observation:
@@ -515,7 +519,8 @@ to $G'$ we would have a $L'$-coloring of $G'$ in which the corresponding vertice
 $C_2$ have the same colors and therefore we would be able to retrieve an $L$-coloring of $G$.
 \end{proof}
 
-This, together with Theorem \ref{twotriangletheorem}, already places a restriction on how the
+This, together with Theorem \ref{twoprecoloredtrianglestheorem}, already places a restriction on how 
+the
 $6$-list-critical graphs on the torus can be: if the graph has a non-contractible triangle, then
 it must also have a not too large non-contractible cycle not homotopically equivalent to 
 the non-contractible triangle, since if the two precolored triangles are at distance $d$ in the
@@ -534,7 +539,7 @@ plane, as in Figure \ref{fig:twocycles_illustration}. This can be thought also a
 through a cycle to get a cylinder, and then cutting through the cylinder to get the plane. 
 
 \begin{figure}
-\label{fig:twocycles_illustration}
+
 \centering
 \begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
 
@@ -553,13 +558,14 @@ through a cycle to get a cylinder, and then cutting through the cylinder to get 
 
 \end{tikzpicture}
 \caption{Cutting the torus into the plane.}
+\label{fig:twocycles_illustration}
 \end{figure}
 
 The idea here is again that we can use this to get critical planar graphs from critical graphs
 on the torus, but now we get a cycle-canvas instead of a prism-canvas. See Figure \ref{fig:k6_cyclecanvas} for an example again with $K_6$.
 
 \begin{figure}
-\label{fig:k6_cyclecanvas}
+
 \centering
 \begin{tikzpicture}[main/.style = {draw, circle, fill=white}]
 
@@ -574,6 +580,7 @@ on the torus, but now we get a cycle-canvas instead of a prism-canvas. See Figur
 \end{scope}
 \end{tikzpicture}
 \caption{Cutting $K_6$ into a critical cycle-canvas.}
+\label{fig:k6_cyclecanvas}
 \end{figure}
 
 \begin{observation}
@@ -619,14 +626,11 @@ graphs on the torus which have at least one non-contractible triangle.
 \end{enumerate}
 
 This plan only works for $6$-list-critical graphs with edge-width $3$, which is the case for 
-the $6$-critical graphs for the previous section. We don't expect to have additional $6$-list-
-critical graphs with larger edge-width, especially given (REF POSTLE RESULT EDGEWIDTH), so our
+the $6$-critical graphs for the previous section. We don't expect to have additional 
+$6$-list-critical graphs with larger edge-width, especially given Theorem \ref{edgewidththeorem}, so our
 hope would be to find an argument independent of this plan to prove that any $6$-list-critical
 graph on the torus must have a non-contractible triangle. 
 
-\todo{check that I defined edge-width and given the result of Postle for ew}
-
-\todo{references for chapters}
 
 The rest of this thesis will be dedicated to describe how to carry out this plan. 
 For the first step, we will explain how to perform the computer generation of such critical graphs

@@ -16,8 +16,8 @@ explainations and will just state the definitions for the purpose of completenes
 disambiguation.                                                                                                                                                                                              
 
 \begin{definition}
-A \emph{graph} $G$ is a pair $(V(G), E(G))$ consisting of a finite set $V(G)$ and a set $E(G)$ of two-
-element subsets of $V(G)$. We call the elements of $V(G)$ vertices and
+A \emph{graph} $G$ is a pair $(V(G), E(G))$ consisting of a finite set $V(G)$ and a set $E(G)$ of two-element
+ subsets of $V(G)$. We call the elements of $V(G)$ vertices and
 the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
 \end{definition}
 
@@ -39,7 +39,7 @@ the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
 
 \begin{definition}
 	For a graph $G = (V, E)$, we say a graph $G' = (V', E')$ is a \emph{subgraph of $G$}
-	 if $V' \subset V$, $E' \subset E$ and for all  $uv \in E'$ we have $u, v \in V'$. 
+	 if $V' \subseteq V$, $E' \subseteq E$ and for all  $uv \in E'$ we have $u, v \in V'$. 
 	 We denote $G'$ being a subgraph of $G$ by $G' \subseteq G$, and denote a \emph{proper}
 	 subgraph (a subgraph in which $E' \subsetneq E$) by $G' \subset G$. 
 	 We say that a subgraph $G' = (V', E')$ is \emph{induced} if $E'$ contains all the edges
@@ -47,7 +47,7 @@ the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
 	 subgraph with the vertex set $X$. If $G' = (V', E) \subset G = (V, E)$, we denote by
 	 $G \setminus G'$ the graph $G[V \setminus V']$, and if $X \subset V$ we denote by
 	  $G \setminus X$
-	 the graph $G[V \setminus X]$.
+	 the graph $G[V \setminus X]$. If $e$ is an edge, $G \setminus e$ is the graph $(V, E \setminus \{e\})$.
 \end{definition}
 
 \begin{definition}
@@ -69,6 +69,12 @@ the elements $\{u, v\}$ of $E(G)$ edges, which we often denote as $uv$.
 	A \emph{cycle} is a connected graph with all vertices of degree $2$. The cycles is said
 	to be of length $\ell$ if it has $\ell$ edges and vertices. The cycle of length $\ell$ is
 	denoted by $C_\ell$. 
+\end{definition}
+
+\begin{definition}
+The \emph{join} of two graphs $G_1 = (V_1, E_1)$ and $G_2 = (V_2, E_2)$, denoted by 
+$G_1 + G_2$, is the graph $(V_1 \cup V_2, E_1 \cup E_2 \cup (V_1 \ltimes V_2))$,
+where $(V_1 \ltimes V_2)$ denotes the set $\{{v_1, v_2} : v_1 \in V_1, v_2 \in V_2\}$. 
 \end{definition}
 
 \begin{definition}
@@ -144,9 +150,13 @@ polygon. See Figure \ref{fig:spheretorusrepresentation} for representations of $
 fundamental polygons. 
 
 \begin{figure}
-\label{fig:spheretorusrepresentation}
-\missingfigure{Sphere and torus representations}
+\centering
+\includegraphics[width=0.8\textwidth]{figures/spheretorus_manifolds.png}
+\begin{tikzpicture}
+\input{figures/spheretorus_fundamentalpolygons.tex}
+\end{tikzpicture}
 \caption{Representation of $S_0$ and $S_1$ as embedded manifolds in $\mathbb{R}^3$ and as fundamental polygons.}
+\label{fig:spheretorusrepresentation}
 \end{figure}
 
 Finally, we define the following topological invariant for surfaces:
@@ -171,8 +181,9 @@ of a continuous injective function $f : S^1 \rightarrow X$, where $S^1$ is the c
 
 \begin{definition}
 A \emph{graph embedded in $X$} is a graph $G$ in which each element
-of $V(G)$ is a point in $X$ together with an associated arc $A_{uv}$ in $X$  each edge $uv \in E(G)$ whose 
-interior is disjoint from any vertices of $G$ and whose endpoints are $u, v$. 
+of $V(G)$ is a point in $X$, together with an associated arc $A_{uv}$ in $X$ for each edge $uv \in E(G)$, such that the 
+interior of each arc $A_{uv}$
+is disjoint from any vertices of $G$ and its endpoints are $u, v$. 
 \end{definition}
 
 The existence of an arc between two points of $X$ determines an equivalency relation which 
@@ -185,17 +196,6 @@ $X \setminus \bigcup_{uv \in E(G)} A_{uv}$.
 The graph $G$ is \emph{$2$-cell-embedded} if every face is homeomorphic to an open disk.
 \end{definition}
 
-\begin{figure}
-\ref{fig:embeddingk7torus}
-\centering
-\missingfigure{embedding of k7 in the torus}
-\caption{Embedding of $K_7$ in the torus, drawn on the fundamental polygon.}
-\end{figure}
-
-As an example of how we will represent a graph embedded in a surface, see the embedding of $K_7$
-in the torus in Figure \ref{fig:embeddingk7torus}. We will usually omit marking the orientations
-and labellings of the edges of the fundamental polygon of the torus when drawing graphs, since
-we will not consider any other surface (other than the plane or sphere). 
 
 \begin{definition}
 A \emph{plane graph} is a graph $G$ embedded in the plane. A \emph{planar graph} is a graph $G$ for which there exists an embedding of $G$ into the plane. 
@@ -259,7 +259,7 @@ A \emph{vertex coloring} of a graph $G$ is a function $\phi : V(G) \rightarrow \
 We think of this as assigning one color to each vertex of the graph, so that adjacent vertices are assigned different colors. This interpretation comes from the origin of the problem in \textit{map coloring}, in which we have to color a political map assigning colors to countries so that neighboring countries are assigned different colors in order to distinguish them. A quantity of interest is the number of colors required for a proper coloring of the graph:
 
 \begin{definition}
-A vertex coloring $\phi$ is said to be a $k$\emph{-coloring} if $|\Im \phi| = k$. A graph $G$ is said to be $k$\emph{-colorable} if it admits a proper $k$-coloring. The \emph{chromatic number} $\chi(G)$ of a graph $G$ is the minimum $k$ such that $G$ is $k$-colorable. 
+A vertex coloring $\phi$ is said to be a $k$\emph{-coloring} if $|\text{Im} \phi| = k$. A graph $G$ is said to be $k$\emph{-colorable} if it admits a proper $k$-coloring. The \emph{chromatic number} $\chi(G)$ of a graph $G$ is the minimum $k$ such that $G$ is $k$-colorable. 
 \end{definition}
 
 In the map coloring context, we study vertex coloring for \emph{planar} graphs. The following remarkable result was the origin of this area of mathematics:
@@ -294,7 +294,7 @@ For every surface $\Sigma \neq N_2$, $K_{H(\Sigma)}$ embeds into $\Sigma$.
 A more recent approach to problems of coloring graphs on surfaces is to ask how the graphs
 that are not colorable with a certain number of colors look like, and see if there is any 
 algorithmic insight to obtain from that.
-For example, is $K_{H(\Sigma)}$ the only graph which is not $H(\Sigma)-1$ colorable?
+For example, is $K_{H(\Sigma)}$ the only graph which is not $(H(\Sigma)-1)$-colorable?
 Any other graph which contains $K_{H(\Sigma)}$ will also chromatic number at least $H(\Sigma)$,
 so in order to properly ask this question we need the concept of \emph{critical graphs}.
 
@@ -314,11 +314,11 @@ For $\Sigma \neq N_2, g(\Sigma) \geq 1$, $K_{H(\Sigma)}$ is the only $H(\Sigma)$
 embeddable in $\Sigma$.
 \end{theorem}
 
-This means that determining $H(\Sigma)$-colorability for graphs embedded in $H(\Sigma)$ is 
+This means that determining $(H(\Sigma)-1)$-colorability for graphs embedded in $H(\Sigma)$ is 
 equivalent to finding an $H(\Sigma)$-clique. 
 
 Is it possible that other simple characterizations exist for graphs on surfaces which are 
-not $k$-colorable for $k < H(\Sigma)$? The answer is affirmative:
+not $k$-colorable for $k < H(\Sigma)-1$? The answer is affirmative:
 
 \begin{theorem}[\cite{thomassenfixedsurface}]
 For any surface $\Sigma$ and $k \geq 6$, there exist only finitely many $k$-critical graphs 
@@ -326,7 +326,7 @@ embeddable in $\Sigma$.
 \end{theorem}
 
 This was proved by Thomassen after previous results by Dirac and Gallai for $k \geq 8$
-and $k \geq 7$, $k \geq 8$. It is the best possible bound for $k$ since Fisk \cite{fisk} proved
+and $k \geq 7$. It is the best possible bound for $k$ since Fisk \cite{fisk} proved
 the existence of infinitely many $5$-critical graphs on the torus.
 
 Let us briefly discuss the algorithmic implications of this result. For a fixed graph $H$, it 
@@ -337,8 +337,8 @@ by testing subgraph isomorphism with each of the $k$-critical graphs in the fini
 
 We can ask what is the complexity of testing $k$-colorability with $k < 6$ for graphs in fixed 
 surfaces.
-$1$-colorability and $2$-colorability can be determined in linear time. $3$-colorability is NP-
-complete even for planar graphs \cite{3colorabilitynpcomplete}. The complexity of $4$-colorability 
+$1$-colorability and $2$-colorability can be determined in linear time. $3$-colorability is 
+NP-complete even for planar graphs \cite{3colorabilitynpcomplete}. The complexity of $4$-colorability 
 in surfaces other than the
 sphere remains an open problem. 
 
@@ -349,7 +349,7 @@ by Vizing \cite{vizinglistcoloring} and Erdős, Rubin and Taylor \cite{erdoschoo
 
 \begin{definition}
 	Let $G$ be a graph. A \emph{list assignment} for $G$ is a function 
-	$L : V \rightarrow 2^{\mathbb{N}}$. An \emph{$L$-coloring} of $G$ for a list assignment
+	$L : V(G) \rightarrow 2^{\mathbb{N}}$. An \emph{$L$-coloring} of $G$ for a list assignment
 	$L$ is a (proper) coloring $\phi$ such that $\phi(v) \in L(v) \, \forall v \in V(G)$. 
 \end{definition}
 
@@ -367,10 +367,10 @@ Note the following:
 $G$ is $k$-list-colorable $\implies$ $G$ $k$-colorable, so $\chi_{\ell}(G) \geq \chi(G)$.
 \end{observation}
 
-The reason for this is that by setting $L(v) = \{1, 2, \ldots k\}$ one retrieves the usual coloring.
+The reason for this is that by setting $L(v) = \{1, 2, \ldots, k\}$ one retrieves the usual coloring.
 
 \begin{figure}
-\label{fig:k33not2lcolorable}
+
 \centering
 \begin{center}
 \begin{tikzpicture}[main/.style = {draw, circle}] 
@@ -393,6 +393,7 @@ The reason for this is that by setting $L(v) = \{1, 2, \ldots k\}$ one retrieves
 \end{tikzpicture}
 \end{center}
 \caption{An example of a bipartite graph which is not $L$-colorable for a $2$-list-assignment $L$.}
+\label{fig:k33not2lcolorable}
 \end{figure}
 
 But there exist graphs with $\chi_{\ell}(G) > \chi(G)$: consider $K_{3, 3}$ with the list
@@ -404,7 +405,7 @@ remaining vertices do not have all colors available but only a subset of them (t
 picked by colored neighbors) and the subsets for each of the vertices can be different. 
 
 We can ask if there is an analogue of the four color theorem for list coloring.
-In their paper from 1993, Erdős, Rubin and Taylor conjectured the following:
+In their paper from 1979, Erdős, Rubin and Taylor conjectured the following:
 
 \begin{conjecture}[\cite{erdoschoosability}]
 \begin{enumerate}
@@ -455,7 +456,7 @@ $u \in V(G_2) \setminus \{v, w\}$, then $G_2$ is $L'$-colorable and a coloring o
 
 Now we have that $G$ has no chords or cutvertices. Let $u$ be the neighbor of $y$ in the outer face other than 
 $x$ and let $v$ be the neighbor of $u$ in the outer face other than $y$ (possibly $v = x$). Let  
-$\{c_1, c_2\} \subseteq L(u) \ L(y)$. Now, let $G'$ be the graph obtained by removing $u$ from $G$ and let $L'$ be 
+$\{c_1, c_2\} \subseteq L(u) \setminus L(y)$. Now, let $G'$ be the graph obtained by removing $u$ from $G$ and let $L'$ be 
 the list assignment for $G'$ in which $\{c_1, c_2\}$ are removed from the lists of the neighbors of $u$ other than 
 $v$. $G'$ satisfies the hypothesis of the theorem: every vertex in the outer face has list size at least $3$, since each of those
 vertices is
@@ -495,7 +496,7 @@ every proper subgraph $H \subset G$.
 
 Notice that here the analogous definition to $k$-critical graphs for the usual coloring is the
 definition of \textbf{minimal} $k$-list-critical (terminology from \cite{onlistcritical}, 
-here it is shown that such graphs are in fact the minimal $k$-list-critical ones with respect
+there it is shown that such graphs are in fact the minimal $k$-list-critical ones with respect
 to subgraph containment), 
 and the actual definition of $k$-list-critical is a little different than what one would 
 immediately expect. The reason for this is that in theoretical arguments
@@ -545,7 +546,7 @@ by construction.
 
 \begin{lemma}
 \label{minimalsubgraphlemma}
-Let $G$ be a graph, $T$ a subgraph, $L$ a list assignment for $G$, and $H \supseteq T$ 
+Let $G$ be a graph, $T$ a subgraph, $L$ a list assignment for $G$, and $H \supset T$ 
 a subgraph of $G$ which is minimal with respect to the following property: 
 for every $L$-coloring $\phi$ of $T$ that extends to $H$, $\phi$ also extends to $G$. 
 Then $H$ is $T$-critical.
@@ -588,7 +589,7 @@ $T \subseteq T' \subset G$, then $G$ is $T'$-critical.
 \end{lemma}
 \begin{proof}
 For any subgraph $H$ with $T \subseteq T' \subseteq H \subset G$, there exists a coloring
-$\phi_{\restriction_T}$ of $T$ that extends to a coloring $\phi$ $H$ but not to $G$ by $T$-criticality. Then, $\phi_{\restriction_T}'$ is a coloring of $T'$ that extends to $H$ but not to $G$.
+$\phi_{\restriction_T}$ of $T$ that extends to a coloring $\phi$ of $H$ but not to $G$ by $T$-criticality. Then, $\phi_{\restriction_{T'}}$ is a coloring of $T'$ that extends to $H$ but not to $G$.
 \end{proof}
 
 \begin{lemma}[Duplication Lemma]
@@ -635,11 +636,14 @@ use the following terminology:
 And when drawing graphs whose vertices have prescribed list sizes by such an $f$, we
 will use the pictorial notation of Figure \ref{fig:listsizenotation} to denote the list sizes
 of the vertices.
-\begin{figure}
-\label{fig:listsizenotation}
+\begin{figure}[h]
+
 \centering
-\missingfigure{figure explaining pictorial notation for list sizes}
-\caption{Shapes used for the vertices of the graphs according to their list sizes}
+\begin{tikzpicture}
+\input{figures/listsizes.tex}
+\end{tikzpicture}
+\caption{Shapes used for the vertices of the graphs according to their list sizes.}
+\label{fig:listsizenotation}
 \end{figure}
 
 Finally, we can ask if there are results for list coloring of graphs on surfaces as there were
@@ -647,7 +651,7 @@ for the usual coloring. The argument of Heawood also works for list coloring, so
 surface $\Sigma$ the graphs embedded in $\Sigma$ are all $H(\Sigma)$-list-colorable.
 
 We have the analogous result that $K_{H(\Sigma)}$ is the only obstruction for
-$H(\Sigma)-1$-list-colorability:
+$(H(\Sigma)-1)$-list-colorability:
 
 \begin{theorem}[\cite{kralclique}]
 For a surface $\Sigma$ with $g(\Sigma) \geq 1$, $\Sigma \neq N_2$, $K_{H(\Sigma)}$ is the only

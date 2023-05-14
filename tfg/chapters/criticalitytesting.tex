@@ -3,13 +3,14 @@
 In this chapter we describe algorithms used to determine list-criticality of graphs. Recall that we are 
 not storing the explicit list assignment $L$ for our graphs, so what we want to check is whether there 
 exists a $L$ so that the graph is critical with respect to that $L$. However, even if $L$ was fixed, 
-it would still be a computationally hard problem to determine criticality. What we will do instead is check 
+to determine criticality would still be a computationally hard problem. What we will do instead is check 
 for weaker properties, and therefore admit some false positives, that is, some graphs we identify as list-critical 
 for which actually no suitable $L$ exist. Our hope is that the tests will be exhaustive enough so that finiteness 
-results such as \ref{linearboundcycletheorem} still hold for the weaker properties we are testing, and our algorithms 
+results such as Theorem \ref{linearboundcycletheorem} still hold for the weaker properties we are testing, and our algorithms 
 terminate. We will see that indeed, the algorithms described here work very well in practice at discarding non-critical graphs. 
 
-\todo{explain that we work with graphs with prescribed list sizes}
+We do not have a fixed list assignment for our graph, but we do have prescribed list sizes $f$ for each
+vertex. So in this section we will see how to test for $f$-criticality. 
 
 \section{Degree Properties}
 
@@ -61,11 +62,11 @@ Then $H$ is not $L'$-colorable: since otherwise, the $L$-coloring $\phi$ of $G \
 \begin{tikzpicture}[scale=0.8]
 \input{figures/reducible1.tex}
 \end{tikzpicture}
-\caption{Illustration of \ref{reducibleobs}: from a subgraph, we get a graph with prescribed list sizes.}
+\caption{Illustration of \ref{reduciblecolorableprop}: from a subgraph, we get a graph with prescribed list sizes.}
 \end{figure}
 
-We can consider \ref{degreeobs} to be a particular case of \ref{reduciblecolorableprop}. 
-In \ref{reduciblecolorablefigure} we see a couple of examples of small graphs that are always $f$-colorable,
+We can consider Observation \ref{degreeobs} to be a particular case of Proposition \ref{reduciblecolorableprop}. 
+In Figure \ref{fig:colorablereducible} we see a couple of examples of small graphs that are always $f$-colorable,
 so one possible test we can add to our criticality testing procedure is to search for occurrences of those graphs as induced subgraphs,
 and if one is found then conclude that the graph is not critical.
 
@@ -75,16 +76,20 @@ and if one is found then conclude that the graph is not critical.
 
 \centering
 \begin{subfigure}{0.4\textwidth}
+
 \begin{tikzpicture}
 \input{figures/reducible1.tex}
-\label{fig:reducible1}
+
 \end{tikzpicture}
+
 \end{subfigure}
 \begin{subfigure}{0.4\textwidth}
+
 \begin{tikzpicture}
 \input{figures/reducible2.tex}
+
 \end{tikzpicture}
-\label{fig:reducible2}
+
 \end{subfigure}
 \caption{Some colorable reducible configurations.}
 \label{fig:colorablereducible}
@@ -121,7 +126,7 @@ a $L$-coloring of $G$, contradiction.
 \end{figure}
 
 \begin{observation}
-The graph depicted in \ref{fig:noncolorablereducible} with prescribed list sizes $f$ is $f$-reducible.
+The graph depicted in Figure \ref{fig:noncolorablereducible} with prescribed list sizes $f$ is $f$-reducible.
 \end{observation}
 
 \begin{proof}
@@ -138,7 +143,8 @@ $L$-colorable.
 
 While checking for the small reducible configurations we found in the previous section is helpful, it is not good enough, because
 there are larger graphs which are always $f$-colorable but do not contain any of the reducible configurations. One could augment the
-list of configurations to check by manually those graphs when they are encountered, but this is ineffective and also inefficient because
+list of configurations to check by manually inspecting
+those graphs when they are encountered, but this is ineffective and also inefficient because
 induced subgraph isomorphism testing starts being very expensive with larger subgraphs. 
 We would, then, like to have a systematic method to find when graphs with prescribed list sizes $f$ are $f$-list-colorable. Alon and Tarsi
 provided a useful criterion:
@@ -149,8 +155,6 @@ Let $G$ be a directed graph on vertices $v_1, \ldots, v_n$, and let $L$ be an as
 $|L(v_i)| \geq d^+(v_i)+1$ for $i = 1, \ldots, n$. If $G$ has a different number of even and odd spanning eulerian subgraphs,
 then $G$ has an $L$-coloring.
 \end{theorem}
-
-\todo{Define directed graphs and d+ either here or in the introduction}.
 
 Here \emph{even} and \emph{odd} eulerian subgraphs refer to the number of edges. We will explain the proof of this theorem here,
 since it will give us insight into how to implement it in a more efficient way than enumerating all eulerian subgraphs. For the
@@ -180,7 +184,7 @@ $G$ if and only if $p_G(\phi(v_1), \ldots, \phi(v_n)) \neq 0$.
 \end{observation}
 
 \begin{proposition}
-\ref{polynomialatproposition}
+\label{polynomialatproposition}
 Let $G$ be as in the hypothesis of the Alon-Tarsi theorem.
 If the coefficient of $p_G$ at $\prod_{i=1}^n x_i^{d^+(v_i)}$ is non-zero, then $G$ has an $L$-coloring.
 \end{proposition}
@@ -215,22 +219,24 @@ the edges in $G$ which have opposite orientation as edges in $D$. Since the inde
 the same, this subgraph is eulerian, and this map is clearly invertible and hence a bijection. 
 \end{proof}
 
-This concludes the proof of \ref{alontarsitheorem}.
+This concludes the proof of Theorem \ref{alontarsitheorem}.
 
 \subsection{Implementation of the Alon-Tarsi Method}
 
-Here we will explain how to use \ref{alontarsitheorem} in practice to check the $f$-colorability of a graph.  The first thing we have to note
-is that \ref{alontarsitheorem} is stated with respect to a directed graph, but this is immaterial to our needs. We only have the prescribed
+Here we will explain how to use Theorem \ref{alontarsitheorem} in practice to check the $f$-colorability of a graph.  The first thing we have to note
+is that Theorem \ref{alontarsitheorem} is stated with respect to a directed graph, but this is immaterial to our needs. We only have the prescribed
 list sizes $f$, and for each such prescription there can be different orientations of that satisfy the $f(v) \geq d^+(v) + 1$ condition, 
-and we could apply the theorem to each of those. So instead of using the combinatorial characterization of \ref{alontarsitheorem}, what we will
+and we could apply the theorem to each of those. So instead of using the combinatorial characterization of the theorem, what we will
 do is directly compute the polynomial $p_G$ with respect to an arbitrary orientation of the graph, and if any monomial $\prod x_i^{e_i}$ with 
 $e_i < f(i)$ has a nonzero coefficient we will conclude $f$-colorability. 
 
 It will be convenient to think of the computation of the polynomial $p_G$ using the expression \eqref{eq:graphpolynomialsum}. This way, we can compute the 
-coefficients by enumerating all orientations of the graph and summing the signs.  The implementation is as follows:
+coefficients by enumerating all orientations of the graph and summing the signs.  See
+Algorithm \ref{naivealontarsi} for the implementation.
 
 \begin{algorithm}
 \caption{Naive Alon-Tarsi.}
+\label{naivealontarsi}
 \SetAlgoLined
 \SetKwComment{Comment}{/* }{ */}
 \SetKwProg{Fn}{function}{}{end}
@@ -279,7 +285,7 @@ corresponding terms of the polynomial
 \emph{$f$-bounded coefficients}).
 Therefore we can store only coefficients of the polynomial corresponding to $f$-bounded orientations.
 We would also like to generate only $f$-bounded orientations, so that we do not have to iterate over all 
-$2^|E(G)|$ orientations of the graphs. 
+$2^{|E(G)|}$ orientations of the graphs. 
 
 If we generate orientations by a orienting each edge one by
 one in a recursive backtracking fashion, we want to know when to cut a branch that is not going to lead
@@ -321,9 +327,9 @@ The important ideas in making this be actually faster than the enumerating orien
 	
 	In a similar fashion to the previous discussion in which we were enumerating $f$-bounded orientations, given 
 	the intermediate polynomial after multiplying some of the terms we can check whether each monomial will have
-	some contribution to a $f$-bounded coefficient in the final result - i.e., whether the partial orientations
+	some contribution to a $f$-bounded coefficient in the final result -- i.e., whether the partial orientations
 	corresponding to the indegree sequence corresponding to the monomial can be extended to a $f$-bounded orientations
-	- by solving a bipartite matching problem. But, just as before, we find that the overhead of performing this
+	-- by solving a bipartite matching problem. But, just as before, we find that the overhead of performing this
 	extendability test is not worth the additional pruning and that it is more efficient in practice to just discard
 	non-$f$-bounded monomials. 
 	
@@ -334,7 +340,7 @@ The important ideas in making this be actually faster than the enumerating orien
 	many zeroes in intermediate results and this can contribute to an important reduction in time and memory usage.
 	
 	\item As before, the order in which we process edges matters. We want to have many truncations and 
-	zero coefficents early, so that we store data for our partial results. This can be done heuristically 
+	zero coefficents early, so that we store fewer data for our partial results. This can be done heuristically 
 	by prioritizing edges with small values of $f$ at their endpoints. 
 
 \end{itemize}
@@ -395,8 +401,10 @@ of the Alon-Tarsi method, see \cite{dvorakefficientalontarsi}.
 
 
 Remember that the Alon-Tarsi method does not always detect colorable graphs successfully. 
-For example, the graph in \ref{fig:reducible2} is not recognized by Alon-Tarsi as a colorable graph. \todo{fix reference to reducible configuration figure}
+For example, the second graph in Figure \ref{fig:colorablereducible} is not recognized by Alon-Tarsi as a colorable graph. 
 In addition, for bigger graphs Alon-Tarsi is significantly slower than the search for fixed small induced subgraphs.
+And remember that we also have non-colorable reducible configurations, for
+which Alon-Tarsi does not apply. 
 So it is still advisable to first check for the small 
 reducible configurations we found above before running Alon-Tarsi. 
 
@@ -406,15 +414,15 @@ We know that if our graph has a reducible configuration as an induced subgraph, 
 be $f$-critical. And we can determine whether a induced subgraph is an always-colorable reducible 
 configuration using the Alon-Tarsi method. So one possible idea would be to apply Alon-Tarsi on 
 every induced subgraph to check if our graph has any reducible configuration. We can easily see 
-that this is not very efficient - we run the already slow Alon-Tarsi method on an exponential 
+that this is not very efficient -- we run the already slow Alon-Tarsi method on an exponential 
 number of graphs. On the other extreme, we can run the Alon-Tarsi method only on the entire 
-graph, falsifying $f$-criticality only if it is $f$-colorable. This is not good, either - we can 
+graph, falsifying $f$-criticality only if it is $f$-colorable. This is not good, either -- we can 
 easily imagine graphs which are not $f$-colorable but are not $f$-critical either, 
 because they contain some reducible configuration as an induced subgraph. 
 
 
 \begin{figure}
-\label{fig:recursivereducibility}
+
 \centering
 \begin{subfigure}{0.4\textwidth}
 \begin{tikzpicture}[scale=0.6]
@@ -433,12 +441,13 @@ because they contain some reducible configuration as an induced subgraph.
 \end{tikzpicture}
 \end{subfigure}
 \caption{An example of a non-$f$-colorable graph with a reducible configuration obtained from a cycle-canvas.}
+\label{fig:recursivereducibility}
 \end{figure}
 
-In fact, as \ref{fig:recursivereducibility} shows, this scenario can happen very easily when, 
+In fact, as Figure \ref{fig:recursivereducibility} shows, this scenario can happen very easily when, 
 for example, generating critical cycle-canvases, because it suffices to have a triangle with list 
 sizes $2$ to make the graph non-$f$-colorable. The specific reducible configuration that appears 
-in \ref{fig:recursivereducibility} is one of the small ones that we can check specifically before 
+in Figure \ref{fig:recursivereducibility} is one of the small ones that we can check specifically before 
 running Alon-Tarsi, but the more general scenario of having a reducible configuration plus a 
 non-colorable subgraph does also often happen with larger reducible configurations and it is 
 important that we deal with it automatically, using Alon-Tarsi to detect the reducible 
@@ -447,14 +456,14 @@ configuration.
 What we do is the following: if Alon-Tarsi returns a negative answer to being applied to the 
 entire graph, we try to find a \emph{minimal} non-colorable subgraph which is causing this 
 negative answer (such 
-as the triangle in \ref{fig:recursivereducibility}). We do that by arbitrarily removing vertices
+as the triangle in Figure \ref{fig:recursivereducibility}). We do that by arbitrarily removing vertices
 and checking whether the graph is still non-$f$-colorable, and doing so until we have a graph
 which becomes $f$-colorable when any vertex is removed. Then we remove subgraph $H$ (and reduce
 the list sizes of vertices neighboring $H$ correspondingly, like when considering reducible 
 configurations) and recursively apply the test to the remaining graph. We see that this works for
-the graph in \ref{fig:recursivereducibility}: first, the triangle is removed and then the 
+the graph in Figure \ref{fig:recursivereducibility}: first, the triangle is removed and then the 
 reducible configuration is identified. This recursive approach also handles more general cases
-when there are multiple non-colorable subgraphs obstructing the colorability of the entire graphs.
+when there are multiple non-colorable subgraphs obstructing the colorability of the entire graph.
 Overall, the results of using this heuristic are very satisfactory. 
 
 \begin{algorithm}[H]

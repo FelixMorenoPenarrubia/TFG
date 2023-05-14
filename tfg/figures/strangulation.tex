@@ -1,0 +1,58 @@
+\draw[densely dotted] (-2, 0) to [out=90,in=90,looseness=1.5] (6, 0);
+\draw[densely dotted] (-2, 0) to [out=270,in=270,looseness=1.5] (6, 0);
+
+\VertexI[x=-1 ,y=1  ]{A1}
+\VertexI[x=-1 ,y=-1 ]{A2}
+\VertexI[x=0  ,y=0  ]{A3}
+\VertexV[x=1  ,y=0  ]{P1}
+\VertexV[x=2  ,y=0  ]{P2}
+\VertexV[x=3  ,y=0  ]{P3}
+\VertexI[x=5  ,y=1  ]{B1}
+\VertexI[x=5  ,y=-1 ]{B2}
+\VertexI[x=4  ,y=0  ]{B3}
+
+\Edge(A1)(A2)
+\Edge(A1)(A3)
+\Edge(A2)(A3)
+\Edge(A3)(P1)
+\Edge(P1)(P2)
+\Edge(P2)(P3)
+\Edge(P3)(B3)
+\Edge(B3)(B1)
+\Edge(B3)(B2)
+\Edge(B1)(B2)
+
+\node[scale=2.0] at (7.5, 0) {$\implies$};
+
+\draw[densely dotted] (9, 0) to [out=90,in=90,looseness=1.5] (17, 0);
+\draw[densely dotted] (9, 0) to [out=270,in=270,looseness=1.5] (17, 0);
+
+\VertexI[x=10  ,y=1   ]{C1}
+\VertexI[x=10  ,y=-1  ]{C2}
+\VertexI[x=11  ,y=0.5]{C3}
+\VertexI[x=11  ,y=-0.5 ]{C4}
+\VertexI[x=12  ,y=0.5 ]{R1}
+\VertexI[x=13 ,y=0.5 ]{R2}
+\VertexI[x=14 ,y=0.5 ]{R3}
+\VertexI[x=12  ,y=-0.5]{S1}
+\VertexI[x=13 ,y=-0.5]{S2}
+\VertexI[x=14 ,y=-0.5]{S3}
+\VertexI[x=16 ,y=1   ]{D1}
+\VertexI[x=16 ,y=-1  ]{D2}
+\VertexI[x=15 ,y=0.5 ]{D3}
+\VertexI[x=15 ,y=-0.5]{D4}
+
+\Edge(C1)(C2)
+\Edge(C1)(C3)
+\Edge(C2)(C4)
+\Edge(C3)(R1)
+\Edge(R1)(R2)
+\Edge(R2)(R3)
+\Edge(R3)(D3)
+\Edge(C4)(S1)
+\Edge(S1)(S2)
+\Edge(S2)(S3)
+\Edge(S3)(D4)
+\Edge(D3)(D1)
+\Edge(D4)(D2)
+\Edge(D1)(D2)

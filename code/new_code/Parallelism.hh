@@ -16,7 +16,7 @@
 
 struct Parallelism {
 
-    static const int MAX_THREADS = 16;
+    static const int MAX_THREADS = 10;
 
     static int curr_id;
     static int active_cnt;

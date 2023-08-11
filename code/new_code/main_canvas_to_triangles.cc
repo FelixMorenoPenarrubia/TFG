@@ -15,8 +15,8 @@ using std::vector;
 using std::string;
 
 int main() {
-   // int T;
-   // cin >> T;
+    int T;
+    cin >> T;
     //int T = 100'000'000;
     //map<TwoTriangleGraphCode, TwoTriangleGraph> m;
     std::set<TwoTriangleGraphCode> s;
@@ -27,12 +27,13 @@ int main() {
 
     auto begin_time = std::chrono::system_clock::now();*/
 
-    string str;
-	while (cin >> str) {
+    //string str;
+	while (T--) {
 
         //auto start = std::chrono::system_clock::now();
 
-        
+        string str;
+        cin >> str;
         Canvas c = Canvas(CanvasCode(str));
        
         
@@ -44,7 +45,7 @@ int main() {
 
             if (s.find(g.compute_code()) == s.end()) {
                 if (g.test_criticality()) {
-                    g.write(cerr);
+                   // g.write(cerr);
                     s.insert(g.compute_code());
                 }
             }

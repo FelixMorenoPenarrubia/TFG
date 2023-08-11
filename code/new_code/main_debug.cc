@@ -477,6 +477,28 @@ void largest_left_cut() {
 	PrecoloredPathGraph::read(cin).largest_left_endpoint_cut().write(cout);
 }
 
+void fuse_pp_and_canvas_plan2() {
+	PrecoloredPathGraph pp = PrecoloredPathGraph::read(cin);
+	Canvas c = Canvas::read(cin);
+	auto v = pp.fuse_canvas(c);
+	for (auto g : v) {
+		g.write(cout);
+	}
+}
+
+void two_triangle_identification() {
+	TwoTriangleGraph g = TwoTriangleGraph::read(cin);
+	for (auto gt : g.identify_triangles()) {
+		gt.write(cout);
+	}
+}
+
+void set_outer_face() {
+	auto g = TwoTriangleGraph::read(cin);
+	g.set_first_triangle_as_outer_face();
+	g.write(cout);
+}
+
 
 int main() {
 	cerr << "Select program: " << endl;
@@ -519,6 +541,9 @@ int main() {
 	cerr << "37. Restricted PrecoloredPathGraph search" << endl;
 	cerr << "38. PrecoloredPathGraph has large fans or bellows" << endl;
 	cerr << "39. PrecoloredPathGraph largest left cut" << endl;
+	cerr << "40. Fuse PrecoloredPathGraph and Canvas plan2" << endl;
+	cerr << "41. Identify triangles from TwoTriangleGraph" << endl;
+	cerr << "42. Set first triangle as outer face" << endl;
 	
 	int c;
 	cin >> c;
@@ -638,5 +663,14 @@ int main() {
 	}
 	if (c == 39) {
 		largest_left_cut();
+	}
+	if (c == 40) {
+		fuse_pp_and_canvas_plan2();
+	}
+	if (c == 41) {
+		two_triangle_identification();
+	}
+	if (c == 42) {
+		set_outer_face();
 	}
 }

@@ -12,16 +12,13 @@ using std::vector;
 using std::string;
 
 int main() {
-    
-	std::set<string> v;
 
     string s;
+    int n = 0;
+    int cnt = 0;
     while (cin >> s) {
-        v.insert(s);
+        n = std::max(n, Canvas(CanvasCode(s)).n);
+        cnt++;
     }
-
-	cout << v.size() << endl;
-	for (string s : v) {
-		cout << s << endl;
-	}
+    cout << cnt << endl << n << endl;
 }

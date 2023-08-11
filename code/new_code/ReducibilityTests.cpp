@@ -212,8 +212,9 @@ bool two_neighbors_heuristic(const ListGraph& g) {
     if (g.n == 1) {
         return g.list_sizes[0] > 0;
     }
-    vector<ListGraph> vcc = g.connected_components();
-    if (vcc.size() > 1) {
+    
+    if (!g.connected()) {
+        vector<ListGraph> vcc = g.connected_components();
         for (ListGraph gi : vcc) {
             if (!two_neighbors_heuristic(gi)) return false;
         }
@@ -274,8 +275,9 @@ bool hill_climbing_two_neighbors_test(const ListGraph& g) {
     for (int u=0; u < g.n; ++u) {
         if (g.list_sizes[u] <= 0) return false;
     }
-    vector<ListGraph> vcc = g.connected_components();
-    if (vcc.size() > 1) {
+    
+    if (!g.connected()) {
+        vector<ListGraph> vcc = g.connected_components();
         for (ListGraph gi : vcc) {
             if (!two_neighbors_heuristic(gi)) return false;
         }
@@ -290,8 +292,9 @@ bool hill_climbing_two_neighbors_test(const ListGraph& g) {
         if (g.n == 1) {
             return g.list_sizes[0] > 0 ? 1e9 : -1e9;
         }
-        vector<ListGraph> vcc = g.connected_components();
-        if (vcc.size() > 1) {
+        
+        if (!g.connected()) {
+            vector<ListGraph> vcc = g.connected_components();
             int cs = 1e9;
             for (ListGraph gi : vcc) {
                 cs = std::min(cs, score_fun(gi));
@@ -401,9 +404,10 @@ bool batch_reducible_test(const ListGraph& g) {
 bool batch_colorable_test(const ListGraph& g) {
     vector<std::function<bool(const ListGraph&)>> tests = {color_and_collapse_test, two_neighbors_heuristic_test, hill_climbing_two_neighbors_test, postle_test, alon_tarsi_test};
 
-    vector<ListGraph> vcc = g.connected_components();
+    
 
-    if (vcc.size() > 1) {
+    if (!g.connected()) {
+        vector<ListGraph> vcc = g.connected_components();
         for (ListGraph gi : vcc) {
             if (!batch_colorable_test(gi)) return false;
         }
@@ -451,7 +455,8 @@ bool recursive_colorability_test(const ListGraph& g) {
 
     vector<ListGraph> vcc = g.connected_components();
 
-    if (vcc.size() > 1) {
+    if (!g.connected()) {
+        vector<ListGraph> vcc = g.connected_components();
         for (ListGraph gi : vcc) {
             if (recursive_colorability_test(gi)) return true;
         }
@@ -498,9 +503,10 @@ bool batch_test(const ListGraph& g) {
     if (g.nocolors()) return false; //TODO: necessary because Alon-Tarsi does not work correctly otherwise, fix?
     
 
-    vector<ListGraph> vcc = g.connected_components();
+    
 
-    if (vcc.size() > 1) {
+    if (!g.connected()) {
+        vector<ListGraph> vcc = g.connected_components();
         for (ListGraph gi : vcc) {
             if (batch_test(gi)) return true;
         }

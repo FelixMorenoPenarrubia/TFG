@@ -2,6 +2,7 @@
 #define PRECOLOREDPATHGRAPH_HH_
 
 #include "PrecoloredGraph.hh"
+#include "Canvas.hh"
 
 #include<iostream>
 #include<vector>
@@ -107,6 +108,9 @@ struct PrecoloredPathGraph : public PrecoloredGraph {
     PrecoloredPathGraph largest_right_endpoint_cut() const;
 
     std::pair<PrecoloredPathGraph, PrecoloredPathGraph> largest_cuts(int u) const;
+
+    //Returns the results of fusing a Canvas of size 2l at all the possible positions
+    std::vector<PrecoloredPathGraph> fuse_canvas(const Canvas& c) const;
 };
 
 #endif

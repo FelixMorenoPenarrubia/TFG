@@ -41,6 +41,8 @@ struct Canvas : public PrecoloredGraph {
 
     int l;
 
+    CanvasCode memoized_code;
+
 
     // FUNCTIONS
 
@@ -48,7 +50,7 @@ struct Canvas : public PrecoloredGraph {
 
     Canvas();
 
-    Canvas(std::vector<std::vector<int>> _al, int _l);
+    Canvas(const std::vector<std::vector<int>>& _al, int _l);
 
     Canvas(const CanvasCode& code);
 

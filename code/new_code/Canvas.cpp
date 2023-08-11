@@ -74,7 +74,7 @@ Canvas::Canvas() {
     l = 0;
 }
 
-Canvas::Canvas(vector<vector<int>> _al, int _l) {
+Canvas::Canvas(const vector<vector<int>>& _al, int _l) {
     l = _l;
     n = _al.size();
     m = 0;
@@ -286,6 +286,8 @@ Canvas::Canvas(const CanvasCode& code) {
 
     init_inherited_values();
 
+    memoized_code = code;
+
 }
 
 void Canvas::dfs_code(int u, int idx, int& c, vector<int>& an, CanvasCode& code) const {
@@ -314,11 +316,14 @@ CanvasCode Canvas::compute_code_edge(int u, int v) const {
 
 //Note: may give different codes for isomorphic graphs if the outer orientation is reversed 
 CanvasCode Canvas::compute_code() const {
-    CanvasCode code = std::min(compute_code_edge(0, 1), compute_code_edge(1, 0));
+    if (memoized_code.size() != 0) return memoized_code;
+    //CanvasCode code = std::min(compute_code_edge(0, 1), compute_code_edge(1, 0));
+    CanvasCode code = compute_code_edge(0, 1);
     for (int u = 1; u < l; ++u) {
-        code = std::min(code, std::min(compute_code_edge(u, (u+1)%l), compute_code_edge((u+1)%l, u)));
+        //code = std::min(code, std::min(compute_code_edge(u, (u+1)%l), compute_code_edge((u+1)%l, u)));
+        code = std::min(code, compute_code_edge(u, (u+1)%l));
     }
-    return code;
+    return  code;
 }
 
 bool Canvas::test_criticality() const {

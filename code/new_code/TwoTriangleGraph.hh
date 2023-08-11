@@ -102,6 +102,13 @@ struct TwoTriangleGraph : public PrecoloredGraph {
 
     bool has_separating_triangle() const;
 
+    void set_first_triangle_as_outer_face();
+
+    void set_second_triangle_as_inner_face();
+
+    //Generates toroidal 5-list graphs by identifying the two triangles in all possible ways
+    std::vector<ListGraph> identify_triangles() const;
+
 };
 
 #endif

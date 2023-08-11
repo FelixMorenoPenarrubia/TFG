@@ -40,7 +40,13 @@ string PrecoloredPathGraphCode::to_string() const { //can be made better
         }
         else if (code[i] > 0) { 
             s.push_back('R');
-            s.push_back('a'+code[i]-1);
+            int cod = code[i];
+            while(cod > 26) {
+                s.push_back('X');
+                cod -= 26;
+            }
+            s.push_back('a'+cod-1);
+            
         }
         else {
             s.push_back('B');
@@ -50,6 +56,7 @@ string PrecoloredPathGraphCode::to_string() const { //can be made better
 }
 
 PrecoloredPathGraphCode::PrecoloredPathGraphCode(const string& s) {
+    int bonus = 0;
     for (int i=0; i < (int)s.length(); ++i) {
         if (s[i] == 'F') {
             //assuming 0 <= ls <= 9
@@ -60,11 +67,15 @@ PrecoloredPathGraphCode::PrecoloredPathGraphCode(const string& s) {
         else if (s[i] == 'B') {
             code.push_back(0);
         }
+        else if (s[i] == 'X') {
+            bonus += 26;
+        }
         else if ('0' <= s[i] && s[i] <= '9') {
              code.push_back((s[i]-'0')+F_OFFSET);
         }
         else {
-            code.push_back(s[i]-'a'+1);
+            code.push_back(s[i]-'a'+1+bonus);
+            bonus = 0;
         }
     }
 }
@@ -852,4 +863,63 @@ std::pair<PrecoloredPathGraph, PrecoloredPathGraph> PrecoloredPathGraph::largest
     
 }
 
+vector<PrecoloredPathGraph> PrecoloredPathGraph::fuse_canvas(const Canvas& c) const {
+    debug_assert(c.l == 2*l);
+    vector<PrecoloredPathGraph> ans;
+    for (int st=0; st < l; ++st) {
+        vector<int> morph_c(c.n);
+        vector<int> morph_p(n);
+        for (int i=0; i < c.l; ++i) {
+            morph_c[(st+i)%c.l] = i;
+        }
+        for (int i=c.l; i < c.n; ++i) {
+            morph_c[i] = i;
+        }
+        
+        for (int i=0; i < l; ++i) {
+            morph_p[i] = 2*l-1-i;
+        }
+        for (int i=l; i < n; ++i) {
+            morph_p[i] = c.n+i-l;
+        }
+
+        vector<vector<int> > nal(c.n+n-l);
+        vector<int> nls(c.n+n-l);
+
+        for (int i=0; i < c.n; ++i) {
+            nls[morph_c[i]] = c.list_sizes[i];
+        }
+        for (int i=0; i < n; ++i) {
+            nls[morph_p[i]] = list_sizes[i];
+        }
+        for (int i=1; i+1 < l; ++i) {
+            nls[morph_p[i]] = 5;
+        }
+        nls[morph_p[0]] = 3;
+        nls[morph_p[l-1]] = 3;
+
+        {
+            for (int v : al[l-1]) {
+                if (v == l-2) continue;
+                nal[morph_p[l-1]].push_back(morph_p[v]);
+            }
+        }
+        for (int u=0; u < c.n; ++u) {
+            for (int v : c.al[u]) {
+                nal[morph_c[u]].push_back(morph_c[v]);
+            }
+        }
+        for (int u=0; u < n; ++u) {
+            if (u == l-1) continue;
+            for (int v : al[u]) {
+                if (u < l && v < l && (u == v+1 || v == u+1 || u == l-1)) continue;
+                nal[morph_p[u]].push_back(morph_p[v]);
+            }
+        }
+
+        ans.emplace_back(nal, l, nls);
+    
+    }
+    return ans;
+}
 

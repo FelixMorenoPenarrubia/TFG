@@ -1,5 +1,6 @@
 #include "TwoTriangleGraph.hh"
 #include "ReducibilityTests.hh"
+#include "debug_utility.hh"
 
 #include<iostream>
 #include<algorithm>
@@ -430,7 +431,7 @@ bool TwoTriangleGraph::test_criticality() const {
 
 vector<TwoTriangleGraph> TwoTriangleGraph::fuse_triangles(TwoTriangleGraph g1, TwoTriangleGraph g2) {
     vector<TwoTriangleGraph> ans;
-    for(int t_idx_1=0; t_idx_1 <= 1; ++t_idx_1) {
+    //for(int t_idx_1=0; t_idx_1 <= 1; ++t_idx_1) {
         for (int t_idx_2=0; t_idx_2 <= 1; ++t_idx_2) {
            // for (int t_ord_1=0; t_ord_1 < 3; ++t_ord_1) {
                 for (int t_ord_2=0; t_ord_2 < 3; ++t_ord_2) {
@@ -438,14 +439,14 @@ vector<TwoTriangleGraph> TwoTriangleGraph::fuse_triangles(TwoTriangleGraph g1, T
                     //g2.set_outer_face(g2.triangles[t_idx_2]);
 
                     ans.push_back(fuse_triangles_fixed(g1, g2));
-                    ans.push_back(fuse_triangles_fixed(g2, g1));
+                    //ans.push_back(fuse_triangles_fixed(g2, g1));
 
                     g2.triangles[t_idx_2] = {g2.triangles[t_idx_2][1], g2.triangles[t_idx_2][2], g2.triangles[t_idx_2][0]};
                 }
             //    g1.triangles[t_idx_1] = {g1.triangles[t_idx_1][1], g1.triangles[t_idx_1][2], g1.triangles[t_idx_1][0]};
             //}
         }
-    }
+   // }
     return ans;
 }
 
@@ -465,13 +466,9 @@ TwoTriangleGraph TwoTriangleGraph::fuse_triangles_fixed(const TwoTriangleGraph& 
     }
     for (int i=0; i < 3; ++i) {
         morph2[g2.triangles[0][i]] = morph1[g1.triangles[1][i]];
+        nal[morph1[g1.triangles[1][i]]].push_back(morph1[g1.al[g1.triangles[1][i]][0]]);
     }
     
-    for (int u=0; u < g1.n; ++u) {
-        for (int v : g1.al[u]) {
-            nal[morph1[u]].push_back(morph1[v]);
-        }
-    }
 
     for (int u=0; u < g2.n; ++u) {
         for (int v : g2.al[u]) {
@@ -480,6 +477,16 @@ TwoTriangleGraph TwoTriangleGraph::fuse_triangles_fixed(const TwoTriangleGraph& 
             }
         }
     }
+    
+    for (int u=0; u < g1.n; ++u) {
+        for (int i=0; i < (int)g1.al[u].size(); ++i) {
+            if (i == 0 && (u == g1.triangles[1][0] || u == g1.triangles[1][1] || u == g1.triangles[1][2])) continue; 
+            int v = g1.al[u][i];
+            nal[morph1[u]].push_back(morph1[v]);
+        }
+    }
+
+    
 
     vector<vector<int>> ntri = {{morph1[g1.triangles[0][0]], morph1[g1.triangles[0][1]], morph1[g1.triangles[0][2]]},
     {morph2[g2.triangles[1][0]], morph2[g2.triangles[1][1]], morph2[g2.triangles[1][2]]}};
@@ -518,4 +525,62 @@ vector<TwoTriangleGraph> TwoTriangleGraph::add_tetrahedral_band(const TwoTriangl
         }
     }
     return ans;
+}
+
+vector<ListGraph> TwoTriangleGraph::identify_triangles() const {
+    vector<ListGraph> ans;
+    vector<int> p(3);
+    p[0] = 0;
+    p[1] = 1;
+    p[2] = 2;
+    for (int j=0; j < 3; ++j) {
+        ans.emplace_back(identify_vertices(triangles[0], {triangles[1][p[0]], triangles[1][p[1]], triangles[1][p[2]]}).al, vector<int>(n-3, 5));
+        p[0]++;
+        p[1]++;
+        p[2]++;
+        p[1]%=3;
+        p[2]%=3;
+    } 
+
+    return ans;
+}
+
+void TwoTriangleGraph::set_first_triangle_as_outer_face()  {
+    if ((ral[triangles[0][0]][triangles[0][1]]+1)%((int)al[triangles[0][0]].size()) != ral[triangles[0][0]][triangles[0][2]]) {
+        for (int i=0; i < n; ++i) {
+            reverse(al[i].begin(), al[i].end());
+        }
+        generate_ral_and_m();
+    }
+    for (int i=0; i < 3; ++i) {
+        debug_assert((ral[triangles[0][i]][triangles[0][(i+1)%3]]+1)%((int)al[triangles[0][i]].size()) == ral[triangles[0][i]][triangles[0][(i+2)%3]]);
+        int s = (int)al[triangles[0][i]].size();
+        int u = triangles[0][i];
+        int stj = ral[u][triangles[0][(i+2)%3]];
+        vector<int> nal;
+        nal.push_back(triangles[0][(i+2)%3]);
+        for (int j=1; j+1 < s; ++j) {
+            nal.push_back(al[u][(stj+j)%s]);
+        }
+        nal.push_back(triangles[0][(i+1)%3]);
+        al[u] = nal;
+
+    }
+    for (int i=0; i < n; ++i) {
+            reverse(al[i].begin(), al[i].end());
+        
+    }
+    m=0;
+    generate_ral_and_m();
+
+
+
+
+}
+
+void TwoTriangleGraph::set_second_triangle_as_inner_face() {
+    if ((ral[triangles[1][0]][triangles[1][1]]+1)%((int)al[triangles[1][0]].size()) != ral[triangles[1][0]][triangles[1][2]]) {
+        reverse(triangles[1].begin(), triangles[1].end());
+    }
+    set_outer_face(triangles[1]);
 }

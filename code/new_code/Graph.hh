@@ -20,6 +20,8 @@ struct Graph {
 
     bool empty() const;
 
+    bool connected() const;
+
     bool neighbors(int u, int v) const;
 
     void generate_ral_and_m();
@@ -29,6 +31,12 @@ struct Graph {
     void set_outer_face(std::vector<int> of);
 
     std::vector<int> get_face_ccw(int u, int v) const;
+
+    Graph identify_vertices(std::vector<int> v1, const std::vector<int> v2) const;
+
+    bool subgraph_isomorphism(const Graph& g) const;
+
+    void write_cpp(std::ostream& os) const;
 
 };
 

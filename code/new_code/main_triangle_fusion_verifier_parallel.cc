@@ -5,6 +5,7 @@
 #include<set>
 #include "TwoTriangleGraph.hh"
 #include "GlobalSettings.hh"
+#include "Parallelism.hh"
 
 using std::cout;
 using std::cin;
@@ -38,28 +39,34 @@ int main() {
 
     for (int idx1=0; idx1 < (int)v.size(); ++idx1) {
         auto g1 = v[idx1];
-        for (auto g2 : v) {
-            vector<TwoTriangleGraph> fus = TwoTriangleGraph::fuse_triangles(g1, g2);
-            for (auto g3 : fus) {
-                if (s.find(g3.compute_code()) == s.end()) {
-                    if (g3.test_criticality()) {
-                        cout << "---" << endl;
-                        g1.write(cout);
-                        g2.write(cout);
-                        cout << "-" << endl;
-                        g3.write(cout);
-                        cout << g3.compute_code().to_string() << endl;
-                        TwoTriangleGraph(g3.compute_code()).write(cout);
-                        cout << "---" << endl;
+        Parallelism::spawn_thread([s, g1, v] () {
+            for (auto g2 : v) {
+                if (g2.distance_between_triangles() > 1) continue; 
+                vector<TwoTriangleGraph> fus = TwoTriangleGraph::fuse_triangles(g1, g2);
+                for (auto g3 : fus) {
+                    if (g3.distance_between_triangles() < 5) continue;
+                    if (s.find(g3.compute_code()) == s.end()) {
+                        if (g3.test_criticality()) {
+                            Parallelism::two_triangle_list_mutex.lock();
+                            cout << "---" << endl;
+                            g1.write(cout);
+                            g2.write(cout);
+                            cout << "-" << endl;
+                            g3.write(cout);
+                            cout << g3.compute_code().to_string() << endl;
+                            TwoTriangleGraph(g3.compute_code()).write(cout);
+                            cout << "---" << endl;
+                            Parallelism::two_triangle_list_mutex.unlock();
+                        }
                     }
                 }
             }
-        }
+        });
         if (((20*idx1)/(int)v.size()) > cnt) {
             cnt++;
             cerr << 5*cnt << "% " << std::flush;
-            if (cnt > 0) return 0;
         }
     }
+    Parallelism::wait_for_threads();
     cerr << endl;
 }

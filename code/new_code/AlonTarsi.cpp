@@ -1,4 +1,5 @@
 #include "AlonTarsi.hh"
+#include "GlobalSettings.hh"
 #include<functional>
 
 using std::vector;
@@ -20,11 +21,13 @@ bool alon_tarsi(const ListGraph& g) {
         return true;
     }
 
-    vector<int> bounds = g.list_sizes;
+    vector<char> bounds(g.n);
+    
+    for (int i=0; i < g.n; ++i) bounds[i] = g.list_sizes[i];
 
-    for (int& x : bounds) x--;
+    for (char& x : bounds) x--;
 
-    std::map<vector<int>, long long> odm;
+    std::map<vector<char>, long long> odm;
     odm[bounds] = 1;
 
     sort(el.begin(), el.end(), [&](pair<int, int> e1, pair<int, int> e2) {
@@ -37,12 +40,12 @@ bool alon_tarsi(const ListGraph& g) {
     });
 
     for (auto e : el) {
-        std::map<vector<int>, long long> nodm;
+        std::map<vector<char>, long long> nodm;
         auto add_orientation = [&] (int u, int sg) {
 
             for (auto& p : odm) {
                 if (p.first[u] > 0) {
-                    vector<int> r = vector<int>(p.first);
+                    vector<char> r = vector<char>(p.first);
                     r[u]--;
                     nodm[r] += sg * p.second;
                 }
@@ -54,11 +57,15 @@ bool alon_tarsi(const ListGraph& g) {
 
         odm.clear();
 
+        if (nodm.size()  > GlobalSettings::ALON_TARSI_MAP_SIZE_LIMIT) return false;
+
         for (auto& p : nodm) {
             if (p.second != 0) {
                 odm[p.first] = p.second;
             }
         }
+
+        
     }
 
     for (auto p : odm) {

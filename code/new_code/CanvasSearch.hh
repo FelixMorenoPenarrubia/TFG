@@ -12,12 +12,17 @@
 #include<unordered_set>
 #include<thread>
 
+#include "parallel_hashmap/phmap.h"
+
+
+
 
 
 
 
 using CanvasList = std::set<CanvasCode>;
-using CanvasHashList = std::unordered_set<cchash>;
+using CanvasHashList = phmap::parallel_flat_hash_set<cchash>;
+
 
 struct CanvasSearch {
     
@@ -43,6 +48,10 @@ struct CanvasSearch {
     static void add_canvas_dfs_serial(const Canvas& g);
 
     static void add_canvas_dfs_parallel(const Canvas& g);
+
+    static void add_canvas_dfs_parallel_2(const Canvas& g);
+
+    static void process_canvas_dfs_parallel(const Canvas& g);
 
     static void add_canvas_st_real(const Canvas& g, std::vector<CanvasCode>& st);
 
@@ -84,6 +93,8 @@ struct CanvasSearch {
     std::set<CanvasCode>& get_chordless_code(int l);
 
     void print_chordless_lessmemory(int l);
+
+    void read_previous_and_print_lessmemory();
 
 };
 
